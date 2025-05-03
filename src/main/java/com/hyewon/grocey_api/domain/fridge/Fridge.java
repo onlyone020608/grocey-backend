@@ -14,4 +14,8 @@ public class Fridge {
 
     @OneToMany(mappedBy = "fridge")
     private List<User> users = new ArrayList<>();
+
+    private Double fridgeTemperature;
+    private Double freezerTemperature;
+
 }
