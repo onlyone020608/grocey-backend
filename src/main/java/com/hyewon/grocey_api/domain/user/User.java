@@ -2,8 +2,12 @@ package com.hyewon.grocey_api.domain.user;
 
 
 import com.hyewon.grocey_api.domain.fridge.Fridge;
+import com.hyewon.grocey_api.domain.recipe.UserRecipe;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -31,6 +35,10 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fridge_id")
     private Fridge fridge;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRecipe> savedRecipes = new ArrayList<>();
+
 
 
 
