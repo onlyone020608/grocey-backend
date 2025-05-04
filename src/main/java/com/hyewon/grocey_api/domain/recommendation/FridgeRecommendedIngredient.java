@@ -14,6 +14,7 @@ public class FridgeRecommendedIngredient extends BaseTimeEntity {
     private Ingredient ingredient;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fridge_recommendation_id")
     private FridgeRecommendation fridgeRecommendation;
 
 }

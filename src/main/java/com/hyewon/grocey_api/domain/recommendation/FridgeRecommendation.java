@@ -20,7 +20,7 @@ public class FridgeRecommendation extends BaseTimeEntity {
     private Fridge fridge;
 
 
-    @OneToMany(mappedBy = "recommendation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "fridgeRecommendation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FridgeRecommendedIngredient> recommendedIngredients = new ArrayList<>();
 
 
