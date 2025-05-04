@@ -1,7 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge;
 
-import com.hyewon.grocey_api.domain.ingredients.Ingredient;
-import com.hyewon.grocey_api.domain.user.FoodPreference;
+import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 

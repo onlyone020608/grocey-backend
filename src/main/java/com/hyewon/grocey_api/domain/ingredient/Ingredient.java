@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.ingredients;
+package com.hyewon.grocey_api.domain.ingredient;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

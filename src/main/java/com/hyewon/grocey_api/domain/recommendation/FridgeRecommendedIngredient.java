@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.recommendation;
 
-import com.hyewon.grocey_api.domain.ingredients.Ingredient;
+import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
