@@ -1,10 +1,11 @@
 package com.hyewon.grocey_api.domain.recipe;
 
 import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
 @Entity
-public class UserRecipe {
+public class UserRecipe extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)

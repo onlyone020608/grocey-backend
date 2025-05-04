@@ -1,13 +1,14 @@
 package com.hyewon.grocey_api.domain.order;
 
 import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Order {
+public class Order extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;

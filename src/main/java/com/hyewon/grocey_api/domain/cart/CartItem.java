@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.domain.cart;
 
 import com.hyewon.grocey_api.domain.ingredients.Ingredient;
 import com.hyewon.grocey_api.domain.product.Product;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class CartItem {
+public class CartItem extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +27,5 @@ public class CartItem {
 
     private int quantity;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
 }

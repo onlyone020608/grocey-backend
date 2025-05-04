@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge;
 
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -7,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class FridgeSnapshot {
+public class FridgeSnapshot extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +22,7 @@ public class FridgeSnapshot {
     private Boolean isFreezer;
 
     private int quantity;
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+
 
 
 

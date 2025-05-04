@@ -2,10 +2,11 @@ package com.hyewon.grocey_api.domain.order;
 
 import com.hyewon.grocey_api.domain.ingredients.Ingredient;
 import com.hyewon.grocey_api.domain.product.Product;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
 @Entity
-public class OrderItem {
+public class OrderItem extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;

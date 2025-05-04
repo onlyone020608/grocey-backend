@@ -2,12 +2,13 @@ package com.hyewon.grocey_api.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.recipe.Recipe;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class RecipeRecommendation {
+public class RecipeRecommendation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -20,8 +21,6 @@ public class RecipeRecommendation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
-
-    private LocalDateTime recommendedAt;
 
     @Enumerated(EnumType.STRING)
     private RecommendationType type;

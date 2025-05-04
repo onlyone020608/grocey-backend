@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.domain.user;
 
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.recipe.UserRecipe;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

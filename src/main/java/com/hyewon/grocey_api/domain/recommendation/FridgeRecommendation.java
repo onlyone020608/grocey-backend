@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.fridge.Fridge;
+import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class FridgeRecommendation {
+public class FridgeRecommendation extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
@@ -18,8 +19,6 @@ public class FridgeRecommendation {
     @JoinColumn(name = "fridge_id")
     private Fridge fridge;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "recommendation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FridgeRecommendedIngredient> recommendedIngredients = new ArrayList<>();
