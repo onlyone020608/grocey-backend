@@ -23,5 +23,12 @@
 hs_err_pid*
 replay_pid*
 
+# IDE
 .idea/
 *.iml
+/out/
+
+#Build
+/build/
+/.gradle/
+
