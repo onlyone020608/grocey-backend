@@ -2,12 +2,14 @@ package com.hyewon.grocey_api.domain.fridge;
 
 import com.hyewon.grocey_api.domain.user.User;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
+@Getter
 public class Fridge {
     @Id @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
