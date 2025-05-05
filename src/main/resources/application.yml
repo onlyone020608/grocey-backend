@@ -10,11 +10,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update  # 개발 중엔 update / 배포 시엔 validate 또는 none
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         show_sql: true
+  sql:
+    init:
+      mode: always
 
   # 필요 시 (서버 포트)
   server:
