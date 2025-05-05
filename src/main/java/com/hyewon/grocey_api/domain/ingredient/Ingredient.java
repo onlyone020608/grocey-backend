@@ -12,4 +12,8 @@ public class Ingredient {
     private Long id;
 
     private String ingredientName;
+
+    private String imageUrl;
+
+
 }
