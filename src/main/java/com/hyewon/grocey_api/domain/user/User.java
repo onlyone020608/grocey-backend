@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "users")
 public class User extends BaseTimeEntity {
 
     @Id
@@ -34,7 +35,7 @@ public class User extends BaseTimeEntity {
     private Gender gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fridge_id")
+    @JoinColumn(name = "fridge_id", nullable = true)
     private Fridge fridge;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
