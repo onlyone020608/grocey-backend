@@ -18,7 +18,8 @@ spring:
         show_sql: true
   sql:
     init:
-      mode: always
+      mode: never
+
 
   # 필요 시 (서버 포트)
   server:
