@@ -6,12 +6,15 @@ import com.hyewon.grocey_api.domain.recipe.UserRecipe;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
     @Id
@@ -41,7 +44,16 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRecipe> savedRecipes = new ArrayList<>();
 
+    public void assignFridge(Fridge fridge) {
+        this.fridge = fridge;
+        fridge.getUsers().add(this); // 양방향이라면 양쪽 연결
+    }
 
-
-
+    public User(String userName, String email, String password, AgeGroup ageGroup, Gender gender) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.ageGroup = ageGroup;
+        this.gender = gender;
+    }
 }
