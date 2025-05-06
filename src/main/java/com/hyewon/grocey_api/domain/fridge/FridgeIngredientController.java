@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge;
 
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponseDto;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,5 +18,10 @@ public class FridgeIngredientController {
     public List<FridgeIngredientResponseDto> getFridgeIngredients(@PathVariable Long fridgeId,
                                                                   @RequestParam(required = false) boolean isFreezer) {
         return fridgeService.getIngredientsByFridge(fridgeId, isFreezer);
+    }
+
+    @GetMapping("/{id}")
+    public FridgeIngredientDetailResponseDto getIngredientDetail(@PathVariable Long id) {
+        return fridgeService.getIngredientDetail(id);
     }
 }
