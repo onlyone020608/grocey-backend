@@ -1,17 +1,20 @@
 package com.hyewon.grocey_api.domain.recommendation;
 
-import com.hyewon.grocey_api.domain.ingredient.Ingredient;
+import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
-public class FridgeRecommendedIngredient extends BaseTimeEntity {
+@Getter
+public class FridgeRecommendedProduct extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Ingredient ingredient;
+    @JoinColumn(name = "product_id") // <-- 상품 추천임
+    private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fridge_recommendation_id")
