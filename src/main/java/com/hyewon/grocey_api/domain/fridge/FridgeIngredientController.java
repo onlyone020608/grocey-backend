@@ -12,16 +12,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FridgeIngredientController {
     private final FridgeIngredientRepository fridgeIngredientRepository;
-    private final FridgeService fridgeService;
+    private final FridgeIngredientService fridgeIngredientService;
 
     @GetMapping
     public List<FridgeIngredientResponseDto> getFridgeIngredients(@PathVariable Long fridgeId,
                                                                   @RequestParam(required = false) boolean isFreezer) {
-        return fridgeService.getIngredientsByFridge(fridgeId, isFreezer);
+        return fridgeIngredientService.getIngredientsByFridge(fridgeId, isFreezer);
     }
 
     @GetMapping("/{id}")
     public FridgeIngredientDetailResponseDto getIngredientDetail(@PathVariable Long id) {
-        return fridgeService.getIngredientDetail(id);
+        return fridgeIngredientService.getIngredientDetail(id);
     }
 }

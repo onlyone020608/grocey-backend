@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FridgeService {
     private final FridgeRepository fridgeRepository;
-    private final FridgeIngredientRepository fridgeIngredientRepository;
 
     public FridgeResponseDto getFridgeInfo(Long userId) {
         Fridge fridge = fridgeRepository.findById(userId)
@@ -23,26 +22,5 @@ public class FridgeService {
         return new FridgeResponseDto(fridge.getFridgeTemperature(), fridge.getFreezerTemperature());
     }
 
-    public List<FridgeIngredientResponseDto> getIngredientsByFridge(Long fridgeId, Boolean isFreezer) {
-        List<FridgeIngredient> ingredients;
 
-        if (isFreezer == null) {
-            ingredients = fridgeIngredientRepository.findByFridgeId(fridgeId);
-        } else {
-            ingredients = fridgeIngredientRepository.findByFridgeIdAndIsFreezer(fridgeId, isFreezer);
-        }
-
-        return ingredients.stream()
-                .map(fi -> new FridgeIngredientResponseDto(
-                        fi.getIngredient().getIngredientName(),
-                        fi.getIngredient().getImageUrl()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    public FridgeIngredientDetailResponseDto getIngredientDetail(Long id) {
-        FridgeIngredient fi = fridgeIngredientRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 재료가 존재하지 않습니다."));
-        return new FridgeIngredientDetailResponseDto(fi);
-    }
 }
