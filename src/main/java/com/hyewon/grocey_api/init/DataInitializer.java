@@ -16,10 +16,7 @@ import com.hyewon.grocey_api.domain.recipe.Recipe;
 import com.hyewon.grocey_api.domain.recipe.RecipeIngredient;
 import com.hyewon.grocey_api.domain.recipe.RecipeIngredientRepository;
 import com.hyewon.grocey_api.domain.recipe.RecipeRepository;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendation;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendationRepository;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProduct;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProductRepository;
+import com.hyewon.grocey_api.domain.recommendation.*;
 import com.hyewon.grocey_api.domain.user.AgeGroup;
 import com.hyewon.grocey_api.domain.user.Gender;
 import com.hyewon.grocey_api.domain.user.User;
@@ -50,7 +47,7 @@ public class DataInitializer implements ApplicationRunner {
     private final CartItemRepository cartItemRepository;
     private final FridgeRecommendationRepository fridgeRecommendationRepository;
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
-
+    private final RecipeRecommendationRepository recipeRecommendationRepository;
 
 
     @Override
@@ -102,6 +99,10 @@ public class DataInitializer implements ApplicationRunner {
 
         fridgeRecommendedProductRepository.save(rp1);
         fridgeRecommendedProductRepository.save(rp2);
+
+        // 유저 기반 레시피 추천용 예시 (fridge 대신 user 객체 연결)
+        RecipeRecommendation recipeRec1 = new RecipeRecommendation(u, recipe, RecommendationType.PREFERENCE_BASED);
+        recipeRecommendationRepository.save(recipeRec1);
 
 
     }
