@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface RecipeRecommendationRepository extends JpaRepository<RecipeRecommendation, Integer> {
     List<RecipeRecommendation> findByUser(User user);
+    List<RecipeRecommendation> findByFridge(Fridge fridge);
 
 
 }

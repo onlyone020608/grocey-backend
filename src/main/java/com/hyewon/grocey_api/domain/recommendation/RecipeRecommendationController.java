@@ -20,4 +20,12 @@ public class RecipeRecommendationController {
     public List<RecipeRecommendationDto> recommendByUser(@PathVariable Long userId) {
         return recommendationService.getRecommendationsByUser(userId);
     }
+
+    @GetMapping("/fridge/{fridgeId}")
+    public List<RecipeRecommendationDto> recommendByFridge(@PathVariable Long fridgeId) {
+        return recommendationService.getRecommendationsByFridge(fridgeId);
+    }
+
+
+
 }

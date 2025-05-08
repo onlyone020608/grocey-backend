@@ -43,5 +43,22 @@ public class RecipeRecommendationService {
 
     }
 
+    public List<RecipeRecommendationDto> getRecommendationsByFridge(@PathVariable Long fridgeId) {
+        Fridge fridge = fridgeRepository.findById(fridgeId)
+                .orElseThrow(() -> new NotFoundException("fridge Not found"));
+
+
+        List<RecipeRecommendation> recommendations = recipeRecommendationRepository.findByFridge(fridge);
+
+        if (recommendations.isEmpty()) {
+            throw RecommendationNotFoundException.forFridgeRecipe(fridgeId);
+        }
+
+        return recommendations.stream()
+                .map(RecipeRecommendationDto::new)
+                .toList();
+
+    }
+
 
 }

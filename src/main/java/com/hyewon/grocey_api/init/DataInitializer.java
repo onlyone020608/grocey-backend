@@ -104,6 +104,11 @@ public class DataInitializer implements ApplicationRunner {
         RecipeRecommendation recipeRec1 = new RecipeRecommendation(u, recipe, RecommendationType.PREFERENCE_BASED);
         recipeRecommendationRepository.save(recipeRec1);
 
+        // 예: 냉장고 기반 레시피 추천용 (또는 유저 기반 레시피 추천용)
+        RecipeRecommendation recipeRec2 = new RecipeRecommendation(f, recipe, RecommendationType.FRIDGE_BASED);
+        recipeRecommendationRepository.save(recipeRec2);
+
+
 
     }
 }
