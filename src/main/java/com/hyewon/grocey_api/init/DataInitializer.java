@@ -16,6 +16,10 @@ import com.hyewon.grocey_api.domain.recipe.Recipe;
 import com.hyewon.grocey_api.domain.recipe.RecipeIngredient;
 import com.hyewon.grocey_api.domain.recipe.RecipeIngredientRepository;
 import com.hyewon.grocey_api.domain.recipe.RecipeRepository;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendation;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendationRepository;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProduct;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.domain.user.AgeGroup;
 import com.hyewon.grocey_api.domain.user.Gender;
 import com.hyewon.grocey_api.domain.user.User;
@@ -44,8 +48,9 @@ public class DataInitializer implements ApplicationRunner {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    @PersistenceContext
-    private EntityManager em;
+    private final FridgeRecommendationRepository fridgeRecommendationRepository;
+    private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
+
 
 
     @Override
@@ -87,6 +92,16 @@ public class DataInitializer implements ApplicationRunner {
 
         cartItemRepository.save(item1);
         cartItemRepository.save(item2);
+
+        // 추천 장바구니 테스트용 데이터
+        FridgeRecommendation recommendation = new FridgeRecommendation(f);
+        fridgeRecommendationRepository.save(recommendation);
+
+        FridgeRecommendedProduct rp1 = new FridgeRecommendedProduct(product1, recommendation);
+        FridgeRecommendedProduct rp2 = new FridgeRecommendedProduct(product2, recommendation);
+
+        fridgeRecommendedProductRepository.save(rp1);
+        fridgeRecommendedProductRepository.save(rp2);
 
 
     }
