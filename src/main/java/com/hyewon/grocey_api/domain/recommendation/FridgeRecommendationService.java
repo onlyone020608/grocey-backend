@@ -17,7 +17,7 @@ public class FridgeRecommendationService {
     public FridgeRecommendationDto getLatestRecommendation(Long fridgeId) {
         FridgeRecommendation recommendation = fridgeRecommendationRepository
                 .findTopByFridgeIdOrderByCreatedAtDesc(fridgeId)
-                .orElseThrow(() -> new RecommendationNotFoundException(fridgeId));
+                .orElseThrow(() -> RecommendationNotFoundException.forFridgeProduct(fridgeId));
 
         return new FridgeRecommendationDto(recommendation);
     }
