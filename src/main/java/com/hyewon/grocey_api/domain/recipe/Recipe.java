@@ -27,6 +27,8 @@ public class Recipe {
 
     private Integer servings;
 
+    private String imageUrl;
+
     private LocalDateTime savedAt;
 
     public Recipe(String recipeName, String description, Integer cookingTime, Integer servings) {
