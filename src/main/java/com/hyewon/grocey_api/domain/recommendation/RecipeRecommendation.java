@@ -5,12 +5,13 @@ import com.hyewon.grocey_api.domain.recipe.Recipe;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecipeRecommendation extends BaseTimeEntity {
 
     @Id
@@ -32,5 +33,15 @@ public class RecipeRecommendation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RecommendationType type;
 
+    public RecipeRecommendation(User user, Recipe recipe, RecommendationType type) {
+        this.recipe = recipe;
+        this.user = user;
+        this.type = type;
+    }
 
+    public RecipeRecommendation(Fridge fridge, Recipe recipe, RecommendationType type) {
+        this.fridge = fridge;
+        this.recipe = recipe;
+        this.type = type;
+    }
 }
