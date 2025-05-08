@@ -2,7 +2,7 @@ package com.hyewon.grocey_api.domain.user;
 
 
 import com.hyewon.grocey_api.domain.fridge.Fridge;
-import com.hyewon.grocey_api.domain.recipe.UserRecipe;
+import com.hyewon.grocey_api.domain.recipe.SavedRecipe;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,7 +44,7 @@ public class User extends BaseTimeEntity {
     private Fridge fridge;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserRecipe> savedRecipes = new ArrayList<>();
+    private List<SavedRecipe> savedRecipes = new ArrayList<>();
 
     public void assignFridge(Fridge fridge) {
         this.fridge = fridge;

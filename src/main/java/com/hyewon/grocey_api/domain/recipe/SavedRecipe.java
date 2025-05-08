@@ -5,7 +5,7 @@ import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
 @Entity
-public class UserRecipe extends BaseTimeEntity {
+public class SavedRecipe extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
