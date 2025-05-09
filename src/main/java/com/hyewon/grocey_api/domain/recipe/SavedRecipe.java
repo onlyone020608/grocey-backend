@@ -3,8 +3,13 @@ package com.hyewon.grocey_api.domain.recipe;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SavedRecipe extends BaseTimeEntity {
 
     @Id
@@ -19,5 +24,8 @@ public class SavedRecipe extends BaseTimeEntity {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-
+    public SavedRecipe(User user, Recipe recipe) {
+        this.user = user;
+        this.recipe = recipe;
+    }
 }

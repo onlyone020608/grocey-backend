@@ -12,10 +12,7 @@ import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.product.ProductRepository;
-import com.hyewon.grocey_api.domain.recipe.Recipe;
-import com.hyewon.grocey_api.domain.recipe.RecipeIngredient;
-import com.hyewon.grocey_api.domain.recipe.RecipeIngredientRepository;
-import com.hyewon.grocey_api.domain.recipe.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.*;
 import com.hyewon.grocey_api.domain.recommendation.*;
 import com.hyewon.grocey_api.domain.user.AgeGroup;
 import com.hyewon.grocey_api.domain.user.Gender;
@@ -48,7 +45,7 @@ public class DataInitializer implements ApplicationRunner {
     private final FridgeRecommendationRepository fridgeRecommendationRepository;
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final RecipeRecommendationRepository recipeRecommendationRepository;
-
+    private final SavedRecipeRepository savedRecipeRepository;
 
     @Override
     @Transactional
@@ -107,6 +104,10 @@ public class DataInitializer implements ApplicationRunner {
         // 예: 냉장고 기반 레시피 추천용 (또는 유저 기반 레시피 추천용)
         RecipeRecommendation recipeRec2 = new RecipeRecommendation(f, recipe, RecommendationType.FRIDGE_BASED);
         recipeRecommendationRepository.save(recipeRec2);
+
+        // 저장한 레시피 테스트용 데이터
+        SavedRecipe savedRecipe = new SavedRecipe(u, recipe);
+        savedRecipeRepository.save(savedRecipe);
 
 
 
