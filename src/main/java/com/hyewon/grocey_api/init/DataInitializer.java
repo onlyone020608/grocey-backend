@@ -116,15 +116,14 @@ public class DataInitializer implements ApplicationRunner {
 
 
         // 주문 테스트용 데이터
-        Order order = new Order(u, "서울시 강남구", PaymentMethod.CARD);
-
-        OrderItem oi1 = new OrderItem(order, product1, 2, product1.getPrice());
-        OrderItem oi2 = new OrderItem(order, product2, 1, product2.getPrice());
-
-        order.getOrderItems().add(oi1);
-        order.getOrderItems().add(oi2);
-
-        orderRepository.save(order);
+        for (int i = 0; i < 11; i++) {
+            Order order = new Order(u, "서울시 강남구", PaymentMethod.CARD);
+            OrderItem oi1 = new OrderItem(order, product1, 1 + i % 3, product1.getPrice());
+            OrderItem oi2 = new OrderItem(order, product2, 1, product2.getPrice());
+            order.getOrderItems().add(oi1);
+            order.getOrderItems().add(oi2);
+            orderRepository.save(order);
+        }
 
 
 

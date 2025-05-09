@@ -7,6 +7,8 @@ import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.global.exception.OrderNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -45,4 +47,14 @@ public class OrderService {
         return new OrderDetailDto(order);
 
     }
+
+    public Page<OrderSummaryDto> getAllOrders(Long userId, Pageable pageable) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        return orderRepository.findByUser(user, pageable)
+                .map(OrderSummaryDto::new); // 또는 .map(order -> new OrderSummaryDto(order))
+    }
+
+
 }
