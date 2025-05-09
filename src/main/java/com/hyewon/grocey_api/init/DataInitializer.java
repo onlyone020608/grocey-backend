@@ -14,8 +14,7 @@ import com.hyewon.grocey_api.domain.order.Order;
 import com.hyewon.grocey_api.domain.order.OrderItem;
 import com.hyewon.grocey_api.domain.order.OrderRepository;
 import com.hyewon.grocey_api.domain.order.PaymentMethod;
-import com.hyewon.grocey_api.domain.product.Product;
-import com.hyewon.grocey_api.domain.product.ProductRepository;
+import com.hyewon.grocey_api.domain.product.*;
 import com.hyewon.grocey_api.domain.recipe.*;
 import com.hyewon.grocey_api.domain.recommendation.*;
 import com.hyewon.grocey_api.domain.user.AgeGroup;
@@ -51,6 +50,7 @@ public class DataInitializer implements ApplicationRunner {
     private final RecipeRecommendationRepository recipeRecommendationRepository;
     private final SavedRecipeRepository savedRecipeRepository;
     private final OrderRepository orderRepository;
+    private final ProductTabRepository productTabRepository;
 
     @Override
     @Transactional
@@ -124,6 +124,15 @@ public class DataInitializer implements ApplicationRunner {
             order.getOrderItems().add(oi2);
             orderRepository.save(order);
         }
+
+        // product 저장 이후 탭 데이터 생성 추가
+        Product savedProduct1 = productRepository.save(new Product("계란 10개입", "롯데", 2980, "egg-pack.png"));
+        Product savedProduct2 = productRepository.save(new Product("우유 1L", "롯데", 2450, "milk-1l.png"));
+
+        // 탭 지정 (예: 신상품, 베스트 등)
+        productTabRepository.save(new ProductTab(savedProduct1, TabType.NEW));
+        productTabRepository.save(new ProductTab(savedProduct1, TabType.BEST));
+        productTabRepository.save(new ProductTab(savedProduct2, TabType.NOBRAND));
 
 
 
