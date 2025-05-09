@@ -10,6 +10,9 @@ import com.hyewon.grocey_api.domain.fridge.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
+import com.hyewon.grocey_api.domain.order.Order;
+import com.hyewon.grocey_api.domain.order.OrderItem;
+import com.hyewon.grocey_api.domain.order.OrderRepository;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.product.ProductRepository;
 import com.hyewon.grocey_api.domain.recipe.*;
@@ -46,6 +49,7 @@ public class DataInitializer implements ApplicationRunner {
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final RecipeRecommendationRepository recipeRecommendationRepository;
     private final SavedRecipeRepository savedRecipeRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional
@@ -108,6 +112,18 @@ public class DataInitializer implements ApplicationRunner {
         // 저장한 레시피 테스트용 데이터
         SavedRecipe savedRecipe = new SavedRecipe(u, recipe);
         savedRecipeRepository.save(savedRecipe);
+
+
+        // 주문 테스트용 데이터
+        Order order = new Order(u);
+
+        OrderItem oi1 = new OrderItem(order, product1, 2, "서울시 강남구", product1.getPrice());
+        OrderItem oi2 = new OrderItem(order, product2, 1, "서울시 강남구", product2.getPrice());
+
+        order.getOrderItems().add(oi1);
+        order.getOrderItems().add(oi2);
+
+        orderRepository.save(order);
 
 
 

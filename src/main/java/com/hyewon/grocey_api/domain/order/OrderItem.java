@@ -3,10 +3,13 @@ package com.hyewon.grocey_api.domain.order;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -26,4 +29,11 @@ public class OrderItem extends BaseTimeEntity {
 
     private int price;
 
+    public OrderItem(Order order, Product product, int quantity, String address, int price) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.address = address;
+        this.price = price;
+    }
 }
