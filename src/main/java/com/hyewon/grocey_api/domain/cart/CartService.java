@@ -74,4 +74,22 @@ public class CartService {
                 .orElseThrow(() -> new CartItemNotFoundException(request.getCartItemId()));
         cartItem.updateQuantity(request.getQuantity());
     }
+
+    public void deleteCartItem(Long userId, Long cartItemId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new CartNotFoundException(user.getId()));
+
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
+
+        if (!cart.getCartItems().contains(cartItem)) {
+            throw new CartItemNotFoundException(cartItemId);
+        }
+
+        cart.removeCartItem(cartItem);
+        cartItemRepository.delete(cartItem);
+    }
 }

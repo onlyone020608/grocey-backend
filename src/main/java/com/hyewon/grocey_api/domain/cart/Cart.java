@@ -40,6 +40,11 @@ public class Cart extends BaseTimeEntity {
         item.assignCart(this);
     }
 
+    public void removeCartItem(CartItem cartItem) {
+        cartItems.remove(cartItem);
+        cartItem.removeFromCart();
+    }
+
 
 
 

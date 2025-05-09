@@ -42,5 +42,12 @@ public class CartItem extends BaseTimeEntity {
         this.quantity = quantity;
     }
 
+    public void removeFromCart() {
+        if (this.cart != null) {
+            this.cart.getCartItems().remove(this);
+            this.cart = null;
+        }
+    }
+
 
 }

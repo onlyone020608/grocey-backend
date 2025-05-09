@@ -40,4 +40,13 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
+    @DeleteMapping("/{userId}/items/{cartItemId}")
+    public ResponseEntity<Void> deleteCartItem(@PathVariable Long userId, @PathVariable Long cartItemId) {
+        cartService.deleteCartItem(userId, cartItemId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
 }
