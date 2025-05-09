@@ -13,6 +13,7 @@ import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.order.Order;
 import com.hyewon.grocey_api.domain.order.OrderItem;
 import com.hyewon.grocey_api.domain.order.OrderRepository;
+import com.hyewon.grocey_api.domain.order.PaymentMethod;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.product.ProductRepository;
 import com.hyewon.grocey_api.domain.recipe.*;
@@ -115,7 +116,7 @@ public class DataInitializer implements ApplicationRunner {
 
 
         // 주문 테스트용 데이터
-        Order order = new Order(u, "서울시 강남구");
+        Order order = new Order(u, "서울시 강남구", PaymentMethod.CARD);
 
         OrderItem oi1 = new OrderItem(order, product1, 2, product1.getPrice());
         OrderItem oi2 = new OrderItem(order, product2, 1, product2.getPrice());
