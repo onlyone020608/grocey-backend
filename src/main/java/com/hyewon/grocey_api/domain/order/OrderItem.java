@@ -3,8 +3,10 @@ package com.hyewon.grocey_api.domain.order;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class OrderItem extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -22,6 +24,6 @@ public class OrderItem extends BaseTimeEntity {
 
     private String address;
 
-    private int totalPrice;
+    private int price;
 
 }
