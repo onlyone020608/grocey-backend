@@ -20,9 +20,6 @@ public class OrderItem extends BaseTimeEntity {
 
     private int quantity;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
-
     private String address;
 
     private int totalPrice;
