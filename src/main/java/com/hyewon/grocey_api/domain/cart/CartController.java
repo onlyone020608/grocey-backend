@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.domain.cart;
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
 import com.hyewon.grocey_api.domain.cart.dto.CartItemResponseDto;
 import com.hyewon.grocey_api.domain.cart.dto.CartResponseDto;
+import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,13 @@ public class CartController {
     ) {
         cartService.addCartItem(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
+    @PatchMapping("/{userId}/items")
+    public ResponseEntity<Void> updateCartItemQuantity(@RequestBody UpdateCartItemRequest request) {
+        cartService.updateCartItemQuantity(request);
+        return ResponseEntity.ok().build();
     }
 
 }
