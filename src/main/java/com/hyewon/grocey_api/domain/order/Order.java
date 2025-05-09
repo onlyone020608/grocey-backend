@@ -25,11 +25,14 @@ public class Order extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    private String address;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order(User user) {
+    public Order(User user, String address) {
         this.user = user;
         this.orderStatus = OrderStatus.CONFIRMED;
+        this.address = address;
     }
 }

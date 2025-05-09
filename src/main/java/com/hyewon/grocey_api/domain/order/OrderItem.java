@@ -25,15 +25,14 @@ public class OrderItem extends BaseTimeEntity {
 
     private int quantity;
 
-    private String address;
+
 
     private int price;
 
-    public OrderItem(Order order, Product product, int quantity, String address, int price) {
+    public OrderItem(Order order, Product product, int quantity,  int price) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
-        this.address = address;
         this.price = price;
     }
 }
