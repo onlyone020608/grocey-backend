@@ -2,12 +2,15 @@ package com.hyewon.grocey_api.domain.user;
 
 import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
 import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
+import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
 
@@ -21,6 +24,20 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         return new UserDetailDto(user);
+    }
+
+    public void updateUser(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (request.getUserName() != null) {
+            user.updateName(request.getUserName());
+        }
+
+        if (request.getEmail() != null) {
+            user.updateEmail(request.getEmail());
+        }
+
     }
 
 

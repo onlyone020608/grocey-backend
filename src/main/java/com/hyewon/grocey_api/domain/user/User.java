@@ -58,4 +58,13 @@ public class User extends BaseTimeEntity {
         this.ageGroup = ageGroup;
         this.gender = gender;
     }
+
+    public void updateName(String name) {
+        this.userName = name;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
 }

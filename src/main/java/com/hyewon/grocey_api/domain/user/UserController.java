@@ -2,11 +2,10 @@ package com.hyewon.grocey_api.domain.user;
 
 import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
 import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
+import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/users")
 @RestController
@@ -25,4 +24,12 @@ public class UserController {
     public UserDetailDto getUserDetail(@PathVariable Long userId) {
         return userService.getUserDetail(userId);
     }
+
+    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> updateUserInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
+        userService.updateUser(userId, request);
+        return ResponseEntity.ok().build();
+    }
+
 }
