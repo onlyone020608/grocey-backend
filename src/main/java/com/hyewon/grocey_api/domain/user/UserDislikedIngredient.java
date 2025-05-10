@@ -14,7 +14,7 @@ public class UserDislikedIngredient {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "preference_ingredient_id")
-    private FoodPreference foodPreference;
+    private PreferenceIngredient preferenceIngredient;
 
 
 }
