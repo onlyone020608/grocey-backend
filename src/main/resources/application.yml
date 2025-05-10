@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:env[.env]
   application:
     name: grocey-api
   datasource:
@@ -21,6 +23,14 @@ spring:
       mode: never
 
 
+
+
   # 필요 시 (서버 포트)
   server:
     port: 8080
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiration-ms: 3600000      # 1시간
+  refresh-token-expiration-ms: 1209600000
+
