@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.user;
 
+import com.hyewon.grocey_api.domain.user.dto.GenderUpdateRequest;
 import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
 import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
 import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
@@ -38,6 +39,12 @@ public class UserService {
             user.updateEmail(request.getEmail());
         }
 
+    }
+
+    public void updateGender(Long userId, GenderUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        user.updateGender(request.toEnum());
     }
 
 
