@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.auth;
 
 import com.hyewon.grocey_api.auth.dto.LoginRequest;
+import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.user.User;
@@ -26,6 +27,17 @@ public class AuthController {
     public AuthController(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409 중복
+        }
+
+        User user = new User(request.getName(), request.getEmail(), request.getPassword());
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).build(); // 201
     }
 
     @PostMapping("/login")
