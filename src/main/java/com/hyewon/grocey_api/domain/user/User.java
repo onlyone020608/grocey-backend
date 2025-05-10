@@ -71,5 +71,9 @@ public class User extends BaseTimeEntity {
         this.gender = gender;
     }
 
+    public void updateAgeGroup(AgeGroup ageGroup) {
+        this.ageGroup = ageGroup;
+    }
+
 
 }

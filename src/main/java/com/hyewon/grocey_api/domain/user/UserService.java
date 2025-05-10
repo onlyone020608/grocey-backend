@@ -1,9 +1,6 @@
 package com.hyewon.grocey_api.domain.user;
 
-import com.hyewon.grocey_api.domain.user.dto.GenderUpdateRequest;
-import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
-import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
-import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
+import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,6 +42,12 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         user.updateGender(request.toEnum());
+    }
+
+    public void updateAgeGroup(Long userId, AgeGroupUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        user.updateAgeGroup(request.toEnum());
     }
 
 

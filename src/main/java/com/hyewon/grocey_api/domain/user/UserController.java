@@ -1,9 +1,6 @@
 package com.hyewon.grocey_api.domain.user;
 
-import com.hyewon.grocey_api.domain.user.dto.GenderUpdateRequest;
-import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
-import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
-import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
+import com.hyewon.grocey_api.domain.user.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +34,12 @@ public class UserController {
     @PatchMapping("/{userId}/gender")
     public ResponseEntity<Void> updateGender(@PathVariable Long userId, @RequestBody GenderUpdateRequest request) {
         userService.updateGender(userId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{userId}/age-group")
+    public ResponseEntity<Void> updateAgeGroup(@PathVariable Long userId, @RequestBody AgeGroupUpdateRequest request) {
+        userService.updateAgeGroup(userId, request);
         return ResponseEntity.ok().build();
     }
 
