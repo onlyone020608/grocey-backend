@@ -1,9 +1,16 @@
 package com.hyewon.grocey_api.domain.order;
 
+import com.hyewon.grocey_api.domain.cart.Cart;
+import com.hyewon.grocey_api.domain.cart.CartItem;
+import com.hyewon.grocey_api.domain.cart.CartItemRepository;
+import com.hyewon.grocey_api.domain.cart.CartRepository;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.global.exception.CartNotFoundException;
+import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.OrderNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +27,8 @@ import java.util.Optional;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
 
     public  List<OrderSummaryDto> getRecentOrderSummaryByUserId(@PathVariable Long userId) {
         User user = userRepository.findById(userId)
@@ -53,8 +62,37 @@ public class OrderService {
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         return orderRepository.findByUser(user, pageable)
-                .map(OrderSummaryDto::new); // 또는 .map(order -> new OrderSummaryDto(order))
+                .map(OrderSummaryDto::new);
     }
+
+    public void placeOrder(Long userId, OrderRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new CartNotFoundException(userId));
+
+        List<CartItem> selectedItems = cartItemRepository.findAllById(request.getCartItemIds());
+        if (selectedItems.isEmpty()) {
+            throw new InvalidRequestException("선택된 장바구니 항목이 없습니다.");
+        }
+
+        Order order = new Order(user, request.getAddress(), request.toPaymentMethod());
+
+        for (CartItem item : selectedItems) {
+            OrderItem orderItem = new OrderItem(order, item.getProduct(), item.getQuantity(), item.getProduct().getPrice());
+            order.getOrderItems().add(orderItem);
+        }
+
+        orderRepository.save(order);
+        cartItemRepository.deleteAll(selectedItems); // 선택된 항목만 장바구니에서 제거
+    }
+
+
+
+
+
+
 
 
 }
