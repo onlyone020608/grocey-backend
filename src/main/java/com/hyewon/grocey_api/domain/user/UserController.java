@@ -51,6 +51,14 @@ public class UserController {
         userService.updateUserAllergies(userId, request);
         return ResponseEntity.ok().build();
     }
+    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
+    @PatchMapping("/{userId}/preferences")
+    public ResponseEntity<Void> updatePreferences(@PathVariable Long userId, @RequestBody PreferenceUpdateRequest request) {
+        userService.updateUserPreferences(userId, request);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 
 

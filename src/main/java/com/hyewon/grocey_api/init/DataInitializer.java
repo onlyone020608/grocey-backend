@@ -49,6 +49,9 @@ public class DataInitializer implements ApplicationRunner {
     private final OrderRepository orderRepository;
     private final ProductTabRepository productTabRepository;
     private final AllergyRepository allergyRepository;
+    private final FoodPreferenceRepository foodPreferenceRepository;
+    private final PreferenceIngredientRepository preferenceIngredientRepository;
+
 
 
     @Override
@@ -138,6 +141,16 @@ public class DataInitializer implements ApplicationRunner {
         Allergy allergy2 = allergyRepository.save(new Allergy("우유"));
         Allergy allergy3 = allergyRepository.save(new Allergy("밀가루"));
         Allergy allergy4 = allergyRepository.save(new Allergy("복숭아"));
+
+        // 선호 음식 유형 저장
+        FoodPreference korean = foodPreferenceRepository.save(new FoodPreference("한식"));
+        FoodPreference western = foodPreferenceRepository.save(new FoodPreference("양식"));
+        FoodPreference chinese = foodPreferenceRepository.save(new FoodPreference("중식"));
+
+        // 선호 식재료 저장
+        PreferenceIngredient eggPref = preferenceIngredientRepository.save(new PreferenceIngredient("달걀"));
+        PreferenceIngredient beefPref = preferenceIngredientRepository.save(new PreferenceIngredient("소고기"));
+        PreferenceIngredient fishPref = preferenceIngredientRepository.save(new PreferenceIngredient("생선"));
 
 
 

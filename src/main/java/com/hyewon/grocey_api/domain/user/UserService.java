@@ -15,6 +15,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserAllergyRepository userAllergyRepository;
     private final AllergyRepository allergyRepository;
+    private final UserFoodPreferenceRepository userFoodPreferenceRepository;
+    private final UserDislikedIngredientRepository userDislikedIngredientRepository;
+    private final UserPreferredIngredientRepository userPreferredIngredientRepository;
+    private final FoodPreferenceRepository foodPreferenceRepository;
+    private final PreferenceIngredientRepository preferenceIngredientRepository;
 
     public UserSummaryDto getUserSummary(Long userId) {
         User user = userRepository.findById(userId)
@@ -70,5 +75,38 @@ public class UserService {
         userAllergyRepository.saveAll(newUserAllergies);
     }
 
+    public void updateUserPreferences(Long userId, PreferenceUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        // 1. 기존 데이터 삭제
+        userFoodPreferenceRepository.deleteByUser(user);
+        userPreferredIngredientRepository.deleteByUser(user);
+        userDislikedIngredientRepository.deleteByUser(user);
+
+        // 2. 선호 음식
+        if (request.getFoodPreferenceIds() != null) {
+            List<FoodPreference> foods = foodPreferenceRepository.findAllById(request.getFoodPreferenceIds());
+            foods.forEach(food -> {
+                userFoodPreferenceRepository.save(new UserFoodPreference(user, food));
+            });
+        }
+
+        // 3. 선호 식재료
+        if (request.getPreferredIngredientIds() != null) {
+            List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(request.getPreferredIngredientIds());
+            ingredients.forEach(ingredient -> {
+                userPreferredIngredientRepository.save(new UserPreferredIngredient(user, ingredient));
+            });
+        }
+
+        // 4. 비선호 식재료
+        if (request.getDislikedIngredientIds() != null) {
+            List<PreferenceIngredient> dislikedIngredients = preferenceIngredientRepository.findAllById(request.getDislikedIngredientIds());
+            dislikedIngredients.forEach(ingredient ->
+                    userDislikedIngredientRepository.save(new UserDislikedIngredient(user, ingredient))
+            );
+        }
+    }
 
 }
