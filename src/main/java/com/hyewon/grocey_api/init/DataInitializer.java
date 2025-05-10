@@ -17,10 +17,7 @@ import com.hyewon.grocey_api.domain.order.PaymentMethod;
 import com.hyewon.grocey_api.domain.product.*;
 import com.hyewon.grocey_api.domain.recipe.*;
 import com.hyewon.grocey_api.domain.recommendation.*;
-import com.hyewon.grocey_api.domain.user.AgeGroup;
-import com.hyewon.grocey_api.domain.user.Gender;
-import com.hyewon.grocey_api.domain.user.User;
-import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.domain.user.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -51,6 +48,8 @@ public class DataInitializer implements ApplicationRunner {
     private final SavedRecipeRepository savedRecipeRepository;
     private final OrderRepository orderRepository;
     private final ProductTabRepository productTabRepository;
+    private final AllergyRepository allergyRepository;
+
 
     @Override
     @Transactional
@@ -133,6 +132,12 @@ public class DataInitializer implements ApplicationRunner {
         productTabRepository.save(new ProductTab(savedProduct1, TabType.NEW));
         productTabRepository.save(new ProductTab(savedProduct1, TabType.BEST));
         productTabRepository.save(new ProductTab(savedProduct2, TabType.NOBRAND));
+
+        // 알레르기 등록
+        Allergy allergy1 = allergyRepository.save(new Allergy("계란"));
+        Allergy allergy2 = allergyRepository.save(new Allergy("우유"));
+        Allergy allergy3 = allergyRepository.save(new Allergy("밀가루"));
+        Allergy allergy4 = allergyRepository.save(new Allergy("복숭아"));
 
 
 

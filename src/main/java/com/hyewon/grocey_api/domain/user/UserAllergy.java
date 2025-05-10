@@ -1,8 +1,13 @@
 package com.hyewon.grocey_api.domain.user;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserAllergy {
 
     @Id
@@ -17,7 +22,8 @@ public class UserAllergy {
     @JoinColumn(name = "allergy_id")
     private Allergy allergy;
 
-
-
-
+    public UserAllergy(User user, Allergy allergy) {
+        this.user = user;
+        this.allergy = allergy;
+    }
 }

@@ -43,4 +43,16 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
+    @PatchMapping("/{userId}/allergies")
+    public ResponseEntity<Void> updateUserAllergies(
+            @PathVariable Long userId,
+            @RequestBody UserAllergyUpdateRequest request) {
+        userService.updateUserAllergies(userId, request);
+        return ResponseEntity.ok().build();
+    }
+
+
+
+
 }

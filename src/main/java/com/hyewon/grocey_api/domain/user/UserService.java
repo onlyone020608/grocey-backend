@@ -6,11 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final UserAllergyRepository userAllergyRepository;
+    private final AllergyRepository allergyRepository;
 
     public UserSummaryDto getUserSummary(Long userId) {
         User user = userRepository.findById(userId)
@@ -48,6 +52,22 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         user.updateAgeGroup(request.toEnum());
+    }
+
+    public void updateUserAllergies(Long userId, UserAllergyUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        // 기존 알러지 삭제
+        userAllergyRepository.deleteByUser(user);
+
+        // 새 알러지 설정
+        List<Allergy> allergies = allergyRepository.findAllById(request.getAllergyIds());
+        List<UserAllergy> newUserAllergies = allergies.stream()
+                .map(allergy -> new UserAllergy(user, allergy))
+                .toList();
+
+        userAllergyRepository.saveAll(newUserAllergies);
     }
 
 
