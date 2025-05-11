@@ -14,6 +14,7 @@ import com.hyewon.grocey_api.global.exception.CartNotFoundException;
 import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,9 +70,14 @@ public class CartService {
         cartItemRepository.save(cartItem);
     }
 
-    public void updateCartItemQuantity(UpdateCartItemRequest request) {
+    public void updateCartItemQuantity(Long userId, UpdateCartItemRequest request) {
         CartItem cartItem = cartItemRepository.findById(request.getCartItemId())
                 .orElseThrow(() -> new CartItemNotFoundException(request.getCartItemId()));
+
+        if (!cartItem.getCart().getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("본인의 장바구니만 수정할 수 있습니다.");
+        }
+
         cartItem.updateQuantity(request.getQuantity());
     }
 

@@ -1,12 +1,13 @@
 package com.hyewon.grocey_api.domain.cart;
 
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
-import com.hyewon.grocey_api.domain.cart.dto.CartItemResponseDto;
 import com.hyewon.grocey_api.domain.cart.dto.CartResponseDto;
 import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
+import com.hyewon.grocey_api.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,32 +19,29 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/{userId}")
-    public CartResponseDto getCart(@PathVariable Long userId) {
-        return cartService.getCart(userId);
+    @GetMapping("/me")
+    public CartResponseDto getCart(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return cartService.getCart(userDetails.getId());
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PostMapping("/{userId}/items")
+    @PostMapping("/me/items")
     public ResponseEntity<Void> addCartItem(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody AddCartItemRequest request
     ) {
-        cartService.addCartItem(userId, request);
+        cartService.addCartItem(userDetails.getId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PatchMapping("/{userId}/items")
-    public ResponseEntity<Void> updateCartItemQuantity(@RequestBody UpdateCartItemRequest request) {
-        cartService.updateCartItemQuantity(request);
+    @PatchMapping("/me/items")
+    public ResponseEntity<Void> updateCartItemQuantity(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody UpdateCartItemRequest request) {
+        cartService.updateCartItemQuantity(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @DeleteMapping("/{userId}/items/{cartItemId}")
-    public ResponseEntity<Void> deleteCartItem(@PathVariable Long userId, @PathVariable Long cartItemId) {
-        cartService.deleteCartItem(userId, cartItemId);
+    @DeleteMapping("/me/items/{cartItemId}")
+    public ResponseEntity<Void> deleteCartItem(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long cartItemId) {
+        cartService.deleteCartItem(userDetails.getId(), cartItemId);
         return ResponseEntity.noContent().build();
     }
 
