@@ -1,8 +1,10 @@
 package com.hyewon.grocey_api.domain.user;
 
 import com.hyewon.grocey_api.domain.user.dto.*;
+import com.hyewon.grocey_api.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/users")
@@ -11,50 +13,46 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT authentication
-    @GetMapping("/{userId}/summary")
-    public UserSummaryDto getSummary(@PathVariable Long userId) {
-        return userService.getUserSummary(userId);
+    @GetMapping("/me/summary")
+    public UserSummaryDto getSummary(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return userService.getUserSummary(userDetails.getId());
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT authentication
-    @GetMapping("/{userId}")
-    public UserDetailDto getUserDetail(@PathVariable Long userId) {
-        return userService.getUserDetail(userId);
+    @GetMapping("/me")
+    public UserDetailDto getUserDetail(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return userService.getUserDetail(userDetails.getId());
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PatchMapping("/{userId}")
-    public ResponseEntity<Void> updateUserInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
-        userService.updateUser(userId, request);
+    @PatchMapping("/me")
+    public ResponseEntity<Void> updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody UserUpdateRequest request) {
+        userService.updateUser(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PatchMapping("/{userId}/gender")
-    public ResponseEntity<Void> updateGender(@PathVariable Long userId, @RequestBody GenderUpdateRequest request) {
-        userService.updateGender(userId, request);
+
+    @PatchMapping("/me/gender")
+    public ResponseEntity<Void> updateGender(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody GenderUpdateRequest request) {
+        userService.updateGender(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{userId}/age-group")
-    public ResponseEntity<Void> updateAgeGroup(@PathVariable Long userId, @RequestBody AgeGroupUpdateRequest request) {
-        userService.updateAgeGroup(userId, request);
+    @PatchMapping("/me/age-group")
+    public ResponseEntity<Void> updateAgeGroup(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody AgeGroupUpdateRequest request) {
+        userService.updateAgeGroup(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PatchMapping("/{userId}/allergies")
+    @PatchMapping("/me/allergies")
     public ResponseEntity<Void> updateUserAllergies(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody UserAllergyUpdateRequest request) {
-        userService.updateUserAllergies(userId, request);
+        userService.updateUserAllergies(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PatchMapping("/{userId}/preferences")
-    public ResponseEntity<Void> updatePreferences(@PathVariable Long userId, @RequestBody PreferenceUpdateRequest request) {
-        userService.updateUserPreferences(userId, request);
+
+    @PatchMapping("/me/preferences")
+    public ResponseEntity<Void> updatePreferences(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody PreferenceUpdateRequest request) {
+        userService.updateUserPreferences(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
