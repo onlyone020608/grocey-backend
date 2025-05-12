@@ -19,12 +19,12 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/me")
+    @GetMapping
     public CartResponseDto getCart(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return cartService.getCart(userDetails.getId());
     }
 
-    @PostMapping("/me/items")
+    @PostMapping("/items")
     public ResponseEntity<Void> addCartItem(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody AddCartItemRequest request
@@ -33,13 +33,13 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/me/items")
+    @PatchMapping("/items")
     public ResponseEntity<Void> updateCartItemQuantity(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody UpdateCartItemRequest request) {
         cartService.updateCartItemQuantity(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/me/items/{cartItemId}")
+    @DeleteMapping("/items/{cartItemId}")
     public ResponseEntity<Void> deleteCartItem(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long cartItemId) {
         cartService.deleteCartItem(userDetails.getId(), cartItemId);
         return ResponseEntity.noContent().build();
