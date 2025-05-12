@@ -25,6 +25,9 @@ public class GlobalExceptionHandler {
         } else if (ex instanceof CartNotFoundException cartEx) {
             return buildResponse(cartEx.getErrorCode());
         }
+        else if (ex instanceof FridgeNotFoundException fridgeEx) {
+            return buildResponse(fridgeEx.getErrorCode());
+        }
 
         return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);
     }

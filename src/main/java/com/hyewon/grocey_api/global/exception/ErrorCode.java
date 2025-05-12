@@ -10,7 +10,8 @@ public enum ErrorCode {
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart not found."),
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "Cart item not found."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access is denied."),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    FRIDGE_NOT_FOUND(HttpStatus.NOT_FOUND, "Fridge not found");
 
 
     private final HttpStatus status;
