@@ -3,12 +3,14 @@ package com.hyewon.grocey_api.domain.order;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailDto;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
+import com.hyewon.grocey_api.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
@@ -21,31 +23,30 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @GetMapping("{userId}/orders/summary")
-    public List<OrderSummaryDto> getSummary(@PathVariable Long userId){
-        return orderService.getRecentOrderSummaryByUserId(userId);
+    @GetMapping("me/orders/summary")
+    public List<OrderSummaryDto> getSummary(@AuthenticationPrincipal CustomUserDetails userDetails){
+        return orderService.getRecentOrderSummaryByUserId(userDetails.getId());
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @GetMapping("{userId}/orders/{orderId}")
-    public OrderDetailDto getOrderDetail(@PathVariable Long userId, @PathVariable Long orderId){
-        return orderService.getOrderDetail(userId, orderId);
+
+    @GetMapping("me/orders/{orderId}")
+    public OrderDetailDto getOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long orderId){
+        return orderService.getOrderDetail(userDetails.getId(), orderId);
     }
 
-    @GetMapping("/{userId}/orders")
+    @GetMapping("/me/orders")
     public Page<OrderSummaryDto> getAllOrders(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return orderService.getAllOrders(userId, pageable);
+        return orderService.getAllOrders(userDetails.getId(), pageable);
     }
 
-    // TODO: Replace with @AuthenticationPrincipal after implementing JWT
-    @PostMapping("/{userId}/orders")
+
+    @PostMapping("/me/orders")
     public ResponseEntity<Void> placeOrder(
-            @PathVariable Long userId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody OrderRequest request) {
-        orderService.placeOrder(userId, request);
+        orderService.placeOrder(userDetails.getId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
