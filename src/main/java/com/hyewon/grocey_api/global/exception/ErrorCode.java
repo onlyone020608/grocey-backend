@@ -12,7 +12,9 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access is denied."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
     FRIDGE_NOT_FOUND(HttpStatus.NOT_FOUND, "Fridge not found"),
-    FRIDGE_INGREDIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Fridge ingredient not found");
+    FRIDGE_INGREDIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Fridge ingredient not found"),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request.");
 
 
 

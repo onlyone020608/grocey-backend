@@ -16,6 +16,7 @@ import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -30,7 +31,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
-    public  List<OrderSummaryDto> getRecentOrderSummaryByUserId(@PathVariable Long userId) {
+    public  List<OrderSummaryDto> getRecentOrderSummaryByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -43,14 +44,11 @@ public class OrderService {
     }
 
     public OrderDetailDto getOrderDetail(Long userId, Long orderId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
         if (!order.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("해당 주문은 유저의 주문이 아닙니다.");
+            throw new AccessDeniedException("You are not authorized to view this order.");
         }
 
         return new OrderDetailDto(order);
@@ -69,12 +67,16 @@ public class OrderService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new CartNotFoundException(userId));
 
         List<CartItem> selectedItems = cartItemRepository.findAllById(request.getCartItemIds());
         if (selectedItems.isEmpty()) {
-            throw new InvalidRequestException("선택된 장바구니 항목이 없습니다.");
+            throw new InvalidRequestException("No cart items selected.");
+        }
+
+        for (CartItem item : selectedItems) {
+            if (!item.getCart().getUser().getId().equals(userId)) {
+                throw new AccessDeniedException("You cannot order items not in your cart.");
+            }
         }
 
         Order order = new Order(user, request.getAddress(), request.toPaymentMethod());
@@ -85,7 +87,7 @@ public class OrderService {
         }
 
         orderRepository.save(order);
-        cartItemRepository.deleteAll(selectedItems); // 선택된 항목만 장바구니에서 제거
+        cartItemRepository.deleteAll(selectedItems);
     }
 
 

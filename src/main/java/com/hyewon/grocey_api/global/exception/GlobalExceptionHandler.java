@@ -15,7 +15,9 @@ public class GlobalExceptionHandler {
             CartItemNotFoundException.class,
             CartNotFoundException.class,
             FridgeNotFoundException.class,
-            FridgeIngredientNotFoundException.class
+            FridgeIngredientNotFoundException.class,
+            OrderNotFoundException.class,
+            InvalidRequestException.class
     })
     public ResponseEntity<ErrorResponse> handleDomainExceptions(RuntimeException ex) {
         if (ex instanceof UserNotFoundException userEx) {
@@ -30,6 +32,10 @@ public class GlobalExceptionHandler {
             return buildResponse(fridgeEx.getErrorCode());
         } else if (ex instanceof FridgeIngredientNotFoundException fridgeIngredientEx) {
             return buildResponse(fridgeIngredientEx.getErrorCode());
+        }  else if (ex instanceof OrderNotFoundException orderEx) {
+            return buildResponse(orderEx.getErrorCode());
+        } else if (ex instanceof InvalidRequestException invalidEx) {
+            return buildResponse(invalidEx.getErrorCode());
         }
 
         return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);
