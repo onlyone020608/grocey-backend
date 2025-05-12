@@ -2,6 +2,8 @@ package com.hyewon.grocey_api.domain.fridge;
 
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponseDto;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponseDto;
+import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
+import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,8 +16,12 @@ import java.util.stream.Collectors;
 public class FridgeIngredientService {
 
     private final FridgeIngredientRepository fridgeIngredientRepository;
+    private final FridgeRepository fridgeRepository;
 
     public List<FridgeIngredientResponseDto> getIngredientsByFridge(Long fridgeId, Boolean isFreezer) {
+        if (!fridgeRepository.existsById(fridgeId)) {
+            throw new FridgeNotFoundException(fridgeId);
+        }
         List<FridgeIngredient> ingredients;
 
         if (isFreezer == null) {
@@ -34,7 +40,7 @@ public class FridgeIngredientService {
 
     public FridgeIngredientDetailResponseDto getIngredientDetail(Long id) {
         FridgeIngredient fi = fridgeIngredientRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 재료가 존재하지 않습니다."));
+                .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
         return new FridgeIngredientDetailResponseDto(fi);
     }
 }
