@@ -18,6 +18,10 @@ public class CustomUserDetails implements UserDetails {
         return user.getId();
     }
 
+    public User getUser() {
+        return user;
+    }
+
     @Override public Collection<? extends GrantedAuthority> getAuthorities() { return List.of(); }
     @Override public String getPassword() { return null; }
     @Override public String getUsername() { return user.getId().toString(); }

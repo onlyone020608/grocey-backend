@@ -2,7 +2,9 @@ package com.hyewon.grocey_api.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationDto;
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendedProductDto;
+import com.hyewon.grocey_api.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class FridgeRecommendationController {
 
     private final FridgeRecommendationService fridgeRecommendationService;
 
-    @GetMapping("/{fridgeId}")
-    public FridgeRecommendationDto getFridgeRecommendation(@PathVariable Long fridgeId) {
-        return fridgeRecommendationService.getLatestRecommendation(fridgeId);
+    @GetMapping
+    public FridgeRecommendationDto getFridgeRecommendation(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return fridgeRecommendationService.getLatestRecommendation(userDetails.getUser().getFridge().getId());
     }
 }
