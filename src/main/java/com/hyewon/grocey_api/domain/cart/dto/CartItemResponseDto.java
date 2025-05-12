@@ -5,12 +5,14 @@ import lombok.Getter;
 @Getter
 public class CartItemResponseDto {
     private Long productId;
+    private Long cartItemId;
     private String productName;
     private String imageUrl;
     private int price;
     private int quantity;
 
-    public CartItemResponseDto(Long productId, String productName, String imageUrl, int price, int quantity) {
+    public CartItemResponseDto(Long cartItemId, Long productId, String productName, String imageUrl, int price, int quantity) {
+        this.cartItemId = cartItemId;
         this.productId = productId;
         this.productName = productName;
         this.imageUrl = imageUrl;
