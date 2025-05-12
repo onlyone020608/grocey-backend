@@ -18,23 +18,23 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping("me/orders/summary")
+    @GetMapping("summary")
     public List<OrderSummaryDto> getSummary(@AuthenticationPrincipal CustomUserDetails userDetails){
         return orderService.getRecentOrderSummaryByUserId(userDetails.getId());
     }
 
 
-    @GetMapping("me/orders/{orderId}")
+    @GetMapping("{orderId}")
     public OrderDetailDto getOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long orderId){
         return orderService.getOrderDetail(userDetails.getId(), orderId);
     }
 
-    @GetMapping("/me/orders")
+    @GetMapping
     public Page<OrderSummaryDto> getAllOrders(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -42,7 +42,7 @@ public class OrderController {
     }
 
 
-    @PostMapping("/me/orders")
+    @PostMapping
     public ResponseEntity<Void> placeOrder(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody OrderRequest request) {
