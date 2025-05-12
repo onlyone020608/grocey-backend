@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.hyewon.grocey_api.domain.fridge.QFridge.fridge;
@@ -66,9 +67,18 @@ public class CartService {
                     return cartRepository.save(newCart);
                 });
 
-        CartItem cartItem = new CartItem(product, request.getQuantity());
-        cart.addCartItem(cartItem);
-        cartItemRepository.save(cartItem);
+        Optional<CartItem> existingItemOpt = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(product.getId()))
+                .findFirst();
+
+        if (existingItemOpt.isPresent()) {
+            CartItem existingItem = existingItemOpt.get();
+            existingItem.updateQuantity(existingItem.getQuantity() + request.getQuantity());
+        } else {
+            CartItem cartItem = new CartItem(product, request.getQuantity());
+            cart.addCartItem(cartItem);
+            cartItemRepository.save(cartItem);
+        }
     }
 
     public void updateCartItemQuantity(Long userId, UpdateCartItemRequest request) {
@@ -92,8 +102,8 @@ public class CartService {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
 
-        if (!cart.getCartItems().contains(cartItem)) {
-            throw new CartItemNotFoundException(cartItemId);
+        if (!cartItem.getCart().getUser().getId().equals(userId)) {
+            throw new AccessDeniedException("본인의 장바구니 아이템만 삭제할 수 있습니다.");
         }
 
         cart.removeCartItem(cartItem);
