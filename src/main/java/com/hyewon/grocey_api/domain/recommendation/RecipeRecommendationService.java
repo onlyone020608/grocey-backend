@@ -7,7 +7,7 @@ import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationDto;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
-import com.hyewon.grocey_api.global.exception.NotFoundException;
+import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class RecipeRecommendationService {
     private final FridgeRepository fridgeRepository;
 
 
-    public List<RecipeRecommendationDto> getRecommendationsByUser(@PathVariable Long userId) {
+    public List<RecipeRecommendationDto> getRecommendationsByUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -43,9 +43,9 @@ public class RecipeRecommendationService {
 
     }
 
-    public List<RecipeRecommendationDto> getRecommendationsByFridge(@PathVariable Long fridgeId) {
+    public List<RecipeRecommendationDto> getRecommendationsByFridge(Long fridgeId) {
         Fridge fridge = fridgeRepository.findById(fridgeId)
-                .orElseThrow(() -> new NotFoundException("fridge Not found"));
+                .orElseThrow(() -> new FridgeNotFoundException(fridgeId));
 
 
         List<RecipeRecommendation> recommendations = recipeRecommendationRepository.findByFridge(fridge);
