@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.domain.recipe;
 
 import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponseDto;
 import com.hyewon.grocey_api.domain.recipe.dto.RecipeIngredientDto;
+import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class RecipeService {
 
     public RecipeDetailResponseDto getRecipeDetail(Long id) {
         Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("해당 레시피가 존재하지 않습니다."));
+                .orElseThrow(() -> new RecipeNotFoundException(id));
 
         List<RecipeIngredientDto> ingredients = recipeIngredientRepository.findByRecipeId(id).stream()
                 .map(ri -> new RecipeIngredientDto(
