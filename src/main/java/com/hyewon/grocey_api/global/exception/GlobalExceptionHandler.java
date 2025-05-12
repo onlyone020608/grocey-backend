@@ -9,29 +9,39 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("사용자를 찾을 수 없습니다.");
-    }
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            ProductNotFoundException.class,
+            CartItemNotFoundException.class,
+            CartNotFoundException.class
+    })
+    public ResponseEntity<ErrorResponse> handleDomainExceptions(RuntimeException ex) {
+        if (ex instanceof UserNotFoundException userEx) {
+            return buildResponse(userEx.getErrorCode());
+        } else if (ex instanceof ProductNotFoundException productEx) {
+            return buildResponse(productEx.getErrorCode());
+        } else if (ex instanceof CartItemNotFoundException cartItemEx) {
+            return buildResponse(cartItemEx.getErrorCode());
+        } else if (ex instanceof CartNotFoundException cartEx) {
+            return buildResponse(cartEx.getErrorCode());
+        }
 
-    @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<String> handleCartNotFound(CartNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("장바구니를 찾을 수 없습니다.");
-    }
-
-    @ExceptionHandler(CartItemNotFoundException.class)
-    public ResponseEntity<String> handleCartItemNotFound(CartItemNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("장바구니 아이템을 찾을 수 없습니다.");
-    }
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> handleProductNotFound(ProductNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("상품을 찾을 수 없습니다.");
+        return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("접근 권한이 없습니다.");
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+        return buildResponse(ErrorCode.ACCESS_DENIED);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+        return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    private ResponseEntity<ErrorResponse> buildResponse(ErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(new ErrorResponse(errorCode));
     }
 
 }
