@@ -1,7 +1,9 @@
 package com.hyewon.grocey_api.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationDto;
+import com.hyewon.grocey_api.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +18,14 @@ public class RecipeRecommendationController {
 
     private final RecipeRecommendationService recommendationService;
 
-    @GetMapping("/personal/{userId}")
-    public List<RecipeRecommendationDto> recommendByUser(@PathVariable Long userId) {
-        return recommendationService.getRecommendationsByUser(userId);
+    @GetMapping("/personal")
+    public List<RecipeRecommendationDto> recommendByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return recommendationService.getRecommendationsByUser(userDetails.getId());
     }
 
-    @GetMapping("/fridge/{fridgeId}")
-    public List<RecipeRecommendationDto> recommendByFridge(@PathVariable Long fridgeId) {
-        return recommendationService.getRecommendationsByFridge(fridgeId);
+    @GetMapping("/fridge")
+    public List<RecipeRecommendationDto> recommendByFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return recommendationService.getRecommendationsByFridge(userDetails.getUser().getFridge().getId());
     }
 
 
