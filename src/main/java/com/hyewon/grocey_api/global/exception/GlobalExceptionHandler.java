@@ -17,7 +17,8 @@ public class GlobalExceptionHandler {
             FridgeNotFoundException.class,
             FridgeIngredientNotFoundException.class,
             OrderNotFoundException.class,
-            InvalidRequestException.class
+            InvalidRequestException.class,
+            InvalidEnumValueException.class
     })
     public ResponseEntity<ErrorResponse> handleDomainExceptions(RuntimeException ex) {
         if (ex instanceof UserNotFoundException userEx) {
@@ -36,6 +37,8 @@ public class GlobalExceptionHandler {
             return buildResponse(orderEx.getErrorCode());
         } else if (ex instanceof InvalidRequestException invalidEx) {
             return buildResponse(invalidEx.getErrorCode());
+        } else if (ex instanceof InvalidEnumValueException invalidEnumEx) {
+            return buildResponse(invalidEnumEx.getErrorCode());
         }
 
         return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -55,5 +58,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatus())
                 .body(new ErrorResponse(errorCode));
     }
+
+    @ExceptionHandler(InvalidEnumValueException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidEnum(InvalidEnumValueException ex) {
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(ex.getErrorCode()));
+    }
+
 
 }

@@ -14,7 +14,9 @@ public enum ErrorCode {
     FRIDGE_NOT_FOUND(HttpStatus.NOT_FOUND, "Fridge not found"),
     FRIDGE_INGREDIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Fridge ingredient not found"),
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found."),
-    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request.");
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request."),
+    INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "Invalid enum value provided.");
+
 
 
 
