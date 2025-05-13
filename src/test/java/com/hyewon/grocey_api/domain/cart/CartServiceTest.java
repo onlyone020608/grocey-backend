@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,5 +78,29 @@ class CartServiceTest {
         assertThat(savedItem.getCart()).isNotNull();
         assertThat(savedItem.getCart().getUser()).isEqualTo(user);
     }
+
+    @Test
+    @DisplayName("addCartItem - increases quantity if product already exists in cart")
+    void addCartItem_shouldIncreaseQuantityIfProductExists() {
+        // given
+        AddCartItemRequest request = new AddCartItemRequest(1L, 2);
+
+        // 기존 CartItem: 상품 동일, 수량 3
+        CartItem existingItem = new CartItem(product, 3);
+        Cart existingCart = new Cart(user, user.getFridge());
+        existingCart.addCartItem(existingItem);
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(productRepository.findById(1L)).willReturn(Optional.of(product));
+        given(cartRepository.findByUser(user)).willReturn(Optional.of(existingCart));
+
+        // when
+        cartService.addCartItem(1L, request);
+
+        // then
+        assertThat(existingItem.getQuantity()).isEqualTo(5); // 3 + 2
+        verify(cartItemRepository, never()).save(any(CartItem.class));
+    }
+
 
 }
