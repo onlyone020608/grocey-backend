@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.domain.cart;
 
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
+import com.hyewon.grocey_api.domain.cart.dto.CartResponseDto;
 import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.product.Product;
@@ -207,6 +208,34 @@ class CartServiceTest {
             cartService.deleteCartItem(attackerId, cartItemId);
         });
     }
+
+    @Test
+    @DisplayName("getCart - returns cart and its items for the user")
+    void getCart_shouldReturnCartWithItems() {
+        // given
+        Long userId = 1L;
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        Cart cart = new Cart(user, user.getFridge());
+        ReflectionTestUtils.setField(cart, "id", 100L);
+
+        CartItem item1 = new CartItem(product, 2);
+        ReflectionTestUtils.setField(item1, "id", 10L);
+        cart.addCartItem(item1);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+
+        // when
+        CartResponseDto response = cartService.getCart(userId);
+
+        // then
+        assertThat(response.getCartId()).isEqualTo(100L);
+        assertThat(response.getItems()).hasSize(1);
+        assertThat(response.getItems().get(0).getProductName()).isEqualTo(product.getProductName());
+        assertThat(response.getItems().get(0).getQuantity()).isEqualTo(2);
+    }
+
 
 
 
