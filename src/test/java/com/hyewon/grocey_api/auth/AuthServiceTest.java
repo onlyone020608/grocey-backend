@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.auth;
 
 import com.hyewon.grocey_api.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
+import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,6 +109,31 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid credentials");
+    }
+
+    @Test
+    @DisplayName("refresh - returns new access token when refresh token is valid")
+    void refresh_shouldReturnNewAccessToken_whenValid() {
+        // given
+        Long userId = 1L;
+        String oldRefreshToken = "valid-refresh-token";
+        TokenRefreshRequest request = TokenRefreshRequest.builder()
+                .refreshToken(oldRefreshToken)
+                .build();
+
+        given(jwtTokenProvider.validateToken(oldRefreshToken)).willReturn(true);
+        given(jwtTokenProvider.getUserIdFromToken(oldRefreshToken)).willReturn(userId);
+        given(jwtTokenProvider.generateAccessToken(userId)).willReturn("new-access-token");
+
+        // refreshTokenStore 세팅
+        ReflectionTestUtils.setField(authService, "refreshTokenStore", Map.of(userId, oldRefreshToken));
+
+        // when
+        TokenResponse response = authService.refresh(request);
+
+        // then
+        assertThat(response.getAccessToken()).isEqualTo("new-access-token");
+        assertThat(response.getRefreshToken()).isEqualTo(oldRefreshToken);
     }
 
 
