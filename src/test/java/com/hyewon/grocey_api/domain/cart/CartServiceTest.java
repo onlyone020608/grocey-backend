@@ -10,6 +10,7 @@ import com.hyewon.grocey_api.domain.user.AgeGroup;
 import com.hyewon.grocey_api.domain.user.Gender;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.global.exception.CartNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -235,6 +236,23 @@ class CartServiceTest {
         assertThat(response.getItems().get(0).getProductName()).isEqualTo(product.getProductName());
         assertThat(response.getItems().get(0).getQuantity()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("getCart - throws CartNotFoundException when cart does not exist for user")
+    void getCart_shouldThrowWhenCartDoesNotExist() {
+        // given
+        Long userId = 1L;
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
+
+        // when & then
+        assertThrows(CartNotFoundException.class, () -> {
+            cartService.getCart(userId);
+        });
+    }
+
 
 
 
