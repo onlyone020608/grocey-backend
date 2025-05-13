@@ -11,6 +11,7 @@ import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import com.hyewon.grocey_api.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final FridgeRepository fridgeRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
     private final Map<Long, String> refreshTokenStore = new HashMap<>();
 
 
@@ -35,7 +37,9 @@ public class AuthService {
         Fridge fridge = new Fridge(3.0, -18.0);
         fridgeRepository.save(fridge);
 
-        User user = new User(request.getName(), request.getEmail(), request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
+        User user = new User(request.getName(), request.getEmail(), encodedPassword);
         user.assignFridge(fridge); // 연관관계 설정
 
         userRepository.save(user);
