@@ -8,6 +8,7 @@ import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import com.hyewon.grocey_api.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -192,6 +193,42 @@ class AuthServiceTest {
         Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
         assertThat(store.containsKey(userId)).isFalse();
     }
+
+    @Test
+    @DisplayName("withdraw - deletes user and removes refresh token when user exists")
+    void withdraw_shouldDeleteUserAndRemoveToken_whenUserExists() {
+        // given
+        Long userId = 1L;
+
+        given(userRepository.existsById(userId)).willReturn(true);
+        Map<Long, String> mockStore = new HashMap<>(Map.of(userId, "token"));
+        ReflectionTestUtils.setField(authService, "refreshTokenStore", mockStore);
+
+        // when
+        authService.withdraw(userId);
+
+        // then
+        verify(userRepository).deleteById(userId);
+        Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
+        assertThat(store.containsKey(userId)).isFalse();
+    }
+
+    @Test
+    @DisplayName("withdraw - throws UserNotFoundException when user does not exist")
+    void withdraw_shouldThrowException_whenUserNotFound() {
+        // given
+        Long userId = 99L;
+        given(userRepository.existsById(userId)).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> authService.withdraw(userId))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User not found");
+    }
+
+
+
+
 
 
 
