@@ -19,6 +19,7 @@ import java.util.stream.StreamSupport;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -247,6 +248,97 @@ class UserServiceTest {
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("One or more allergy IDs are invalid.");
     }
+
+    @Test
+    @DisplayName("updateUserPreferences - updates preferences when all IDs are valid")
+    void updateUserPreferences_shouldUpdateAll() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        FoodPreference food1 = new FoodPreference("Meat");
+        PreferenceIngredient pi1 = new PreferenceIngredient("Garlic");
+        PreferenceIngredient pi2 = new PreferenceIngredient("Cucumber");
+        ReflectionTestUtils.setField(food1, "id", 10L);
+        ReflectionTestUtils.setField(pi1, "id", 20L);
+        ReflectionTestUtils.setField(pi2, "id", 30L);
+
+        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
+        ReflectionTestUtils.setField(request, "foodPreferenceIds", List.of(10L));
+        ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(20L));
+        ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(30L));
+
+        given(foodPreferenceRepository.findAllById(List.of(10L))).willReturn(List.of(food1));
+        given(preferenceIngredientRepository.findAllById(List.of(20L))).willReturn(List.of(pi1));
+        given(preferenceIngredientRepository.findAllById(List.of(30L))).willReturn(List.of(pi2));
+
+        // when
+        userService.updateUserPreferences(1L, request);
+
+        // then
+        verify(userFoodPreferenceRepository).saveAll(any());
+        verify(userPreferredIngredientRepository).saveAll(any());
+        verify(userDislikedIngredientRepository).saveAll(any());
+    }
+
+    @Test
+    @DisplayName("updateUserPreferences - throws if foodPreferenceIds are invalid")
+    void updateUserPreferences_shouldThrowForInvalidFoodPreference() {
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        ReflectionTestUtils.setField(user, "id", 1L);
+
+        FoodPreference food = new FoodPreference("Meat");
+        ReflectionTestUtils.setField(food, "id", 10L);
+
+        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
+        ReflectionTestUtils.setField(request, "foodPreferenceIds", List.of(10L, 99L));
+
+        given(foodPreferenceRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(food));
+
+        assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("food preference");
+    }
+
+    @Test
+    @DisplayName("updateUserPreferences - throws if preferredIngredientIds are invalid")
+    void updateUserPreferences_shouldThrowForInvalidPreferredIngredient() {
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        PreferenceIngredient pi = new PreferenceIngredient("Onion");
+        ReflectionTestUtils.setField(pi, "id", 10L);
+
+        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
+        ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(10L, 99L));
+
+        given(preferenceIngredientRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(pi));
+
+        assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("preferred ingredient");
+    }
+
+    @Test
+    @DisplayName("updateUserPreferences - throws if dislikedIngredientIds are invalid")
+    void updateUserPreferences_shouldThrowForInvalidDislikedIngredient() {
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        PreferenceIngredient pi = new PreferenceIngredient("Mushroom");
+        ReflectionTestUtils.setField(pi, "id", 10L);
+
+        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
+        ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(10L, 999L));
+
+        given(preferenceIngredientRepository.findAllById(List.of(10L, 999L))).willReturn(List.of(pi));
+
+        assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("disliked ingredient");
+    }
+
+
+
+
 
 
 
