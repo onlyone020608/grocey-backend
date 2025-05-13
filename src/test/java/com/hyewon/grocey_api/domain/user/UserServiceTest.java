@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.domain.user;
 
 import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
 import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
+import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -90,6 +91,59 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.getUserDetail(1L))
                 .isInstanceOf(UserNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("updateUser - updates name and email when both are provided")
+    void updateUser_shouldUpdateNameAndEmail() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        UserUpdateRequest request = new UserUpdateRequest();
+        ReflectionTestUtils.setField(request, "userName", "newName");
+        ReflectionTestUtils.setField(request, "email", "new@email.com");
+
+        // when
+        userService.updateUser(1L, request);
+
+        // then
+        assertThat(user.getUserName()).isEqualTo("newName");
+        assertThat(user.getEmail()).isEqualTo("new@email.com");
+    }
+
+    @Test
+    @DisplayName("updateUser - updates only email when name is null")
+    void updateUser_shouldUpdateEmailOnly() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        UserUpdateRequest request = new UserUpdateRequest();
+        ReflectionTestUtils.setField(request, "userName", null);
+        ReflectionTestUtils.setField(request, "email", "updated@email.com");
+
+        // when
+        userService.updateUser(1L, request);
+
+        // then
+        assertThat(user.getUserName()).isEqualTo("tester"); // unchanged
+        assertThat(user.getEmail()).isEqualTo("updated@email.com");
+    }
+
+    @Test
+    @DisplayName("updateUser - throws exception when user not found")
+    void updateUser_shouldThrowIfUserNotFound() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+        UserUpdateRequest request = new UserUpdateRequest();
+        ReflectionTestUtils.setField(request, "userName", "ignored");
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateUser(1L, request))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+
+
 
 
 
