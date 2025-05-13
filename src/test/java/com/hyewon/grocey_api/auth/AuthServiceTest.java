@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -175,6 +176,23 @@ class AuthServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Refresh token mismatch");
     }
+
+    @Test
+    @DisplayName("logout - removes refresh token from store")
+    void logout_shouldRemoveRefreshToken() {
+        // given
+        Long userId = 1L;
+        String refreshToken = "refresh-token";
+        ReflectionTestUtils.setField(authService, "refreshTokenStore", new HashMap<>(Map.of(userId, refreshToken)));
+
+        // when
+        authService.logout(userId);
+
+        // then
+        Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
+        assertThat(store.containsKey(userId)).isFalse();
+    }
+
 
 
 
