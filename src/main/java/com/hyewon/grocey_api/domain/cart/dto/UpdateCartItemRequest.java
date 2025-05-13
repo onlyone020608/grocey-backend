@@ -6,4 +6,9 @@ import lombok.Getter;
 public class UpdateCartItemRequest {
     private Long cartItemId;
     private int quantity;
+
+    public UpdateCartItemRequest(Long cartItemId, int quantity) {
+        this.cartItemId = cartItemId;
+        this.quantity = quantity;
+    }
 }

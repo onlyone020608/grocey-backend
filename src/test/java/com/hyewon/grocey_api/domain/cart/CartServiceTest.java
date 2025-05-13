@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.domain.cart;
 
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
+import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.product.ProductRepository;
@@ -101,6 +102,32 @@ class CartServiceTest {
         assertThat(existingItem.getQuantity()).isEqualTo(5); // 3 + 2
         verify(cartItemRepository, never()).save(any(CartItem.class));
     }
+
+    @Test
+    @DisplayName("updateCartItemQuantity - updates quantity successfully when cart item belongs to user")
+    void updateCartItemQuantity_shouldUpdateQuantityIfUserOwnsItem() {
+        // given
+        Long userId = 1L;
+        Long cartItemId = 100L;
+        int newQuantity = 5;
+
+        UpdateCartItemRequest request = new UpdateCartItemRequest(cartItemId, newQuantity);
+
+        Cart cart = new Cart(user, user.getFridge());
+        ReflectionTestUtils.setField(user, "id", userId);
+        CartItem cartItem = new CartItem(product, 2);
+        cart.addCartItem(cartItem);
+        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
+
+        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
+
+        // when
+        cartService.updateCartItemQuantity(userId, request);
+
+        // then
+        assertThat(cartItem.getQuantity()).isEqualTo(newQuantity);
+    }
+
 
 
 }
