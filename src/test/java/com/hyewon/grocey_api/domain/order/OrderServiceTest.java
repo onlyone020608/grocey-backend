@@ -20,6 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -202,6 +205,31 @@ class OrderServiceTest {
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessageContaining("not authorized");
     }
+
+    @Test
+    @DisplayName("getAllOrders - returns paginated list of order summaries")
+    void getAllOrders_shouldReturnPagedSummaries() {
+        // given
+        ReflectionTestUtils.setField(user, "id", 1L);
+
+        Pageable pageable = Pageable.ofSize(10);
+        Order order = new Order(user, "123 Seoul", PaymentMethod.TOSS);
+        ReflectionTestUtils.setField(order, "id", 100L);
+
+        Page<Order> mockPage = new PageImpl<>(List.of(order), pageable, 1);
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(orderRepository.findByUser(user, pageable)).willReturn(mockPage);
+
+        // when
+        Page<OrderSummaryDto> result = orderService.getAllOrders(1L, pageable);
+
+        // then
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent().get(0).getOrderId()).isEqualTo(100L);
+        assertThat(result.getContent().get(0).getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
+    }
+
 
 
 
