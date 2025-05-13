@@ -86,7 +86,7 @@ public class CartService {
                 .orElseThrow(() -> new CartItemNotFoundException(request.getCartItemId()));
 
         if (!cartItem.getCart().getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("본인의 장바구니만 수정할 수 있습니다.");
+            throw new AccessDeniedException("You can only modify your own cart.");
         }
 
         cartItem.updateQuantity(request.getQuantity());
@@ -103,7 +103,7 @@ public class CartService {
                 .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
 
         if (!cartItem.getCart().getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("본인의 장바구니 아이템만 삭제할 수 있습니다.");
+            throw new AccessDeniedException("You can only delete items from your own cart.");
         }
 
         cart.removeCartItem(cartItem);
