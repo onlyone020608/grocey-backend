@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -93,6 +94,21 @@ class AuthServiceTest {
         assertThat(response.getAccessToken()).isEqualTo("access-token");
         assertThat(response.getRefreshToken()).isEqualTo("refresh-token");
     }
+
+    @Test
+    @DisplayName("login - throws exception when credentials are invalid")
+    void login_shouldThrowException_whenCredentialsInvalid() {
+        // given
+        LoginRequest request = new LoginRequest("wrong@email.com", "wrongpass");
+        given(userRepository.findByEmailAndPassword(anyString(), anyString()))
+                .willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> authService.login(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Invalid credentials");
+    }
+
 
 
 }
