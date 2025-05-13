@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.cart.Cart;
 import com.hyewon.grocey_api.domain.cart.CartItem;
 import com.hyewon.grocey_api.domain.cart.CartItemRepository;
 import com.hyewon.grocey_api.domain.cart.CartRepository;
+import com.hyewon.grocey_api.domain.order.dto.OrderDetailDto;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
 import com.hyewon.grocey_api.domain.product.Product;
@@ -162,6 +163,47 @@ class OrderServiceTest {
         assertThat(result.get(0).getOrderId()).isEqualTo(100L);
         assertThat(result.get(0).getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
     }
+
+    @Test
+    @DisplayName("getOrderDetail - returns order detail when user owns the order")
+    void getOrderDetail_shouldReturnDetailIfUserOwnsOrder() {
+        // given
+        Long userId = 1L;
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        Order order = new Order(user, "123 Seoul", PaymentMethod.KAKAOPAY);
+        ReflectionTestUtils.setField(order, "id", 101L);
+
+        given(orderRepository.findById(101L)).willReturn(Optional.of(order));
+
+        // when
+        OrderDetailDto result = orderService.getOrderDetail(userId, 101L);
+
+        // then
+        assertThat(result.getOrderId()).isEqualTo(101L);
+        assertThat(result.getShippingAddress()).isEqualTo("123 Seoul");
+        assertThat(result.getPaymentMethod()).isEqualTo(PaymentMethod.KAKAOPAY);
+    }
+
+    @Test
+    @DisplayName("getOrderDetail - throws AccessDeniedException when user does not own the order")
+    void getOrderDetail_shouldThrowIfUserDoesNotOwnOrder() {
+        // given
+        User anotherUser = new User("hacker", "bad@evil.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
+        ReflectionTestUtils.setField(anotherUser, "id", 999L);
+
+        Order order = new Order(anotherUser, "hidden address", PaymentMethod.TOSS);
+        ReflectionTestUtils.setField(order, "id", 101L);
+
+        given(orderRepository.findById(101L)).willReturn(Optional.of(order));
+
+        // when & then
+        assertThatThrownBy(() -> orderService.getOrderDetail(1L, 101L))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessageContaining("not authorized");
+    }
+
+
 
 
 
