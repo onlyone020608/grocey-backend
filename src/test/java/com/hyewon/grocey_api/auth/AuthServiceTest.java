@@ -153,6 +153,30 @@ class AuthServiceTest {
                 .hasMessageContaining("Invalid refresh token");
     }
 
+    @Test
+    @DisplayName("refresh - throws exception when token does not match stored token")
+    void refresh_shouldThrowException_whenTokenMismatch() {
+        // given
+        Long userId = 1L;
+        String oldToken = "valid-refresh-token";
+        String storedToken = "different-token";
+
+        TokenRefreshRequest request = TokenRefreshRequest.builder()
+                .refreshToken(oldToken)
+                .build();
+
+        given(jwtTokenProvider.validateToken(oldToken)).willReturn(true);
+        given(jwtTokenProvider.getUserIdFromToken(oldToken)).willReturn(userId);
+
+        ReflectionTestUtils.setField(authService, "refreshTokenStore", Map.of(userId, storedToken));
+
+        // when & then
+        assertThatThrownBy(() -> authService.refresh(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Refresh token mismatch");
+    }
+
+
 
 
 
