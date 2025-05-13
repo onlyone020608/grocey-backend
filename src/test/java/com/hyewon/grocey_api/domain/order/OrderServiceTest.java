@@ -5,6 +5,7 @@ import com.hyewon.grocey_api.domain.cart.CartItem;
 import com.hyewon.grocey_api.domain.cart.CartItemRepository;
 import com.hyewon.grocey_api.domain.cart.CartRepository;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
+import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.user.AgeGroup;
 import com.hyewon.grocey_api.domain.user.Gender;
@@ -24,6 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,6 +141,28 @@ class OrderServiceTest {
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("Invalid payment method");
     }
+
+    @Test
+    @DisplayName("getRecentOrderSummaryByUserId - returns list of recent orders")
+    void getRecentOrderSummaryByUserId_shouldReturnSummaries() {
+        // given
+        ReflectionTestUtils.setField(user, "id", 1L);
+
+        Order order = new Order(user, "Seoul", PaymentMethod.KAKAOPAY);
+        ReflectionTestUtils.setField(order, "id", 100L);
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(orderRepository.findTop5ByUserOrderByCreatedAtDesc(user)).willReturn(List.of(order));
+
+        // when
+        List<OrderSummaryDto> result = orderService.getRecentOrderSummaryByUserId(1L);
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getOrderId()).isEqualTo(100L);
+        assertThat(result.get(0).getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
+    }
+
 
 
 
