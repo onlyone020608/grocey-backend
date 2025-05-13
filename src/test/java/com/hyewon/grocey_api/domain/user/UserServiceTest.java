@@ -12,12 +12,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -194,6 +198,57 @@ class UserServiceTest {
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("Invalid age group value");
     }
+
+    @Test
+    @DisplayName("updateUserAllergies - updates user allergies successfully")
+    void updateUserAllergies_shouldUpdateCorrectly() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        Allergy allergy1 = new Allergy("Egg");
+        Allergy allergy2 = new Allergy("Milk");
+        ReflectionTestUtils.setField(allergy1, "id", 100L);
+        ReflectionTestUtils.setField(allergy2, "id", 200L);
+
+        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest();
+        ReflectionTestUtils.setField(request, "allergyIds", List.of(100L, 200L));
+
+        given(allergyRepository.findAllById(List.of(100L, 200L))).willReturn(List.of(allergy1, allergy2));
+
+        // when
+        userService.updateUserAllergies(1L, request);
+
+        // then
+        verify(userAllergyRepository).deleteByUser(user);
+        verify(userAllergyRepository).saveAll(argThat(allergies ->
+                StreamSupport.stream(allergies.spliterator(), false)
+                        .count() == 2
+        ));
+
+    }
+
+    @Test
+    @DisplayName("updateUserAllergies - throws when allergy ID is invalid")
+    void updateUserAllergies_shouldThrowIfAllergyIdInvalid() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        Allergy allergy = new Allergy("Egg");
+        ReflectionTestUtils.setField(allergy, "id", 100L);
+
+        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest();
+        ReflectionTestUtils.setField(request, "allergyIds", List.of(100L, 999L));
+
+        // only one found
+        given(allergyRepository.findAllById(List.of(100L, 999L))).willReturn(List.of(allergy));
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateUserAllergies(1L, request))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("One or more allergy IDs are invalid.");
+    }
+
+
 
 
 
