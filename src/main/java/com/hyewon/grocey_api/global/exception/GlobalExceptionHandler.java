@@ -62,11 +62,6 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(errorCode));
     }
 
-    @ExceptionHandler(InvalidEnumValueException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidEnum(InvalidEnumValueException ex) {
-        return ResponseEntity.badRequest()
-                .body(new ErrorResponse(ex.getErrorCode()));
-    }
 
 
 }

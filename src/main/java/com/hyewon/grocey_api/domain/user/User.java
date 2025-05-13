@@ -7,6 +7,7 @@ import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -59,11 +60,14 @@ public class User extends BaseTimeEntity {
         this.gender = gender;
     }
 
+    @Builder
     public User(String userName, String email, String password) {
         this.userName = userName;
         this.email = email;
         this.password = password;
     }
+
+
 
     public void updateName(String name) {
         this.userName = name;
