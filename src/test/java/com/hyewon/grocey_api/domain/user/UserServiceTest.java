@@ -1,8 +1,7 @@
 package com.hyewon.grocey_api.domain.user;
 
-import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
-import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
-import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
+import com.hyewon.grocey_api.domain.user.dto.*;
+import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -141,6 +140,64 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.updateUser(1L, request))
                 .isInstanceOf(UserNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("updateGender - updates gender when valid value is provided")
+    void updateGender_shouldUpdateGender() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        GenderUpdateRequest request = new GenderUpdateRequest();
+        ReflectionTestUtils.setField(request, "gender", "male");
+
+        // when
+        userService.updateGender(1L, request);
+
+        // then
+        assertThat(user.getGender()).isEqualTo(Gender.MALE);
+    }
+
+    @Test
+    @DisplayName("updateGender - throws exception for invalid gender value")
+    void updateGender_shouldThrowForInvalidGender() {
+        GenderUpdateRequest request = new GenderUpdateRequest();
+        ReflectionTestUtils.setField(request, "gender", "invalid");
+
+        assertThatThrownBy(() -> request.toEnum())
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("Invalid gender value");
+    }
+
+    @Test
+    @DisplayName("updateAgeGroup - updates age group when valid value is provided")
+    void updateAgeGroup_shouldUpdateAgeGroup() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest();
+        ReflectionTestUtils.setField(request, "ageValue", 30);
+
+        // when
+        userService.updateAgeGroup(1L, request);
+
+        // then
+        assertThat(user.getAgeGroup()).isEqualTo(AgeGroup.THIRTIES);
+    }
+
+    @Test
+    @DisplayName("updateAgeGroup - throws exception for invalid age group value")
+    void updateAgeGroup_shouldThrowForInvalidAge() {
+        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest();
+        ReflectionTestUtils.setField(request, "ageValue", 999); // 유효하지 않은 값
+
+        assertThatThrownBy(() -> request.toEnum())
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("Invalid age group value");
+    }
+
+
+
+
 
 
 
