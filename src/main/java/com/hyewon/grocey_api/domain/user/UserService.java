@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.domain.user;
 
 import com.hyewon.grocey_api.domain.user.dto.*;
+import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -66,12 +67,15 @@ public class UserService {
         // 기존 알러지 삭제
         userAllergyRepository.deleteByUser(user);
 
-        // 새 알러지 설정
-        List<Allergy> allergies = allergyRepository.findAllById(request.getAllergyIds());
+        List<Long> allergyIds = request.getAllergyIds();
+        List<Allergy> allergies = allergyRepository.findAllById(allergyIds);
+        if (allergies.size() != allergyIds.size()) {
+            throw new InvalidRequestException("One or more allergy IDs are invalid.");
+        }
+
         List<UserAllergy> newUserAllergies = allergies.stream()
                 .map(allergy -> new UserAllergy(user, allergy))
                 .toList();
-
         userAllergyRepository.saveAll(newUserAllergies);
     }
 
@@ -87,25 +91,39 @@ public class UserService {
         // 2. 선호 음식
         if (request.getFoodPreferenceIds() != null) {
             List<FoodPreference> foods = foodPreferenceRepository.findAllById(request.getFoodPreferenceIds());
-            foods.forEach(food -> {
-                userFoodPreferenceRepository.save(new UserFoodPreference(user, food));
-            });
+            if (foods.size() != request.getFoodPreferenceIds().size()) {
+                throw new InvalidRequestException("One or more food preference IDs are invalid.");
+            }
+            List<UserFoodPreference> userFoodPreferences = foods.stream()
+                    .map(food -> new UserFoodPreference(user, food))
+                    .toList();
+            userFoodPreferenceRepository.saveAll(userFoodPreferences);
         }
 
         // 3. 선호 식재료
         if (request.getPreferredIngredientIds() != null) {
-            List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(request.getPreferredIngredientIds());
-            ingredients.forEach(ingredient -> {
-                userPreferredIngredientRepository.save(new UserPreferredIngredient(user, ingredient));
-            });
+            List<Long> preferredIds = request.getPreferredIngredientIds();
+            List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(preferredIds);
+            if (ingredients.size() != preferredIds.size()) {
+                throw new InvalidRequestException("One or more preferred ingredient IDs are invalid.");
+            }
+            List<UserPreferredIngredient> preferredEntities = ingredients.stream()
+                    .map(ingredient -> new UserPreferredIngredient(user, ingredient))
+                    .toList();
+            userPreferredIngredientRepository.saveAll(preferredEntities);
         }
 
         // 4. 비선호 식재료
         if (request.getDislikedIngredientIds() != null) {
-            List<PreferenceIngredient> dislikedIngredients = preferenceIngredientRepository.findAllById(request.getDislikedIngredientIds());
-            dislikedIngredients.forEach(ingredient ->
-                    userDislikedIngredientRepository.save(new UserDislikedIngredient(user, ingredient))
-            );
+            List<Long> dislikedIds = request.getDislikedIngredientIds();
+            List<PreferenceIngredient> dislikedIngredients = preferenceIngredientRepository.findAllById(dislikedIds);
+            if (dislikedIngredients.size() != dislikedIds.size()) {
+                throw new InvalidRequestException("One or more disliked ingredient IDs are invalid.");
+            }
+            List<UserDislikedIngredient> dislikedEntities = dislikedIngredients.stream()
+                    .map(ingredient -> new UserDislikedIngredient(user, ingredient))
+                    .toList();
+            userDislikedIngredientRepository.saveAll(dislikedEntities);
         }
     }
 
