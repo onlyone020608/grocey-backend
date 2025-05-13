@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.user;
 
+import com.hyewon.grocey_api.domain.user.dto.UserDetailDto;
 import com.hyewon.grocey_api.domain.user.dto.UserSummaryDto;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +65,33 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.getUserSummary(1L))
                 .isInstanceOf(UserNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("getUserDetail - returns detailed info for existing user")
+    void getUserDetail_shouldReturnDetail() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        // when
+        UserDetailDto result = userService.getUserDetail(1L);
+
+        // then
+        assertThat(result.getUserName()).isEqualTo("tester");
+        assertThat(result.getEmail()).isEqualTo("tester@email.com");
+    }
+
+    @Test
+    @DisplayName("getUserDetail - throws exception if user not found")
+    void getUserDetail_shouldThrowIfUserNotFound() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> userService.getUserDetail(1L))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+
 
 
 
