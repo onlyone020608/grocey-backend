@@ -8,6 +8,7 @@ import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import com.hyewon.grocey_api.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,4 +74,14 @@ public class AuthService {
     public void logout(Long userId) {
         refreshTokenStore.remove(userId);
     }
+
+    public void withdraw(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+
+        refreshTokenStore.remove(userId);
+        userRepository.deleteById(userId);
+    }
+
 }
