@@ -14,9 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,5 +51,20 @@ class AuthServiceTest {
         // then
         verify(fridgeRepository).save(any(Fridge.class));
         verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    @DisplayName("signup - throws exception when email is already in use")
+    void signup_shouldThrowWhenEmailAlreadyExists() {
+        // given
+        given(userRepository.existsByEmail(signupRequest.getEmail())).willReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> authService.signup(signupRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Email already in use");
+
+        verify(userRepository, never()).save(any(User.class));
+        verify(fridgeRepository, never()).save(any(Fridge.class));
     }
 }
