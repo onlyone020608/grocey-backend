@@ -2,6 +2,8 @@ package com.hyewon.grocey_api.domain.fridge;
 
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponseDto;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
+import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
+import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
@@ -72,4 +75,32 @@ class FridgeIngredientServiceTest {
         assertThat(result.getIsFreezer()).isFalse();
         assertThat(result.getExpirationDate()).isEqualTo(LocalDate.of(2025, 12, 1));
     }
+
+    @Test
+    @DisplayName("getIngredientsByFridge - throws FridgeNotFoundException when fridge does not exist")
+    void getIngredientsByFridge_shouldThrowWhenFridgeDoesNotExist() {
+        // given
+        Long fridgeId = 999L;
+        Boolean isFreezer = true;
+
+        given(fridgeRepository.existsById(fridgeId)).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> fridgeIngredientService.getIngredientsByFridge(fridgeId, isFreezer))
+                .isInstanceOf(FridgeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("getIngredientDetail - throws FridgeIngredientNotFoundException when ingredient not found")
+    void getIngredientDetail_shouldThrowWhenIngredientNotFound() {
+        // given
+        Long id = 123L;
+        given(fridgeIngredientRepository.findById(id)).willReturn(java.util.Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> fridgeIngredientService.getIngredientDetail(id))
+                .isInstanceOf(FridgeIngredientNotFoundException.class);
+    }
+
+
 }
