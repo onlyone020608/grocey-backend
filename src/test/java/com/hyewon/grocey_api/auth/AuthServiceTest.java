@@ -136,6 +136,24 @@ class AuthServiceTest {
         assertThat(response.getRefreshToken()).isEqualTo(oldRefreshToken);
     }
 
+    @Test
+    @DisplayName("refresh - throws exception when token is invalid")
+    void refresh_shouldThrowException_whenTokenIsInvalid() {
+        // given
+        String invalidToken = "invalid-refresh-token";
+        TokenRefreshRequest request = TokenRefreshRequest.builder()
+                .refreshToken(invalidToken)
+                .build();
+
+        given(jwtTokenProvider.validateToken(invalidToken)).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> authService.refresh(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid refresh token");
+    }
+
+
 
 
 }
