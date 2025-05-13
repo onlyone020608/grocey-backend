@@ -155,6 +155,34 @@ class CartServiceTest {
         });
     }
 
+    @Test
+    @DisplayName("deleteCartItem - removes item when user owns the cart item")
+    void deleteCartItem_shouldRemoveItemIfUserOwnsIt() {
+        // given
+        Long userId = 1L;
+        Long cartItemId = 10L;
+
+        ReflectionTestUtils.setField(user, "id", userId);
+        Cart cart = new Cart(user, user.getFridge());
+
+        CartItem cartItem = new CartItem(product, 2);
+        cart.addCartItem(cartItem);
+
+        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
+
+        // when
+        cartService.deleteCartItem(userId, cartItemId);
+
+        // then
+        assertThat(cart.getCartItems()).doesNotContain(cartItem);
+        verify(cartItemRepository).delete(cartItem);
+    }
+
+
 
 
 }
