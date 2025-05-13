@@ -17,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -126,6 +127,32 @@ class CartServiceTest {
 
         // then
         assertThat(cartItem.getQuantity()).isEqualTo(newQuantity);
+    }
+
+    @Test
+    @DisplayName("updateCartItemQuantity - throws AccessDeniedException if user does not own the cart item")
+    void updateCartItemQuantity_shouldThrowIfUserDoesNotOwnItem() {
+        // given
+        Long actualOwnerId = 1L;
+        Long attackerId = 999L; // 다른 사용자
+        Long cartItemId = 100L;
+
+        User anotherUser = new User("other", "other@email.com", "pass", AgeGroup.TWENTIES, Gender.MALE);
+        ReflectionTestUtils.setField(anotherUser, "id", actualOwnerId);
+
+        Cart cart = new Cart(anotherUser, anotherUser.getFridge());
+        CartItem cartItem = new CartItem(product, 2);
+        cart.addCartItem(cartItem);
+        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
+
+        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
+
+        UpdateCartItemRequest request = new UpdateCartItemRequest(cartItemId, 5);
+
+        // when & then
+        assertThrows(AccessDeniedException.class, () -> {
+            cartService.updateCartItemQuantity(attackerId, request);
+        });
     }
 
 
