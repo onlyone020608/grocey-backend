@@ -1,6 +1,8 @@
 package com.hyewon.grocey_api.auth;
 
+import com.hyewon.grocey_api.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
+import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
 import com.hyewon.grocey_api.domain.user.User;
@@ -13,7 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,4 +73,26 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any(User.class));
         verify(fridgeRepository, never()).save(any(Fridge.class));
     }
+
+    @Test
+    @DisplayName("login - returns access and refresh token when credentials are valid")
+    void login_shouldReturnTokens_whenCredentialsAreValid() {
+        // given
+        LoginRequest request = new LoginRequest("user@email.com", "password");
+        User user = new User("tester", "user@email.com", "password");
+        ReflectionTestUtils.setField(user, "id", 1L);
+
+        given(userRepository.findByEmailAndPassword("user@email.com", "password")).willReturn(Optional.of(user));
+        given(jwtTokenProvider.generateAccessToken(1L)).willReturn("access-token");
+        given(jwtTokenProvider.generateRefreshToken(1L)).willReturn("refresh-token");
+
+        // when
+        TokenResponse response = authService.login(request);
+
+        // then
+        assertThat(response.getAccessToken()).isEqualTo("access-token");
+        assertThat(response.getRefreshToken()).isEqualTo("refresh-token");
+    }
+
+
 }
