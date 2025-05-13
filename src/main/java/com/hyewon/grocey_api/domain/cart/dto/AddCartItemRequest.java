@@ -4,8 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class AddCartItemRequest {
-    private Long userId;
     private Long productId;
     private int quantity;
 
+    public AddCartItemRequest(Long productId, int quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 }
