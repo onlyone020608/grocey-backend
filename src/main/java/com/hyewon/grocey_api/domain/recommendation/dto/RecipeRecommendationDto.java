@@ -8,8 +8,10 @@ import lombok.Getter;
 public class RecipeRecommendationDto {
     private String recipeName;
     private String recipeImageUrl;
+    private Long recipeId;
 
     public RecipeRecommendationDto(RecipeRecommendation recommendation) {
+        this.recipeId = recommendation.getRecipe().getId();
         this.recipeName = recommendation.getRecipe().getRecipeName();
         this.recipeImageUrl = recommendation.getRecipe().getImageUrl();
     }
