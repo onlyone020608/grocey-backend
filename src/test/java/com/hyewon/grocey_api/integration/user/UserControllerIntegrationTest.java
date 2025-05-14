@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.integration.user;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
+import com.hyewon.grocey_api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
@@ -26,5 +27,20 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         // then
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(user.getUserName()));
+    }
+
+    @Test
+    @DisplayName("GET /api/users/me - should return user detail")
+    void getUserDetail_shouldReturnUserDetail() throws Exception {
+        // given
+        User user = createTestUser("Mary Kim", "mary@example.com", "password123");
+        String token = generateTokenFor(user);
+
+        // when & then
+        mockMvc.perform(get("/api/users/me")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userName").value(user.getUserName()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
 }
