@@ -31,4 +31,22 @@ public class RecipeRecommendationControllerIntegrationTest extends AbstractInteg
                 .andExpect(jsonPath("$[0].recipeName").value(recipe.getRecipeName()))
                 .andExpect(jsonPath("$[0].recipeImageUrl").value(recipe.getImageUrl()));
     }
+
+    @Test
+    @DisplayName("GET /api/recipes/recommendations/fridge - should return fridge-based recipe recommendations")
+    void getFridgeRecommendations_shouldReturnRecipes() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        String token = generateTokenFor(user);
+
+        Recipe recipe = recipeRepository.findById(2L).orElseThrow();
+        setupRecipeRecommendationByFridge(user, recipe);
+
+        // when & then
+        mockMvc.perform(get("/api/recipes/recommendations/fridge")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].recipeName").value(recipe.getRecipeName()))
+                .andExpect(jsonPath("$[0].recipeImageUrl").value(recipe.getImageUrl()));
+    }
 }
