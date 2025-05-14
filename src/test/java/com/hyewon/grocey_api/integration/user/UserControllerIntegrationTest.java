@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.integration.user;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.domain.user.dto.AgeGroupUpdateRequest;
 import com.hyewon.grocey_api.domain.user.dto.GenderUpdateRequest;
 import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -93,6 +94,29 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
         assertThat(updatedUser.getGender().name()).isEqualTo("FEMALE");
     }
+
+    @Test
+    @DisplayName("PATCH /api/users/me/age-group - should update user age group")
+    void updateAgeGroup_shouldUpdateUserAgeGroup() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "password123");
+        String token = generateTokenFor(user);
+
+        AgeGroupUpdateRequest request = AgeGroupUpdateRequest.builder()
+                .ageValue(20)
+                .build();
+
+        // when & then
+        mockMvc.perform(patch("/api/users/me/age-group")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(updatedUser.getAgeGroup().name()).isEqualTo("TWENTIES");
+    }
+
 
 
 }
