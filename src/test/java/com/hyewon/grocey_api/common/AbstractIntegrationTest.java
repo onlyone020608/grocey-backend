@@ -8,6 +8,12 @@ import com.hyewon.grocey_api.domain.fridge.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
+import com.hyewon.grocey_api.domain.product.Product;
+import com.hyewon.grocey_api.domain.product.ProductRepository;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendation;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendationRepository;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProduct;
+import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserAllergyRepository;
 import com.hyewon.grocey_api.domain.user.UserRepository;
@@ -48,11 +54,20 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired protected IngredientRepository ingredientRepository;
 
+    @Autowired protected ProductRepository productRepository;
+
     @Autowired
     private AuthService authService;
 
     @Autowired
     private FridgeIngredientRepository fridgeIngredientRepository;
+
+    @Autowired
+    private FridgeRecommendationRepository fridgeRecommendationRepository;
+
+    @Autowired
+    private FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
+
 
 
 
@@ -68,5 +83,15 @@ public abstract class AbstractIntegrationTest {
         Fridge fridge = user.getFridge();
         FridgeIngredient fi = new FridgeIngredient(fridge, ingredient, isFreezer,  quantity, LocalDate.now().plusDays(7));
         return fridgeIngredientRepository.save(fi);
+    }
+
+    protected FridgeRecommendation setupFridgeRecommendation(User user) {
+        FridgeRecommendation recommendation = new FridgeRecommendation(user.getFridge());
+        return fridgeRecommendationRepository.save(recommendation);
+    }
+
+    protected FridgeRecommendedProduct setupRecommendedProduct(Product product, FridgeRecommendation recommendation) {
+        FridgeRecommendedProduct recProduct = new FridgeRecommendedProduct(product, recommendation);
+        return fridgeRecommendedProductRepository.save(recProduct);
     }
 }

@@ -13,7 +13,7 @@ public class FridgeRecommendedProductDto {
     private final int price;
     private final String imageUrl;
 
-    public FridgeRecommendedProductDto(FridgeRecommendedProduct recommendedProduct) {  // ✅ 맞는 타입
+    public FridgeRecommendedProductDto(FridgeRecommendedProduct recommendedProduct) {
         this.productId = recommendedProduct.getProduct().getId();
         this.productName = recommendedProduct.getProduct().getProductName();
         this.brand = recommendedProduct.getProduct().getBrandName();
