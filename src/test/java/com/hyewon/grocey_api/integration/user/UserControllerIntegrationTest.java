@@ -146,6 +146,28 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .containsExactlyInAnyOrder(1L, 2L);
     }
 
+    @Test
+    @DisplayName("PATCH /api/users/me/preferences - should update user preferences")
+    void updatePreferences_shouldUpdateUserPreferences() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "password123");
+        String token = generateTokenFor(user);
+
+        PreferenceUpdateRequest request = PreferenceUpdateRequest.builder()
+                .foodPreferenceIds(List.of(1L, 2L))
+                .preferredIngredientIds(List.of(1L))
+                .dislikedIngredientIds(List.of(2L))
+                .build();
+
+        // when & then
+        mockMvc.perform(patch("/api/users/me/preferences")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+
 
 
 
