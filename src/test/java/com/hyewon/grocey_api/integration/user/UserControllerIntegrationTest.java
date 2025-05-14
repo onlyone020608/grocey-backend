@@ -1,14 +1,15 @@
 package com.hyewon.grocey_api.integration.user;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
-import com.hyewon.grocey_api.domain.user.User;
-import com.hyewon.grocey_api.domain.user.dto.AgeGroupUpdateRequest;
-import com.hyewon.grocey_api.domain.user.dto.GenderUpdateRequest;
-import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
+import com.hyewon.grocey_api.domain.user.*;
+import com.hyewon.grocey_api.domain.user.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,6 +17,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("UserController Integration Test")
+@Sql(scripts = {
+        "/sql/allergy-data.sql",
+        "/sql/food-preference-data.sql",
+        "/sql/preference-ingredient-data.sql"
+}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/users/me/summary - Should return user summary")
@@ -116,6 +122,30 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
         assertThat(updatedUser.getAgeGroup().name()).isEqualTo("TWENTIES");
     }
+
+    @Test
+    @DisplayName("PATCH /api/users/me/allergies - should update user allergies")
+    void updateUserAllergies_shouldUpdateAllergyList() throws Exception {
+        // given
+        User user = createTestUser("AllergyUser", "allergy@example.com", "password123");
+        String token = generateTokenFor(user);
+
+        // assuming allergy-data.sql includes ID 1 and 2
+        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(1L, 2L));
+
+        // when & then
+        mockMvc.perform(patch("/api/users/me/allergies")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        List<UserAllergy> updated = userAllergyRepository.findByUser(user);
+        assertThat(updated).hasSize(2);
+        assertThat(updated).extracting(ua -> ua.getAllergy().getId())
+                .containsExactlyInAnyOrder(1L, 2L);
+    }
+
 
 
 

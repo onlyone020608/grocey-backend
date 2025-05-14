@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.domain.user.UserAllergyRepository;
 import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.security.JwtTokenProvider;
 import org.junit.jupiter.api.TestInstance;
@@ -33,6 +34,9 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired protected UserAllergyRepository userAllergyRepository;
+
 
     protected User createTestUser(String name, String email, String rawPassword) {
         User user = User.builder()

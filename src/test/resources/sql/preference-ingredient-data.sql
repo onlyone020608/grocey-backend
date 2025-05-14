@@ -1,0 +1,17 @@
+INSERT INTO preference_ingredient (name) VALUES ('Egg');
+INSERT INTO preference_ingredient (name) VALUES ('Chicken');
+INSERT INTO preference_ingredient (name) VALUES ('Beef');
+INSERT INTO preference_ingredient (name) VALUES ('Fish');
+INSERT INTO preference_ingredient (name) VALUES ('Milk');
+INSERT INTO preference_ingredient (name) VALUES ('Pork');
+INSERT INTO preference_ingredient (name) VALUES ('Duck');
+INSERT INTO preference_ingredient (name) VALUES ('Carrot');
+INSERT INTO preference_ingredient (name) VALUES ('Clam');
+INSERT INTO preference_ingredient (name) VALUES ('Eggplant');
+INSERT INTO preference_ingredient (name) VALUES ('Lamb');
+INSERT INTO preference_ingredient (name) VALUES ('Onion');
+INSERT INTO preference_ingredient (name) VALUES ('Bell-pepper');
+INSERT INTO preference_ingredient (name) VALUES ('Cilantro');
+INSERT INTO preference_ingredient (name) VALUES ('Cheese');
+INSERT INTO preference_ingredient (name) VALUES ('Garlic');
+INSERT INTO preference_ingredient (name) VALUES ('Green-onion');

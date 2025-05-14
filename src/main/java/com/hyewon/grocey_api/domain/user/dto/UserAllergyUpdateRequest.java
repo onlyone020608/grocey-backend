@@ -7,4 +7,11 @@ import java.util.List;
 @Getter
 public class UserAllergyUpdateRequest {
     private List<Long> allergyIds;
+
+    public UserAllergyUpdateRequest(List<Long> allergyIds) {
+        this.allergyIds = allergyIds;
+    }
+
+    public UserAllergyUpdateRequest() {
+    }
 }
