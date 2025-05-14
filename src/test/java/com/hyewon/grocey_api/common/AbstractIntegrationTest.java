@@ -10,10 +10,9 @@ import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.product.ProductRepository;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendation;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendationRepository;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProduct;
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendedProductRepository;
+import com.hyewon.grocey_api.domain.recipe.Recipe;
+import com.hyewon.grocey_api.domain.recipe.RecipeRepository;
+import com.hyewon.grocey_api.domain.recommendation.*;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserAllergyRepository;
 import com.hyewon.grocey_api.domain.user.UserRepository;
@@ -68,6 +67,8 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     private FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
 
+    @Autowired protected RecipeRepository recipeRepository;
+    @Autowired protected RecipeRecommendationRepository recipeRecommendationRepository;
 
 
 
@@ -93,5 +94,15 @@ public abstract class AbstractIntegrationTest {
     protected FridgeRecommendedProduct setupRecommendedProduct(Product product, FridgeRecommendation recommendation) {
         FridgeRecommendedProduct recProduct = new FridgeRecommendedProduct(product, recommendation);
         return fridgeRecommendedProductRepository.save(recProduct);
+    }
+
+    protected RecipeRecommendation setupRecipeRecommendationByUser(User user, Recipe recipe) {
+        RecipeRecommendation recommendation = new RecipeRecommendation(user, recipe, RecommendationType.PREFERENCE_BASED);
+        return recipeRecommendationRepository.save(recommendation);
+    }
+
+    protected RecipeRecommendation setupRecipeRecommendationByFridge(User user, Recipe recipe) {
+        RecipeRecommendation recommendation = new RecipeRecommendation(user.getFridge(), recipe, RecommendationType.PREFERENCE_BASED);
+        return recipeRecommendationRepository.save(recommendation);
     }
 }
