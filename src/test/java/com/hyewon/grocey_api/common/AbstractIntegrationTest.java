@@ -3,6 +3,11 @@ package com.hyewon.grocey_api.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyewon.grocey_api.auth.AuthService;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
+import com.hyewon.grocey_api.domain.fridge.Fridge;
+import com.hyewon.grocey_api.domain.fridge.FridgeIngredient;
+import com.hyewon.grocey_api.domain.fridge.FridgeIngredientRepository;
+import com.hyewon.grocey_api.domain.ingredient.Ingredient;
+import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserAllergyRepository;
 import com.hyewon.grocey_api.domain.user.UserRepository;
@@ -14,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+
+import java.time.LocalDate;
 
 
 @ActiveProfiles("test")
@@ -39,8 +46,13 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired protected UserAllergyRepository userAllergyRepository;
 
+    @Autowired protected IngredientRepository ingredientRepository;
+
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private FridgeIngredientRepository fridgeIngredientRepository;
 
 
 
@@ -50,5 +62,11 @@ public abstract class AbstractIntegrationTest {
 
     protected String generateTokenFor(User user) {
         return jwtTokenProvider.generateAccessToken(user.getId());
+    }
+
+    protected FridgeIngredient setupFridgeIngredient(User user, Ingredient ingredient, boolean isFreezer,  int quantity) {
+        Fridge fridge = user.getFridge();
+        FridgeIngredient fi = new FridgeIngredient(fridge, ingredient, isFreezer,  quantity, LocalDate.now().plusDays(7));
+        return fridgeIngredientRepository.save(fi);
     }
 }
