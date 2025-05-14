@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 public class ProductTab {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Enumerated(EnumType.STRING)
