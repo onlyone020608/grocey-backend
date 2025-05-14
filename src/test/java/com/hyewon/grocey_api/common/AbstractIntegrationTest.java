@@ -1,6 +1,8 @@
 package com.hyewon.grocey_api.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hyewon.grocey_api.auth.AuthService;
+import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserAllergyRepository;
 import com.hyewon.grocey_api.domain.user.UserRepository;
@@ -37,14 +39,13 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired protected UserAllergyRepository userAllergyRepository;
 
+    @Autowired
+    private AuthService authService;
+
+
 
     protected User createTestUser(String name, String email, String rawPassword) {
-        User user = User.builder()
-                .userName(name)
-                .email(email)
-                .password(passwordEncoder.encode(rawPassword))
-                .build();
-        return userRepository.save(user);
+        return authService.signup(new SignupRequest(name, email, passwordEncoder.encode(rawPassword)));
     }
 
     protected String generateTokenFor(User user) {

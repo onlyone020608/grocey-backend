@@ -28,7 +28,7 @@ public class AuthService {
 
 
 
-    public void signup(SignupRequest request) {
+    public User signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
         }
@@ -43,6 +43,7 @@ public class AuthService {
         user.assignFridge(fridge); // 연관관계 설정
 
         userRepository.save(user);
+        return user;
     }
 
     public TokenResponse login(LoginRequest request) {
