@@ -2,6 +2,7 @@ package com.hyewon.grocey_api.integration.user;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.domain.user.dto.GenderUpdateRequest;
 import com.hyewon.grocey_api.domain.user.dto.UserUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,5 +71,28 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(updatedUser.getUserName()).isEqualTo("New Name");
         assertThat(updatedUser.getEmail()).isEqualTo("new@example.com");
     }
+
+    @Test
+    @DisplayName("PATCH /api/users/me/gender - should update user gender")
+    void updateGender_shouldUpdateUserGender() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "pass123");
+        String token = generateTokenFor(user);
+
+        GenderUpdateRequest request = GenderUpdateRequest.builder()
+                .gender("FEMALE")
+                .build();
+
+        // when & then
+        mockMvc.perform(patch("/api/users/me/gender")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(updatedUser.getGender().name()).isEqualTo("FEMALE");
+    }
+
 
 }
