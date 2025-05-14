@@ -28,6 +28,7 @@ public class RecipeRecommendationControllerIntegrationTest extends AbstractInteg
         mockMvc.perform(get("/api/recipes/recommendations/personal")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].recipeId").value(recipe.getId()))
                 .andExpect(jsonPath("$[0].recipeName").value(recipe.getRecipeName()))
                 .andExpect(jsonPath("$[0].recipeImageUrl").value(recipe.getImageUrl()));
     }
@@ -46,6 +47,7 @@ public class RecipeRecommendationControllerIntegrationTest extends AbstractInteg
         mockMvc.perform(get("/api/recipes/recommendations/fridge")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].recipeId").value(recipe.getId()))
                 .andExpect(jsonPath("$[0].recipeName").value(recipe.getRecipeName()))
                 .andExpect(jsonPath("$[0].recipeImageUrl").value(recipe.getImageUrl()));
     }
