@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.integration.fridge;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
+import com.hyewon.grocey_api.domain.fridge.FridgeIngredient;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,6 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
         Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();
         setupFridgeIngredient(user, ingredient, false, 2 );
 
-        Long fridgeId = user.getFridge().getId();
 
         mockMvc.perform(get("/api/fridge/ingredients")
                         .header("Authorization", "Bearer " + token)
@@ -33,6 +33,26 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].ingredientName").value(ingredient.getIngredientName()))
                 .andExpect(jsonPath("$[0].imageUrl").value(ingredient.getImageUrl()));
+    }
+
+    @Test
+    @DisplayName("GET /api/fridge/ingredients/{ingredientId} - should return detail info")
+    void getFridgeIngredientDetail_shouldReturnDetail() throws Exception {
+        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        String token = generateTokenFor(user);
+
+        Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();
+        FridgeIngredient fridgeIngredient = setupFridgeIngredient(user, ingredient, false, 2);
+
+        // when & then
+        mockMvc.perform(get("/api/fridge/ingredients/" + fridgeIngredient.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ingredientName").value(ingredient.getIngredientName()))
+                .andExpect(jsonPath("$.imageUrl").value(ingredient.getImageUrl()))
+                .andExpect(jsonPath("$.quantity").value(2))
+                .andExpect(jsonPath("$.isFreezer").value(false))
+                .andExpect(jsonPath("$.expirationDate").exists());
     }
 
 }
