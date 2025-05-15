@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,11 +44,11 @@ public class OrderController {
 
 
     @PostMapping
-    public ResponseEntity<Void> placeOrder(
+    public ResponseEntity<Map<String, Long>> placeOrder(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody OrderRequest request) {
-        orderService.placeOrder(userDetails.getId(), request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Long orderId = orderService.placeOrder(userDetails.getId(), request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("orderId", orderId));
     }
 
 

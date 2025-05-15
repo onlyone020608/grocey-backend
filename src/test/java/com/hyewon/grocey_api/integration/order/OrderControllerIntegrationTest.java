@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.integration.order;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import com.hyewon.grocey_api.domain.cart.CartItem;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
@@ -75,6 +76,46 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[0].orderStatus").value("CONFIRMED"))
                 .andExpect(jsonPath("$[0].items[0].productName").value(product.getProductName()));
     }
+
+    @Test
+    @DisplayName("GET /api/orders/{orderId} - should return order detail")
+    void getOrderDetail_shouldReturnDetail() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        String token = generateTokenFor(user);
+        Product product = productRepository.findById(1L).orElseThrow();
+        CartItem item = addCartItemFor(user, product, 2);
+
+
+        OrderRequest request = new OrderRequest(
+                List.of(item.getId()),
+                "Gangnam-gu, Seoul",
+                "KAKAOPAY"
+        );
+
+        String responseBody = mockMvc.perform(post("/api/orders")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode json = objectMapper.readTree(responseBody);
+        Long orderId = json.get("orderId").asLong();
+
+        // when & then
+        mockMvc.perform(get("/api/orders/" + orderId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderId").value(orderId))
+                .andExpect(jsonPath("$.orderStatus").value("CONFIRMED"))
+                .andExpect(jsonPath("$.paymentMethod").value("KAKAOPAY"))
+                .andExpect(jsonPath("$.shippingAddress").value("Gangnam-gu, Seoul"))
+                .andExpect(jsonPath("$.items[0].productName").value(product.getProductName()));
+    }
+
 
 
 

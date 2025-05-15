@@ -63,7 +63,7 @@ public class OrderService {
                 .map(OrderSummaryDto::new);
     }
 
-    public void placeOrder(Long userId, OrderRequest request) {
+    public Long placeOrder(Long userId, OrderRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -88,6 +88,7 @@ public class OrderService {
 
         orderRepository.save(order);
         cartItemRepository.deleteAll(selectedItems);
+        return order.getId();
     }
 
 
