@@ -1,8 +1,10 @@
 package com.hyewon.grocey_api.integration.cart;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
+import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,5 +59,38 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items[0].productId").value(product.getId()))
                 .andExpect(jsonPath("$.items[0].productName").value(product.getProductName()));
+    }
+
+    @Test
+    @DisplayName("PATCH /api/cart/items - should update quantity")
+    void updateCartItem_shouldSucceed() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        String token = generateTokenFor(user);
+        Product product = productRepository.findById(1L).orElseThrow();
+
+        AddCartItemRequest addRequest = new AddCartItemRequest(product.getId(), 2);
+        mockMvc.perform(post("/api/cart/items")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(addRequest)))
+                .andExpect(status().isCreated());
+
+        String cartJson = mockMvc.perform(get("/api/cart")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        JsonNode root = new ObjectMapper().readTree(cartJson);
+        Long cartItemId = root.get("items").get(0).get("cartItemId").asLong();
+
+        // when & then
+        UpdateCartItemRequest updateRequest = new UpdateCartItemRequest(cartItemId, 5);
+
+        mockMvc.perform(patch("/api/cart/items")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk());
     }
 }
