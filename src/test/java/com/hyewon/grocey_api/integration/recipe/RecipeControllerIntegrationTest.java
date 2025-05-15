@@ -18,7 +18,7 @@ public class RecipeControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/recipes/{recipeId} - should return recipe detail")
     void getRecipeDetail_shouldReturnRecipeDetail() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
 

@@ -18,7 +18,7 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
     @DisplayName("GET /api/users/me/recipes - should return saved recipes of user")
     void getSavedRecipes_shouldReturnRecipes() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary@", "securepw");
         String token = generateTokenFor(user);
 
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
