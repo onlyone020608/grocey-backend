@@ -28,7 +28,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("POST /api/orders - should create order")
     void placeOrder_shouldSucceed() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
         Long cartItemId = addCartItemFor(user, product, 2).getId();
@@ -51,7 +51,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/orders/summary - should return recent order summary")
     void getOrderSummary_shouldReturnSummary() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
         CartItem item = addCartItemFor(user, product, 2);
@@ -81,7 +81,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/orders/{orderId} - should return order detail")
     void getOrderDetail_shouldReturnDetail() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
         CartItem item = addCartItemFor(user, product, 2);
@@ -119,7 +119,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/orders - should return paged order list")
     void getAllOrders_shouldReturnPagedOrders() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
         CartItem item = addCartItemFor(user, product, 2);
