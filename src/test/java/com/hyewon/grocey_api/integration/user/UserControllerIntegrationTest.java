@@ -27,7 +27,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/users/me/summary - Should return user summary")
     void getUserSummary_shouldReturnUserSummary() throws Exception {
         // given
-        var user = createTestUser("Mary Kim", "mary@example.com", "password123");
+        var user = createTestUser("Mary Kim", "mary", "password123");
         String token = generateTokenFor(user);
 
         // when
@@ -44,7 +44,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/users/me - should return user detail")
     void getUserDetail_shouldReturnUserDetail() throws Exception {
         // given
-        User user = createTestUser("Mary Kim", "mary@example.com", "password123");
+        User user = createTestUser("Mary Kim", "mary", "password123");
         String token = generateTokenFor(user);
 
         // when & then
@@ -59,12 +59,12 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me - should update user info")
     void updateUserInfo_shouldUpdateUserNameAndEmail() throws Exception {
         // given
-        User user = createTestUser("Old Name", "old@example.com", "password123");
+        User user = createTestUser("Old Name", "old", "password123");
         String token = generateTokenFor(user);
 
         UserUpdateRequest request = UserUpdateRequest.builder()
                 .userName("New Name")
-                .email("new@example.com")
+                .email("new")
                 .build();
 
         // when & then
@@ -76,14 +76,14 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
         assertThat(updatedUser.getUserName()).isEqualTo("New Name");
-        assertThat(updatedUser.getEmail()).isEqualTo("new@example.com");
+        assertThat(updatedUser.getEmail()).isEqualTo("new");
     }
 
     @Test
     @DisplayName("PATCH /api/users/me/gender - should update user gender")
     void updateGender_shouldUpdateUserGender() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "pass123");
+        User user = createTestUser("Mary", "mary", "pass123");
         String token = generateTokenFor(user);
 
         GenderUpdateRequest request = GenderUpdateRequest.builder()
@@ -105,7 +105,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/age-group - should update user age group")
     void updateAgeGroup_shouldUpdateUserAgeGroup() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "password123");
+        User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);
 
         AgeGroupUpdateRequest request = AgeGroupUpdateRequest.builder()
@@ -127,7 +127,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/allergies - should update user allergies")
     void updateUserAllergies_shouldUpdateAllergyList() throws Exception {
         // given
-        User user = createTestUser("AllergyUser", "allergy@example.com", "password123");
+        User user = createTestUser("AllergyUser", "allergy", "password123");
         String token = generateTokenFor(user);
 
         // assuming allergy-data.sql includes ID 1 and 2
@@ -150,7 +150,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/preferences - should update user preferences")
     void updatePreferences_shouldUpdateUserPreferences() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "password123");
+        User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);
 
         PreferenceUpdateRequest request = PreferenceUpdateRequest.builder()

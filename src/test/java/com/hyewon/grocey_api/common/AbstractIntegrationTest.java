@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 
 @ActiveProfiles("test")
@@ -85,7 +86,8 @@ public abstract class AbstractIntegrationTest {
 
 
 
-    protected User createTestUser(String name, String email, String rawPassword) {
+    protected User createTestUser(String name, String emailPrefix, String rawPassword) {
+        String email = emailPrefix + "_" + UUID.randomUUID() + "@example.com";
         return authService.signup(new SignupRequest(email, rawPassword, name ));
     }
 
