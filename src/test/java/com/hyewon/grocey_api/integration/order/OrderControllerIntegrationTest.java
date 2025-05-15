@@ -115,6 +115,39 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.shippingAddress").value("Gangnam-gu, Seoul"))
                 .andExpect(jsonPath("$.items[0].productName").value(product.getProductName()));
     }
+    @Test
+    @DisplayName("GET /api/orders - should return paged order list")
+    void getAllOrders_shouldReturnPagedOrders() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        String token = generateTokenFor(user);
+        Product product = productRepository.findById(1L).orElseThrow();
+        CartItem item = addCartItemFor(user, product, 2);
+
+        OrderRequest request = new OrderRequest(
+                List.of(item.getId()),
+                "Gangnam-gu, Seoul",
+                "KAKAOPAY"
+        );
+
+        mockMvc.perform(post("/api/orders")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated());
+
+        // when & then
+        mockMvc.perform(get("/api/orders")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].orderId").exists())
+                .andExpect(jsonPath("$.content[0].createdAt").exists())
+                .andExpect(jsonPath("$.content[0].orderStatus").value("CONFIRMED"))
+                .andExpect(jsonPath("$.content[0].items[0].productName").value(product.getProductName()));
+    }
+
+
+
 
 
 
