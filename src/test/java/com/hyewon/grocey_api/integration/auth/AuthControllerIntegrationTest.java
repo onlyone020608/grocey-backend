@@ -90,5 +90,25 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    @DisplayName("DELETE /api/auth/withdraw - should delete user and invalidate refresh token")
+    void withdraw_shouldDeleteUserAndInvalidateToken() throws Exception {
+        createTestUser("WithdrawUser", "withdraw@example.com", "test1234!");
+
+        LoginRequest loginRequest = new LoginRequest("withdraw@example.com", "test1234!");
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+        String accessToken = tokens.getAccessToken();
+
+        mockMvc.perform(delete("/api/auth/withdraw")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isNoContent());
+    }
+
 
 }
