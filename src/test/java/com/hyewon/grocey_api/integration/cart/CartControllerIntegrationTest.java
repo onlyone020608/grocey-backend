@@ -28,7 +28,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/cart/items - should add cart item")
     void addCartItem_shouldSucceed() throws Exception {
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 
@@ -44,7 +44,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/cart - should return cart with items")
     void getCart_shouldReturnCartInfo() throws Exception {
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 
@@ -66,7 +66,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/cart/items - should update quantity")
     void updateCartItem_shouldSucceed() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 
@@ -99,7 +99,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("DELETE /api/cart/items/{cartItemId} - should delete item from cart")
     void deleteCartItem_shouldSucceed() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 
