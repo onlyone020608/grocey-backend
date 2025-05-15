@@ -86,7 +86,7 @@ public abstract class AbstractIntegrationTest {
 
 
     protected User createTestUser(String name, String email, String rawPassword) {
-        return authService.signup(new SignupRequest(name, email, passwordEncoder.encode(rawPassword)));
+        return authService.signup(new SignupRequest(email, rawPassword, name ));
     }
 
     protected String generateTokenFor(User user) {

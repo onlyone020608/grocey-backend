@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.integration.auth;
 
+import com.hyewon.grocey_api.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -19,5 +20,21 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("POST /api/auth/login - should return tokens for valid credentials")
+    void login_shouldReturnTokens() throws Exception {
+        createTestUser("TestUser", "login@example.com", "test1234!");
+
+
+        LoginRequest request = new LoginRequest("login@example.com", "test1234!");
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists());
     }
 }
