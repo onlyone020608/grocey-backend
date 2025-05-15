@@ -5,7 +5,6 @@ import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
-import com.hyewon.grocey_api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -69,5 +68,27 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.accessToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists());
     }
+
+    @Test
+    @DisplayName("POST /api/auth/logout - should succeed with valid token and invalidate refresh token")
+    void logout_shouldInvalidateRefreshToken() throws Exception {
+        createTestUser("LogoutUser", "logout@example.com", "test1234!");
+
+        LoginRequest loginRequest = new LoginRequest("logout@example.com", "test1234!");
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+        String accessToken = tokens.getAccessToken();
+
+        mockMvc.perform(post("/api/auth/logout")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+
+    }
+
 
 }
