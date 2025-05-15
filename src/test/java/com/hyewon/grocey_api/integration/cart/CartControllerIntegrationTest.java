@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -92,5 +93,35 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("DELETE /api/cart/items/{cartItemId} - should delete item from cart")
+    void deleteCartItem_shouldSucceed() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        String token = generateTokenFor(user);
+        Product product = productRepository.findById(1L).orElseThrow();
+
+        AddCartItemRequest addRequest = new AddCartItemRequest(product.getId(), 2);
+        mockMvc.perform(post("/api/cart/items")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(addRequest)))
+                .andExpect(status().isCreated());
+
+
+        String cartJson = mockMvc.perform(get("/api/cart")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        JsonNode root = objectMapper.readTree(cartJson);
+        Long cartItemId = root.get("items").get(0).get("cartItemId").asLong();
+
+        // when & then
+        mockMvc.perform(delete("/api/cart/items/" + cartItemId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNoContent());
     }
 }
