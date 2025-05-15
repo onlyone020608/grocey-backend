@@ -39,10 +39,10 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/login - should return tokens for valid credentials")
     void login_shouldReturnTokens() throws Exception {
-        createTestUser("TestUser", "login@example.com", "test1234!");
+        User user = createTestUser("Mary", "mary", "test1234!");
 
 
-        LoginRequest request = new LoginRequest("login@example.com", "test1234!");
+        LoginRequest request = new LoginRequest(user.getEmail(), "test1234!");
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,10 +55,10 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/refresh - should return new tokens")
     void refresh_shouldReturnNewTokens() throws Exception {
-        createTestUser("RefreshUser", "refresh@example.com", "test1234!");
+        User user = createTestUser("Mary", "mary", "test1234!");
 
 
-        LoginRequest loginRequest = new LoginRequest("refresh@example.com", "test1234!");
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
 
         String loginResponse = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -84,9 +84,9 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/logout - should succeed with valid token and invalidate refresh token")
     void logout_shouldInvalidateRefreshToken() throws Exception {
-        createTestUser("LogoutUser", "logout@example.com", "test1234!");
+        User user = createTestUser("Mary", "mary", "test1234!");
 
-        LoginRequest loginRequest = new LoginRequest("logout@example.com", "test1234!");
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
         String loginResponse = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
@@ -105,9 +105,9 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("DELETE /api/auth/withdraw - should delete user and invalidate refresh token")
     void withdraw_shouldDeleteUserAndInvalidateToken() throws Exception {
-        createTestUser("WithdrawUser", "withdraw@example.com", "test1234!");
+        User user = createTestUser("Mary", "mary", "test1234!");
 
-        LoginRequest loginRequest = new LoginRequest("withdraw@example.com", "test1234!");
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
         String loginResponse = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequest)))
