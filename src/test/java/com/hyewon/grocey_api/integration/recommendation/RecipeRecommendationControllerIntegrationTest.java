@@ -18,7 +18,7 @@ public class RecipeRecommendationControllerIntegrationTest extends AbstractInteg
     @DisplayName("GET /api/recipes/recommendations/personal - should return personal recipe recommendations")
     void getPersonalRecommendations_shouldReturnRecipes() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
 
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
@@ -37,7 +37,7 @@ public class RecipeRecommendationControllerIntegrationTest extends AbstractInteg
     @DisplayName("GET /api/recipes/recommendations/fridge - should return fridge-based recipe recommendations")
     void getFridgeRecommendations_shouldReturnRecipes() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
 
         Recipe recipe = recipeRepository.findById(2L).orElseThrow();
