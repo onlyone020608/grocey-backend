@@ -3,6 +3,8 @@ package com.hyewon.grocey_api.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyewon.grocey_api.auth.AuthService;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
+import com.hyewon.grocey_api.domain.cart.*;
+import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
 import com.hyewon.grocey_api.domain.fridge.Fridge;
 import com.hyewon.grocey_api.domain.fridge.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.FridgeIngredientRepository;
@@ -75,6 +77,12 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     private SavedRecipeRepository savedRecipeRepository;
 
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
 
     protected User createTestUser(String name, String email, String rawPassword) {
@@ -114,4 +122,14 @@ public abstract class AbstractIntegrationTest {
     protected void setupSavedRecipe(User user, Recipe recipe) {
         savedRecipeRepository.save(new SavedRecipe(user, recipe));
     }
+
+    protected CartItem addCartItemFor(User user, Product product, int quantity) {
+        AddCartItemRequest request = new AddCartItemRequest(product.getId(), quantity);
+        cartService.addCartItem(user.getId(), request);  // 여기를 서비스 단 호출로
+        return cartItemRepository.findAll().stream()
+                .filter(i -> i.getProduct().getId().equals(product.getId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("CartItem not found"));
+    }
+
 }

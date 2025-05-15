@@ -19,4 +19,13 @@ public class OrderRequest {
             throw new InvalidRequestException("Invalid payment method: " + paymentMethod);
         }
     }
+
+    public OrderRequest(List<Long> cartItemIds, String address, String paymentMethod) {
+        this.cartItemIds = cartItemIds;
+        this.address = address;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public OrderRequest() {
+    }
 }
