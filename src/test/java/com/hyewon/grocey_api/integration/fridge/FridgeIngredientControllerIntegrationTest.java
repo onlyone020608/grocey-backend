@@ -20,7 +20,7 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
     @Test
     @DisplayName("GET /api/fridge/ingredients - should return fridge ingredient list")
     void getFridgeIngredients_shouldReturnList() throws Exception {
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
 
         Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();
@@ -38,7 +38,7 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
     @Test
     @DisplayName("GET /api/fridge/ingredients/{ingredientId} - should return detail info")
     void getFridgeIngredientDetail_shouldReturnDetail() throws Exception {
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
 
         Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();
