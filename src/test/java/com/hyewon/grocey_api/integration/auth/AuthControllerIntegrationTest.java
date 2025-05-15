@@ -5,9 +5,14 @@ import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
+import com.hyewon.grocey_api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -22,6 +27,13 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
+
+        Optional<User> userOpt = userRepository.findByEmail("mary@example.com");
+        assertThat(userOpt).isPresent();
+
+        User user = userOpt.get();
+        assertThat(user.getUserName()).isEqualTo("Mary");
+        assertThat(passwordEncoder.matches("securepw", user.getPassword())).isTrue();
     }
 
     @Test
