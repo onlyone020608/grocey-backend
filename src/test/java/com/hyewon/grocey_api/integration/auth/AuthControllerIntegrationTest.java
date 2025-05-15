@@ -2,7 +2,10 @@ package com.hyewon.grocey_api.integration.auth;
 
 import com.hyewon.grocey_api.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
+import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
+import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
+import com.hyewon.grocey_api.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -37,4 +40,34 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.accessToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists());
     }
+
+    @Test
+    @DisplayName("POST /api/auth/refresh - should return new tokens")
+    void refresh_shouldReturnNewTokens() throws Exception {
+        createTestUser("RefreshUser", "refresh@example.com", "test1234!");
+
+
+        LoginRequest loginRequest = new LoginRequest("refresh@example.com", "test1234!");
+
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+
+
+        TokenRefreshRequest refreshRequest = TokenRefreshRequest.builder()
+                .refreshToken(tokens.getRefreshToken())
+                .build();
+
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(refreshRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists());
+    }
+
 }
