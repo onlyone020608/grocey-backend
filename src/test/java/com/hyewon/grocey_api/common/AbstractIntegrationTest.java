@@ -12,6 +12,8 @@ import com.hyewon.grocey_api.domain.product.Product;
 import com.hyewon.grocey_api.domain.product.ProductRepository;
 import com.hyewon.grocey_api.domain.recipe.Recipe;
 import com.hyewon.grocey_api.domain.recipe.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.SavedRecipe;
+import com.hyewon.grocey_api.domain.recipe.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.*;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserAllergyRepository;
@@ -70,6 +72,9 @@ public abstract class AbstractIntegrationTest {
     @Autowired protected RecipeRepository recipeRepository;
     @Autowired protected RecipeRecommendationRepository recipeRecommendationRepository;
 
+    @Autowired
+    private SavedRecipeRepository savedRecipeRepository;
+
 
 
     protected User createTestUser(String name, String email, String rawPassword) {
@@ -104,5 +109,9 @@ public abstract class AbstractIntegrationTest {
     protected RecipeRecommendation setupRecipeRecommendationByFridge(User user, Recipe recipe) {
         RecipeRecommendation recommendation = new RecipeRecommendation(user.getFridge(), recipe, RecommendationType.PREFERENCE_BASED);
         return recipeRecommendationRepository.save(recommendation);
+    }
+
+    protected void setupSavedRecipe(User user, Recipe recipe) {
+        savedRecipeRepository.save(new SavedRecipe(user, recipe));
     }
 }
