@@ -23,7 +23,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/products?tab=NEW - should return products in NEW tab")
     void getProductsByTab_shouldReturnNewTabProducts() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 
@@ -43,7 +43,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/products?tab=BEST - should return products in BEST tab")
     void getProductsByTab_shouldReturnBestTabProducts() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@example.com", "securepw");
+        User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(2L).orElseThrow();
 
