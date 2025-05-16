@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 @Profile("!test")
 public class DataInitializer implements ApplicationRunner {
