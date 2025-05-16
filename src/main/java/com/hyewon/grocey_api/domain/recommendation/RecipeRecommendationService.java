@@ -36,13 +36,19 @@ public class RecipeRecommendationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        List<RecipeRecommendation> recommendations = recipeRecommendationRepository.findByUser(user);
-
-        if (recommendations.isEmpty()) {
+        List<Long> recipeIds = fetchPreferenceBasedRecipeIds(userId); // AI 호출
+        if (recipeIds.isEmpty()) {
             throw RecommendationNotFoundException.forUserRecipe(userId);
         }
 
-        return recommendations.stream()
+        List<Recipe> recipes = recipeRepository.findAllById(recipeIds);
+
+        List<RecipeRecommendation> saved = recipes.stream()
+                .map(recipe -> new RecipeRecommendation(user, recipe, RecommendationType.PREFERENCE_BASED))
+                .toList();
+        recipeRecommendationRepository.saveAll(saved);
+
+        return saved.stream()
                 .map(RecipeRecommendationDto::new)
                 .toList();
 
@@ -77,6 +83,13 @@ public class RecipeRecommendationService {
     private List<Long> fetchFridgeBasedRecipeIds(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:5001/api/recommend/recipes/fridge/" + userId;
+        ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
+        return response.getBody();
+    }
+
+    private List<Long> fetchPreferenceBasedRecipeIds(Long userId) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:5001/api/recommend/recipes/preference/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody();
     }
