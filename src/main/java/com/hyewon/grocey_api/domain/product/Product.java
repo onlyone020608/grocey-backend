@@ -30,4 +30,8 @@ public class Product extends BaseTimeEntity {
         this.productName = productName;
         this.brandName = brandName;
     }
+
+    public void assignIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
 }
