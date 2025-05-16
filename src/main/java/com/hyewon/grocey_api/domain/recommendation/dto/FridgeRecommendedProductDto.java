@@ -10,7 +10,7 @@ public class FridgeRecommendedProductDto {
     private final Long productId;
     private final String productName;
     private final String brand;
-    private final int price;
+    private final double price;
     private final String imageUrl;
 
     public FridgeRecommendedProductDto(FridgeRecommendedProduct recommendedProduct) {

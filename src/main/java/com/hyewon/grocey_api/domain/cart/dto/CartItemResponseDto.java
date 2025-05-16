@@ -8,10 +8,10 @@ public class CartItemResponseDto {
     private Long cartItemId;
     private String productName;
     private String imageUrl;
-    private int price;
+    private double price;
     private int quantity;
 
-    public CartItemResponseDto(Long cartItemId, Long productId, String productName, String imageUrl, int price, int quantity) {
+    public CartItemResponseDto(Long cartItemId, Long productId, String productName, String imageUrl, double price, int quantity) {
         this.cartItemId = cartItemId;
         this.productId = productId;
         this.productName = productName;

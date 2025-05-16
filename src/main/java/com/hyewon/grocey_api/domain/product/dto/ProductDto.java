@@ -8,7 +8,7 @@ public class ProductDto {
     private Long productId;
     private String brandName;
     private String productName;
-    private int price;
+    private double price;
     private String imageUrl;
 
     public ProductDto(Product product) {

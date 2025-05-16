@@ -8,7 +8,7 @@ public class OrderItemDto {
     private final Long orderItemId;
     private final String productName;
     private final int quantity;
-    private final int price;
+    private final double price;
 
     public OrderItemDto(OrderItem item) {
         this.orderItemId = item.getId();
