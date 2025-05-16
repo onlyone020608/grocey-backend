@@ -17,14 +17,14 @@ public class Product extends BaseTimeEntity {
 
     private String brandName;
     private String productName;
-    private int price;
+    private double price;
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    public Product(String productName, String brandName, int price, String imageUrl) {
+    public Product(String productName, String brandName, double price, String imageUrl) {
         this.imageUrl = imageUrl;
         this.price = price;
         this.productName = productName;
