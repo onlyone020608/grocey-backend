@@ -57,7 +57,7 @@ public class RecipeRecommendationService {
                 .orElseThrow(() -> new UserNotFoundException(fridgeId))
                 .getId();
 
-        List<Long> recipeIds = fetchRecommendedRecipeIds(userId);
+        List<Long> recipeIds = fetchFridgeBasedRecipeIds(userId);
         if (recipeIds.isEmpty()) {
             throw RecommendationNotFoundException.forFridgeRecipe(fridgeId);
         }
@@ -74,7 +74,7 @@ public class RecipeRecommendationService {
                 .toList();
     }
 
-    private List<Long> fetchRecommendedRecipeIds(Long userId) {
+    private List<Long> fetchFridgeBasedRecipeIds(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:5001/api/recommend/recipes/fridge/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
