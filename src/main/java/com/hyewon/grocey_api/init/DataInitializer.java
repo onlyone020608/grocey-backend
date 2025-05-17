@@ -26,7 +26,6 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void loadIngredients() throws Exception{
-        if (ingredientRepository.count() > 0) return;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 new ClassPathResource("data/ingredient.csv").getInputStream(), StandardCharsets.UTF_8))) {
@@ -38,6 +37,7 @@ public class DataInitializer implements CommandLineRunner {
                 String[] tokens = line.split(",");
                 String name = tokens[0].trim();
                 String imageUrl = tokens.length > 1 ? tokens[1].trim() : null;
+                if (ingredientRepository.existsByIngredientName(name)) continue;
 
                 Ingredient ingredient = new Ingredient(name, imageUrl);
                 ingredientRepository.save(ingredient);
@@ -63,7 +63,7 @@ public class DataInitializer implements CommandLineRunner {
                 String imageUrl = tokens.length > 3 ? tokens[3].trim() : null;
                 Long ingredientId = tokens.length > 4 ? Long.parseLong(tokens[4].trim()) : null;
 
-                Product product = new Product(brandName, productName, price, imageUrl);
+                Product product = new Product(productName, brandName, price, imageUrl);
                 if (ingredientId != null) {
                     Ingredient ingredient = ingredientRepository.findById(ingredientId)
                             .orElseThrow(() -> new RuntimeException("Ingredient not found with ID: " + ingredientId));
