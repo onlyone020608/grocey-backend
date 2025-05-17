@@ -2,8 +2,7 @@ package com.hyewon.grocey_api.init;
 
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
-import com.hyewon.grocey_api.domain.product.Product;
-import com.hyewon.grocey_api.domain.product.ProductRepository;
+import com.hyewon.grocey_api.domain.product.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -18,10 +17,12 @@ import java.nio.charset.StandardCharsets;
 public class DataInitializer implements CommandLineRunner {
     private final IngredientRepository ingredientRepository;
     private final ProductRepository productRepository;
+    private final ProductTabRepository productTabRepository;
     @Override
     public void run(String... args) throws Exception {
         loadIngredients();
         loadProducts();
+        loadProductTabs();
     }
 
     private void loadIngredients() throws Exception{
@@ -72,4 +73,30 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
     }
+
+    private void loadProductTabs() throws Exception {
+        if (productTabRepository.count() > 0) return;
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                new ClassPathResource("data/product_tab.csv").getInputStream(), StandardCharsets.UTF_8))) {
+
+            String line;
+            br.readLine(); // skip header
+
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(",");
+                Long productId = Long.parseLong(tokens[0].trim());
+                TabType tabType = TabType.valueOf(tokens[1].trim().toUpperCase());
+
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new RuntimeException("Product not found: id=" + productId));
+
+                ProductTab productTab = new ProductTab(product, tabType);
+                productTabRepository.save(productTab);
+                System.out.println("✅ ProductTab saved: " + product.getProductName() + " - " + tabType);
+            }
+        }
+    }
+
+
 }
