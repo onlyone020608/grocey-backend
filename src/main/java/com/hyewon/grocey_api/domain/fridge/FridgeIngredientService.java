@@ -32,6 +32,7 @@ public class FridgeIngredientService {
 
         return ingredients.stream()
                 .map(fi -> new FridgeIngredientResponseDto(
+                        fi.getIngredient().getId(),
                         fi.getIngredient().getIngredientName(),
                         fi.getIngredient().getImageUrl()
                 ))
