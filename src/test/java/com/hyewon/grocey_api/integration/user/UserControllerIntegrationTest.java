@@ -167,6 +167,27 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @DisplayName("PATCH /api/users/me/vegan - should update isVegan status")
+    void updateVegan_shouldUpdateUserIsVeganStatus() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary", "password123");
+        String token = generateTokenFor(user);
+
+        VeganUpdateRequest request = new VeganUpdateRequest(true);
+
+        // when & then
+        mockMvc.perform(patch("/api/users/me/vegan")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
+        User updatedUser = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(updatedUser.getIsVegan()).isTrue();
+    }
+
+
 
 
 
