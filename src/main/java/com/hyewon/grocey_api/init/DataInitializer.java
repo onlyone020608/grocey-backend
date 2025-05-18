@@ -3,8 +3,7 @@ package com.hyewon.grocey_api.init;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.product.*;
-import com.hyewon.grocey_api.domain.user.Allergy;
-import com.hyewon.grocey_api.domain.user.AllergyRepository;
+import com.hyewon.grocey_api.domain.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -21,12 +20,18 @@ public class DataInitializer implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final ProductTabRepository productTabRepository;
     private final AllergyRepository allergyRepository;
+    private final PreferenceIngredientRepository preferenceIngredientRepository;
+    private final FoodPreferenceRepository foodPreferenceRepository;
+
     @Override
     public void run(String... args) throws Exception {
         loadIngredients();
         loadProducts();
         loadProductTabs();
         loadAllergies();
+        loadFoodPreferences();
+        loadPreferenceIngredients();
+
     }
 
     private void loadIngredients() throws Exception{
@@ -119,6 +124,47 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
     }
+
+    private void loadFoodPreferences() throws Exception {
+        if (foodPreferenceRepository.count() > 0) return;
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                new ClassPathResource("data/food_preference.csv").getInputStream(), StandardCharsets.UTF_8))) {
+
+            String line;
+            br.readLine(); // skip header
+
+            while ((line = br.readLine()) != null) {
+                String name = line.trim();
+                if (foodPreferenceRepository.existsByName(name)) continue;
+
+                FoodPreference foodPreference = new FoodPreference(name);
+                foodPreferenceRepository.save(foodPreference);
+            }
+        }
+    }
+
+    private void loadPreferenceIngredients() throws Exception {
+        if (preferenceIngredientRepository.count() > 0) return;
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                new ClassPathResource("data/preference_ingredient.csv").getInputStream(), StandardCharsets.UTF_8))) {
+
+            String line;
+            br.readLine(); // skip header
+
+            while ((line = br.readLine()) != null) {
+                String name = line.trim();
+                if (preferenceIngredientRepository.existsByName(name)) continue;
+
+                PreferenceIngredient ingredient = new PreferenceIngredient(name);
+                preferenceIngredientRepository.save(ingredient);
+            }
+        }
+    }
+
+
+
 
 
 
