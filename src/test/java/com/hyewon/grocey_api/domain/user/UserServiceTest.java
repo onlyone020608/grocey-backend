@@ -336,6 +336,35 @@ class UserServiceTest {
                 .hasMessageContaining("disliked ingredient");
     }
 
+    @Test
+    @DisplayName("updateVeganStatus - updates isVegan flag correctly")
+    void updateVeganStatus_shouldUpdateIsVegan() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        VeganUpdateRequest request = new VeganUpdateRequest(true);
+
+        // when
+        userService.updateVeganStatus(1L, request);
+
+        // then
+        assertThat(user.getIsVegan()).isTrue();
+    }
+
+    @Test
+    @DisplayName("updateVeganStatus - throws exception if user not found")
+    void updateVeganStatus_shouldThrowIfUserNotFound() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+        VeganUpdateRequest request = new VeganUpdateRequest(true);
+
+        // when & then
+        assertThatThrownBy(() -> userService.updateVeganStatus(1L, request))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+
 
 
 
