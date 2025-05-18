@@ -3,6 +3,8 @@ package com.hyewon.grocey_api.init;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.product.*;
+import com.hyewon.grocey_api.domain.user.Allergy;
+import com.hyewon.grocey_api.domain.user.AllergyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -18,11 +20,13 @@ public class DataInitializer implements CommandLineRunner {
     private final IngredientRepository ingredientRepository;
     private final ProductRepository productRepository;
     private final ProductTabRepository productTabRepository;
+    private final AllergyRepository allergyRepository;
     @Override
     public void run(String... args) throws Exception {
         loadIngredients();
         loadProducts();
         loadProductTabs();
+        loadAllergies();
     }
 
     private void loadIngredients() throws Exception{
@@ -93,10 +97,29 @@ public class DataInitializer implements CommandLineRunner {
 
                 ProductTab productTab = new ProductTab(product, tabType);
                 productTabRepository.save(productTab);
-                System.out.println("✅ ProductTab saved: " + product.getProductName() + " - " + tabType);
             }
         }
     }
+    private void loadAllergies() throws Exception {
+        if (allergyRepository.count() > 0) return;
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                new ClassPathResource("data/allergy.csv").getInputStream(), StandardCharsets.UTF_8))) {
+
+            String line;
+            br.readLine(); // skip header
+
+            while ((line = br.readLine()) != null) {
+                String name = line.trim();
+
+                if (allergyRepository.existsByAllergyName(name)) continue;
+
+                Allergy allergy = new Allergy(name);
+                allergyRepository.save(allergy);
+            }
+        }
+    }
+
 
 
 }
