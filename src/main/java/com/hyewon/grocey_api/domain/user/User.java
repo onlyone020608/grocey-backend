@@ -84,6 +84,9 @@ public class User extends BaseTimeEntity {
     public void updateAgeGroup(AgeGroup ageGroup) {
         this.ageGroup = ageGroup;
     }
+    public void updateVeganStatus(boolean isVegan) {
+        this.isVegan = isVegan;
+    }
 
 
 }

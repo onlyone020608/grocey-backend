@@ -56,6 +56,15 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/me/vegan")
+    public ResponseEntity<Void> updateVegan(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody VeganUpdateRequest request) {
+        userService.updateVeganStatus(userDetails.getId(), request);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 
 

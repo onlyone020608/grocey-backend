@@ -127,4 +127,12 @@ public class UserService {
         }
     }
 
+    public void updateVeganStatus(Long userId, VeganUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        user.updateVeganStatus(request.isVegan());
+    }
+
+
 }
