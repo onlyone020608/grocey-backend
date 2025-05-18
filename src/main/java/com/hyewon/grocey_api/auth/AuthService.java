@@ -28,6 +28,7 @@ public class AuthService {
 
 
 
+
     public User signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
@@ -46,12 +47,26 @@ public class AuthService {
         return user;
     }
 
+    public TokenResponse signupAndGenerateTokens(SignupRequest request) {
+        User user = signup(request);
+
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+
+        refreshTokenStore.put(user.getId(), refreshToken);
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
     public TokenResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials");
+//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+//            throw new IllegalArgumentException("Invalid credentials");
+//        }
+
+        if (!user.getPassword().equals(request.getPassword())) {
+           throw new IllegalArgumentException("Invalid credentials");
         }
 
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId());

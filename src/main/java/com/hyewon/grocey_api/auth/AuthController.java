@@ -21,9 +21,9 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
-        authService.signup(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<TokenResponse> signup(@RequestBody SignupRequest request) {
+        TokenResponse tokens = authService.signupAndGenerateTokens(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tokens);
     }
 
     @PostMapping("/login")
