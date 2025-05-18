@@ -5,7 +5,11 @@ import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.fridge.Fridge;
+import com.hyewon.grocey_api.domain.fridge.FridgeIngredient;
+import com.hyewon.grocey_api.domain.fridge.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
+import com.hyewon.grocey_api.domain.ingredient.Ingredient;
+import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
@@ -14,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -22,6 +28,8 @@ import java.util.Map;
 public class AuthService {
     private final UserRepository userRepository;
     private final FridgeRepository fridgeRepository;
+    private final IngredientRepository ingredientRepository;
+    private final FridgeIngredientRepository fridgeIngredientRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final Map<Long, String> refreshTokenStore = new HashMap<>();
@@ -43,6 +51,20 @@ public class AuthService {
         User user = new User(request.getName(), request.getEmail(), encodedPassword);
         user.assignFridge(fridge); // 연관관계 설정
 
+
+        for (long ingredientId : List.of(1L, 2L, 3L)) {
+            Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                    .orElseThrow(() -> new IllegalArgumentException("Ingredient not found: " + ingredientId));
+
+            FridgeIngredient fi = new FridgeIngredient(
+                    fridge,
+                    ingredient,
+                    false,
+                    2, // 수량
+                    LocalDate.now().plusDays(7)
+            );
+            fridgeIngredientRepository.save(fi);
+        }
         userRepository.save(user);
         return user;
     }
