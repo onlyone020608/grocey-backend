@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,6 +108,70 @@ class CartServiceTest {
     }
 
     @Test
+    @DisplayName("deleteCartItems - removes multiple items when user owns them")
+    void deleteCartItems_shouldRemoveItemsIfUserOwnsThem() {
+        // given
+        Long userId = 1L;
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        Cart cart = new Cart(user, user.getFridge());
+        ReflectionTestUtils.setField(cart, "id", 777L);
+
+        CartItem item1 = new CartItem(product, 1);
+        CartItem item2 = new CartItem(product, 2);
+        cart.addCartItem(item1);
+        cart.addCartItem(item2);
+
+        ReflectionTestUtils.setField(item1, "id", 101L);
+        ReflectionTestUtils.setField(item2, "id", 102L);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+        given(cartItemRepository.findAllById(List.of(101L, 102L))).willReturn(List.of(item1, item2));
+
+        // when
+        cartService.deleteCartItems(userId, List.of(101L, 102L));
+
+        // then
+        assertThat(cart.getCartItems()).doesNotContain(item1, item2);
+        verify(cartItemRepository).deleteAll(List.of(item1, item2));
+    }
+
+    @Test
+    @DisplayName("deleteCartItems - throws AccessDeniedException when user does not own one of the items")
+    void deleteCartItems_shouldThrowIfItemNotBelongsToUserCart() {
+        // given
+        Long attackerId = 999L;
+        Long ownerId = 1L;
+
+        User attacker = user;
+        ReflectionTestUtils.setField(attacker, "id", attackerId);
+
+        User owner = new User("owner", "owner@email.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
+        ReflectionTestUtils.setField(owner, "id", ownerId);
+
+        Cart attackerCart = new Cart(attacker, attacker.getFridge());
+        Cart ownerCart = new Cart(owner, owner.getFridge());
+        ReflectionTestUtils.setField(attackerCart, "id", 888L);
+        ReflectionTestUtils.setField(ownerCart, "id", 999L);
+
+        CartItem item = new CartItem(product, 1);
+        ReflectionTestUtils.setField(item, "id", 200L);
+        ownerCart.addCartItem(item);
+
+        given(userRepository.findById(attackerId)).willReturn(Optional.of(attacker));
+        given(cartRepository.findByUser(attacker)).willReturn(Optional.of(attackerCart));
+        given(cartItemRepository.findAllById(List.of(200L))).willReturn(List.of(item));
+
+        // when & then
+        assertThrows(AccessDeniedException.class, () -> {
+            cartService.deleteCartItems(attackerId, List.of(200L));
+        });
+    }
+
+
+
+    @Test
     @DisplayName("updateCartItemQuantity - updates quantity successfully when cart item belongs to user")
     void updateCartItemQuantity_shouldUpdateQuantityIfUserOwnsItem() {
         // given
@@ -157,58 +222,7 @@ class CartServiceTest {
         });
     }
 
-    @Test
-    @DisplayName("deleteCartItem - removes item when user owns the cart item")
-    void deleteCartItem_shouldRemoveItemIfUserOwnsIt() {
-        // given
-        Long userId = 1L;
-        Long cartItemId = 10L;
 
-        ReflectionTestUtils.setField(user, "id", userId);
-        Cart cart = new Cart(user, user.getFridge());
-
-        CartItem cartItem = new CartItem(product, 2);
-        cart.addCartItem(cartItem);
-
-        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
-
-        given(userRepository.findById(userId)).willReturn(Optional.of(user));
-        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
-        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
-
-        // when
-        cartService.deleteCartItem(userId, cartItemId);
-
-        // then
-        assertThat(cart.getCartItems()).doesNotContain(cartItem);
-        verify(cartItemRepository).delete(cartItem);
-    }
-
-    @Test
-    @DisplayName("deleteCartItem - throws AccessDeniedException when user does not own the cart item")
-    void deleteCartItem_shouldThrowIfUserDoesNotOwnItem() {
-        // given
-        Long attackerId = 999L;
-        Long ownerId = 1L;
-        Long cartItemId = 10L;
-
-        User owner = new User("owner", "owner@email.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
-        ReflectionTestUtils.setField(owner, "id", ownerId);
-        Cart cart = new Cart(owner, owner.getFridge());
-
-        CartItem cartItem = new CartItem(product, 2);
-        cart.addCartItem(cartItem);
-        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
-
-        given(userRepository.findById(attackerId)).willReturn(Optional.of(user));
-        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart)); // user = attacker
-        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
-
-        // when & then
-        assertThrows(AccessDeniedException.class, () -> {
-            cartService.deleteCartItem(attackerId, cartItemId);
-        });
-    }
 
     @Test
     @DisplayName("getCart - returns cart and its items for the user")
