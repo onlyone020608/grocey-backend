@@ -37,4 +37,12 @@ public class Recipe {
         this.cookingTime = cookingTime;
         this.servings = servings;
     }
+
+    public Recipe(String recipeName, String description, Integer cookingTime, Integer servings, String imageUrl) {
+        this.recipeName = recipeName;
+        this.description = description;
+        this.cookingTime = cookingTime;
+        this.servings = servings;
+        this.imageUrl = imageUrl;
+    }
 }
