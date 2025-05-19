@@ -92,21 +92,22 @@ public class CartService {
         cartItem.updateQuantity(request.getQuantity());
     }
 
-    public void deleteCartItem(Long userId, Long cartItemId) {
+    public void deleteCartItems(Long userId, List<Long> cartItemIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         Cart cart = cartRepository.findByUser(user)
-                .orElseThrow(() -> new CartNotFoundException(user.getId()));
+                .orElseThrow(() -> new CartNotFoundException(userId));
 
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new CartItemNotFoundException(cartItemId));
+        List<CartItem> itemsToDelete = cartItemRepository.findAllById(cartItemIds);
 
-        if (!cartItem.getCart().getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("You can only delete items from your own cart.");
+        for (CartItem cartItem : itemsToDelete) {
+            if (!cartItem.getCart().getId().equals(cart.getId())) {
+                throw new AccessDeniedException("Cannot delete cart item not belonging to this user.");
+            }
+            cart.removeCartItem(cartItem);
         }
 
-        cart.removeCartItem(cartItem);
-        cartItemRepository.delete(cartItem);
+        cartItemRepository.deleteAll(itemsToDelete);
     }
 }
