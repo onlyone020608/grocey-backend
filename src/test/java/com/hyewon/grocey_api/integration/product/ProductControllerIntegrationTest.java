@@ -58,4 +58,24 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[0].price").value(product.getPrice()))
                 .andExpect(jsonPath("$[0].imageUrl").value(product.getImageUrl()));
     }
+
+    @Test
+    @DisplayName("GET /api/products/{productId} - should return product details by ID")
+    void getProductById_shouldReturnProductDetail() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary", "securepw");
+        String token = generateTokenFor(user);
+        Product product = productRepository.findById(1L).orElseThrow();
+
+        // when & then
+        mockMvc.perform(get("/api/products/{productId}", product.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productId").value(product.getId()))
+                .andExpect(jsonPath("$.brandName").value(product.getBrandName()))
+                .andExpect(jsonPath("$.productName").value(product.getProductName()))
+                .andExpect(jsonPath("$.price").value(product.getPrice()))
+                .andExpect(jsonPath("$.imageUrl").value(product.getImageUrl()));
+    }
+
 }
