@@ -32,6 +32,7 @@ public class RecipeService {
                 recipe.getDescription(),
                 recipe.getCookingTime(),
                 recipe.getServings(),
+                recipe.getImageUrl(),
                 ingredients
         );
     }

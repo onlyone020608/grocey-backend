@@ -14,13 +14,15 @@ public class RecipeDetailResponseDto {
     private Integer cookingTime;
     private Integer servings;
     private List<RecipeIngredientDto> ingredients;
+    private String recipeImageUrl;
 
     public RecipeDetailResponseDto(String recipeName, String description, Integer cookingTime,
-                                   Integer servings, List<RecipeIngredientDto> ingredients) {
+                                   Integer servings, String recipeImageUrl,  List<RecipeIngredientDto> ingredients) {
         this.recipeName = recipeName;
         this.descriptionSteps = parseDescription(description);
         this.cookingTime = cookingTime;
         this.servings = servings;
+        this.recipeImageUrl = recipeImageUrl;
         this.ingredients = ingredients;
     }
 
