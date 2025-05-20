@@ -18,6 +18,8 @@ public class FridgeRecommendationController {
 
     @GetMapping
     public FridgeRecommendationDto getFridgeRecommendation(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long fridgeId = userDetails.getUser().getFridge().getId();
+        fridgeRecommendationService.simulateFridgeChange(fridgeId);
         return fridgeRecommendationService.getLatestRecommendation(userDetails.getUser().getFridge().getId());
     }
 }
