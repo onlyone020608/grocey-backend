@@ -11,6 +11,8 @@ import com.hyewon.grocey_api.domain.user.Gender;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.global.exception.CartNotFoundException;
+import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
+import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -266,6 +269,59 @@ class CartServiceTest {
             cartService.getCart(userId);
         });
     }
+
+    @Test
+    @DisplayName("addCartItemsInBatch - adds multiple items, creating cart if needed")
+    void addCartItemsInBatch_shouldAddAllItemsCorrectly() {
+        // given
+        AddCartItemRequest request1 = new AddCartItemRequest(1L, 2);
+        AddCartItemRequest request2 = new AddCartItemRequest(2L, 1);
+
+        Product product1 = new Product("Milk", "BrandA", 1000, "image1");
+        Product product2 = new Product("Bread", "BrandB", 2000, "image2");
+        ReflectionTestUtils.setField(product1, "id", 1L);
+        ReflectionTestUtils.setField(product2, "id", 2L);
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
+        given(productRepository.findById(2L)).willReturn(Optional.of(product2));
+        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
+        given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+        // when
+        cartService.addCartItemsInBatch(1L, List.of(request1, request2));
+
+        // then
+        verify(cartItemRepository).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("addCartItemsInBatch - throws if user not found")
+    void addCartItemsInBatch_shouldThrowIfUserNotFound() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThrows(UserNotFoundException.class, () -> {
+            cartService.addCartItemsInBatch(1L, List.of());
+        });
+    }
+
+    @Test
+    @DisplayName("addCartItemsInBatch - throws if any product not found")
+    void addCartItemsInBatch_shouldThrowIfProductNotFound() {
+        // given
+        AddCartItemRequest request = new AddCartItemRequest(999L, 1);
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
+        given(productRepository.findById(999L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThrows(ProductNotFoundException.class, () -> {
+            cartService.addCartItemsInBatch(1L, List.of(request));
+        });
+    }
+
 
 
 
