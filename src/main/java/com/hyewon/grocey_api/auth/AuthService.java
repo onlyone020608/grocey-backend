@@ -4,10 +4,7 @@ import com.hyewon.grocey_api.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
-import com.hyewon.grocey_api.domain.fridge.Fridge;
-import com.hyewon.grocey_api.domain.fridge.FridgeIngredient;
-import com.hyewon.grocey_api.domain.fridge.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
+import com.hyewon.grocey_api.domain.fridge.*;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
 import com.hyewon.grocey_api.domain.user.User;
@@ -30,10 +27,10 @@ public class AuthService {
     private final FridgeRepository fridgeRepository;
     private final IngredientRepository ingredientRepository;
     private final FridgeIngredientRepository fridgeIngredientRepository;
+    private final FridgeSnapshotRepository fridgeSnapshotRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final Map<Long, String> refreshTokenStore = new HashMap<>();
-
 
 
 
@@ -46,7 +43,8 @@ public class AuthService {
         Fridge fridge = new Fridge(3.0, -18.0);
         fridgeRepository.save(fridge);
 
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+//        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword = request.getPassword();
 
         User user = new User(request.getName(), request.getEmail(), encodedPassword);
         user.assignFridge(fridge); // 연관관계 설정
@@ -64,6 +62,18 @@ public class AuthService {
                     LocalDate.now().plusDays(7)
             );
             fridgeIngredientRepository.save(fi);
+        }
+
+        List<FridgeIngredient> fridgeIngredients = fridgeIngredientRepository.findByFridgeId(fridge.getId());
+
+        for (FridgeIngredient fi : fridgeIngredients) {
+            FridgeSnapshot snapshot = new FridgeSnapshot(
+                    fridge,
+                    fi.getIngredient().getId(),
+                    fi.getIsFreezer(),
+                    fi.getQuantity()
+            );
+            fridgeSnapshotRepository.save(snapshot);
         }
         userRepository.save(user);
         return user;
