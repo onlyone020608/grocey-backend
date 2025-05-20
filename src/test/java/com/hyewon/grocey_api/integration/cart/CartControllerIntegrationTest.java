@@ -141,5 +141,32 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items").isEmpty());
     }
 
+    @Test
+    @DisplayName("POST /api/cart/items/batch - should add multiple items to cart")
+    void addCartItemsInBatch_shouldSucceed() throws Exception {
+        User user = createTestUser("Mary", "mary", "securepw");
+        String token = generateTokenFor(user);
+        Product product1 = productRepository.findById(1L).orElseThrow();
+        Product product2 = productRepository.findById(2L).orElseThrow();
+
+        List<AddCartItemRequest> requests = List.of(
+                new AddCartItemRequest(product1.getId(), 2),
+                new AddCartItemRequest(product2.getId(), 1)
+        );
+
+        mockMvc.perform(post("/api/cart/items/batch")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/cart")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[0].productId").value(product1.getId()))
+                .andExpect(jsonPath("$.items[1].productId").value(product2.getId()));
+    }
+
+
 
 }
