@@ -18,6 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -110,4 +111,36 @@ public class CartService {
 
         cartItemRepository.deleteAll(itemsToDelete);
     }
+
+    public void addCartItemsInBatch(Long userId, List<AddCartItemRequest> requests) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        Cart cart = cartRepository.findByUser(user)
+                .orElseGet(() -> cartRepository.save(new Cart(user, user.getFridge())));
+
+        List<CartItem> itemsToSave = new ArrayList<>();
+
+        for (AddCartItemRequest request : requests) {
+            Product product = productRepository.findById(request.getProductId())
+                    .orElseThrow(() -> new ProductNotFoundException(request.getProductId()));
+
+            Optional<CartItem> existingItemOpt = cart.getCartItems().stream()
+                    .filter(item -> item.getProduct().getId().equals(product.getId()))
+                    .findFirst();
+
+            if (existingItemOpt.isPresent()) {
+                CartItem existingItem = existingItemOpt.get();
+                existingItem.updateQuantity(existingItem.getQuantity() + request.getQuantity());
+            } else {
+                CartItem newItem = new CartItem(product, request.getQuantity());
+                cart.addCartItem(newItem);
+                itemsToSave.add(newItem);
+            }
+        }
+
+        cartItemRepository.saveAll(itemsToSave);
+    }
+
+
 }

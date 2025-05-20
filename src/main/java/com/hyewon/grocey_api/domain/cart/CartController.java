@@ -47,6 +47,16 @@ public class CartController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/items/batch")
+    public ResponseEntity<Void> addCartItemsInBatch(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody List<AddCartItemRequest> requests
+    ) {
+        cartService.addCartItemsInBatch(userDetails.getId(), requests);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
 
 
 }
