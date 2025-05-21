@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
@@ -39,6 +40,9 @@ class AuthServiceTest {
     private UserRepository userRepository;
     @Mock private FridgeRepository fridgeRepository;
     @Mock private JwtTokenProvider jwtTokenProvider;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private AuthService authService;
@@ -225,6 +229,66 @@ class AuthServiceTest {
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User not found");
     }
+
+    @Test
+    @DisplayName("changePassword - should succeed when current password matches")
+    void changePassword_shouldSucceed_whenPasswordMatches() {
+        // given
+        Long userId = 1L;
+        String currentPassword = "oldPass";
+        String newPassword = "newPass";
+        String encodedPassword = "encodedNewPass";
+
+        User user = new User("tester", "tester@email.com", "encodedOldPass");
+        ReflectionTestUtils.setField(user, "id", userId);
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(passwordEncoder.matches(currentPassword, "encodedOldPass")).willReturn(true);
+        given(passwordEncoder.encode(newPassword)).willReturn(encodedPassword);
+
+        // when
+        authService.changePassword(userId, currentPassword, newPassword);
+
+        // then
+        verify(userRepository).save(user);
+        assertThat(user.getPassword()).isEqualTo(encodedPassword);
+    }
+
+
+
+    @Test
+    @DisplayName("changePassword - throws exception when current password does not match")
+    void changePassword_shouldThrow_whenPasswordIncorrect() {
+        // given
+        Long userId = 1L;
+        User user = new User("tester", "tester@email.com", "encodedPass");
+
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(passwordEncoder.matches("wrongPass", "encodedPass")).willReturn(false);
+
+        // when & then
+        assertThatThrownBy(() -> authService.changePassword(userId, "wrongPass", "newPass"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Current password does not match");
+
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+
+    @Test
+    @DisplayName("changePassword - throws exception when user not found")
+    void changePassword_shouldThrow_whenUserNotFound() {
+        // given
+        Long userId = 42L;
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> authService.changePassword(userId, "irrelevant", "newPass"))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User not found");
+    }
+
+
 
 
 
