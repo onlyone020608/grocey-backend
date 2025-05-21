@@ -7,8 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,4 +47,25 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isCreated());
     }
+    @Test
+    @DisplayName("DELETE /api/users/me/recipes/{recipeId} - should delete saved recipe")
+    void deleteSavedRecipe_shouldSucceed() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@", "securepw");
+        String token = generateTokenFor(user);
+
+        Recipe recipe = recipeRepository.findById(1L).orElseThrow();
+        setupSavedRecipe(user, recipe);
+
+        // when & then
+        mockMvc.perform(delete("/api/users/me/recipes/" + recipe.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/users/me/recipes")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
 }
