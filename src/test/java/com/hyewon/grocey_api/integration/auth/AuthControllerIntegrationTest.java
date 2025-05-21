@@ -122,5 +122,73 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isNoContent());
     }
 
+    @Test
+    @DisplayName("PATCH /api/auth/password - should change password when current password is correct")
+    void changePassword_shouldSucceed_whenCurrentPasswordMatches() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary", "oldPassword123");
+
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "oldPassword123");
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+        String accessToken = tokens.getAccessToken();
+
+        // when & then
+        mockMvc.perform(patch("/api/auth/password")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                          "currentPassword": "oldPassword123",
+                          "newPassword": "newPassword456"
+                        }
+                    """))
+                .andExpect(status().isOk());
+
+        // verify login with new password
+        LoginRequest newLogin = new LoginRequest(user.getEmail(), "newPassword456");
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newLogin)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("PATCH /api/auth/password - should fail when current password is incorrect")
+    void changePassword_shouldFail_whenCurrentPasswordIncorrect() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary", "correctPassword");
+
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "correctPassword");
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+        String accessToken = tokens.getAccessToken();
+
+        // when & then
+        mockMvc.perform(patch("/api/auth/password")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                          "currentPassword": "wrongPassword",
+                          "newPassword": "newPassword456"
+                        }
+                    """))
+                .andExpect(status().isBadRequest());
+    }
+
+
+
+
 
 }
