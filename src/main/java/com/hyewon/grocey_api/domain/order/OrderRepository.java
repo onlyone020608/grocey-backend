@@ -10,6 +10,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findTop5ByUserOrderByCreatedAtDesc(User user);
     Page<Order> findByUser(User user, Pageable pageable);
+    void deleteByUser(User user);
 
 
 }

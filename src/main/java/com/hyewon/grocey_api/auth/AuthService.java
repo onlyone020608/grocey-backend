@@ -4,16 +4,20 @@ import com.hyewon.grocey_api.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.domain.cart.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.*;
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.IngredientRepository;
-import com.hyewon.grocey_api.domain.user.User;
-import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.domain.order.OrderRepository;
+import com.hyewon.grocey_api.domain.recipe.SavedRecipeRepository;
+import com.hyewon.grocey_api.domain.recommendation.RecipeRecommendationRepository;
+import com.hyewon.grocey_api.domain.user.*;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import com.hyewon.grocey_api.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -28,6 +32,14 @@ public class AuthService {
     private final IngredientRepository ingredientRepository;
     private final FridgeIngredientRepository fridgeIngredientRepository;
     private final FridgeSnapshotRepository fridgeSnapshotRepository;
+    private final UserAllergyRepository userAllergyRepository;
+    private final UserDislikedIngredientRepository  userDislikedIngredientRepository;
+    private final UserPreferredIngredientRepository  userPreferredIngredientRepository;
+    private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
+    private final UserFoodPreferenceRepository userFoodPreferenceRepository;
+    private final SavedRecipeRepository savedRecipeRepository;
+    private final RecipeRecommendationRepository recipeRecommendationRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final Map<Long, String> refreshTokenStore = new HashMap<>();
@@ -126,13 +138,28 @@ public class AuthService {
         refreshTokenStore.remove(userId);
     }
 
+    @Transactional
     public void withdraw(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException(userId);
-        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+
+        userAllergyRepository.deleteByUser(user);
+        userDislikedIngredientRepository.deleteByUser(user);
+        userFoodPreferenceRepository.deleteByUser(user);
+        userPreferredIngredientRepository.deleteByUser(user);
+
+
+        savedRecipeRepository.deleteByUser(user);
+        recipeRecommendationRepository.deleteByUser(user);
+
+
+        orderRepository.deleteByUser(user);
+        cartRepository.deleteByUser(user);
+
 
         refreshTokenStore.remove(userId);
-        userRepository.deleteById(userId);
+        userRepository.delete(user);
     }
 
     public void changePassword(Long userId, String currentPassword, String newPassword) {
