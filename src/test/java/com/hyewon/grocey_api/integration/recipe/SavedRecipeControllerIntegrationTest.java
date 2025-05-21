@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,5 +32,20 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
                 .andExpect(jsonPath("$[0].recipeId").value(recipe.getId()))
                 .andExpect(jsonPath("$[0].recipeName").value(recipe.getRecipeName()))
                 .andExpect(jsonPath("$[0].imageUrl").value(recipe.getImageUrl()));
+    }
+
+    @Test
+    @DisplayName("POST /api/users/me/recipes - should save recipe successfully")
+    void saveRecipe_shouldSucceed() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary@", "securepw");
+        String token = generateTokenFor(user);
+
+        Recipe recipe = recipeRepository.findById(1L).orElseThrow();
+
+        // when & then
+        mockMvc.perform(post("/api/users/me/recipes/" + recipe.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isCreated());
     }
 }
