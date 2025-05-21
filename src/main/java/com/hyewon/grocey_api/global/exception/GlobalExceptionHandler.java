@@ -20,7 +20,8 @@ public class GlobalExceptionHandler {
             InvalidRequestException.class,
             InvalidEnumValueException.class,
             RecipeNotFoundException.class,
-            DuplicateSavedRecipeException.class
+            DuplicateSavedRecipeException.class,
+            SavedRecipeNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleDomainExceptions(RuntimeException ex) {
         if (ex instanceof UserNotFoundException userEx) {
@@ -45,6 +46,8 @@ public class GlobalExceptionHandler {
             return buildResponse(recipeEx.getErrorCode());
         }  else if (ex instanceof DuplicateSavedRecipeException dupEx) {
             return buildResponse(dupEx.getErrorCode());
+        } else if (ex instanceof SavedRecipeNotFoundException savedEx) {
+            return buildResponse(savedEx.getErrorCode());
         }
 
         return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);

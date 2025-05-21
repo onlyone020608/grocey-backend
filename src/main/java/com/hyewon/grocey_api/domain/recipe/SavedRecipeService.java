@@ -5,6 +5,7 @@ import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
+import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,18 @@ public class SavedRecipeService {
 
         SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
         savedRecipeRepository.save(savedRecipe);
+    }
+
+    public void deleteRecipe(Long userId, Long recipeId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RecipeNotFoundException(recipeId));
+
+        SavedRecipe savedRecipe = savedRecipeRepository.findByUserAndRecipe(user, recipe)
+                .orElseThrow(() -> new SavedRecipeNotFoundException(userId, recipeId));
+
+        savedRecipeRepository.delete(savedRecipe);
     }
 }

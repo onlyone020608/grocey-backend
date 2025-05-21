@@ -30,4 +30,13 @@ public class SavedRecipeController {
         savedRecipeService.saveRecipe(userDetails.getId(), recipeId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/me/recipes/{recipeId}")
+    public ResponseEntity<Void> deleteSavedRecipe(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long recipeId) {
+        savedRecipeService.deleteRecipe(userDetails.getId(), recipeId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
