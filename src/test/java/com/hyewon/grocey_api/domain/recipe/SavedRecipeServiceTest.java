@@ -5,6 +5,7 @@ import com.hyewon.grocey_api.domain.user.AgeGroup;
 import com.hyewon.grocey_api.domain.user.Gender;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,13 +22,16 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SavedRecipeServiceTest {
     @Mock
     private SavedRecipeRepository savedRecipeRepository;
     @Mock private UserRepository userRepository;
+    @Mock private RecipeRepository recipeRepository;
     @InjectMocks
     private SavedRecipeService savedRecipeService;
 
@@ -72,5 +76,35 @@ class SavedRecipeServiceTest {
         assertThatThrownBy(() -> savedRecipeService.getSavedRecipes(1L))
                 .isInstanceOf(UserNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("saveRecipe - saves new recipe when not already saved")
+    void saveRecipe_shouldSaveRecipeIfNotExists() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
+        given(savedRecipeRepository.existsByUserAndRecipe(user, recipe)).willReturn(false);
+
+        // when
+        savedRecipeService.saveRecipe(1L, 10L);
+
+        // then
+        verify(savedRecipeRepository).save(any(SavedRecipe.class));
+    }
+
+    @Test
+    @DisplayName("saveRecipe - throws DuplicateSavedRecipeException when recipe already saved")
+    void saveRecipe_shouldThrowIfRecipeAlreadySaved() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
+        given(savedRecipeRepository.existsByUserAndRecipe(user, recipe)).willReturn(true);
+
+        // when & then
+        assertThatThrownBy(() -> savedRecipeService.saveRecipe(1L, 10L))
+                .isInstanceOf(DuplicateSavedRecipeException.class)
+                .hasMessageContaining("Recipe already saved");
+    }
+
 
 }
