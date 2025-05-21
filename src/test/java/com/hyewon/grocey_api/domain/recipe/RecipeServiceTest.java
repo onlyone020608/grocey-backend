@@ -2,6 +2,9 @@ package com.hyewon.grocey_api.domain.recipe;
 
 import com.hyewon.grocey_api.domain.ingredient.Ingredient;
 import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponseDto;
+import com.hyewon.grocey_api.domain.user.AgeGroup;
+import com.hyewon.grocey_api.domain.user.Gender;
+import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +28,8 @@ class RecipeServiceTest {
     @Mock
     private RecipeRepository recipeRepository;
     @Mock private RecipeIngredientRepository recipeIngredientRepository;
+
+    @Mock private SavedRecipeRepository savedRecipeRepository;
     @InjectMocks
     private RecipeService recipeService;
 
@@ -45,14 +50,18 @@ class RecipeServiceTest {
     @DisplayName("getRecipeDetail - returns detailed recipe with ingredients")
     void getRecipeDetail_shouldReturnDetail() {
         // given
+        User user = new User("tester", "email@test.com", "pw", AgeGroup.TWENTIES, Gender.FEMALE);
+        ReflectionTestUtils.setField(user, "id", 1L);
+
         Ingredient ingredient = new Ingredient("Kimchi", "url.com/kimchi");
         RecipeIngredient ri = new RecipeIngredient(recipe, ingredient, "1 cup");
 
         given(recipeRepository.findById(1L)).willReturn(Optional.of(recipe));
         given(recipeIngredientRepository.findByRecipeId(1L)).willReturn(List.of(ri));
+        given(savedRecipeRepository.existsByUserIdAndRecipeId(1L, 1L)).willReturn(true);
 
         // when
-        RecipeDetailResponseDto result = recipeService.getRecipeDetail(1L);
+        RecipeDetailResponseDto result = recipeService.getRecipeDetail(1L, 1L);
 
         // then
         assertThat(result.getRecipeName()).isEqualTo("Kimchi Fried Rice");
@@ -66,16 +75,18 @@ class RecipeServiceTest {
         assertThat(result.getIngredients()).hasSize(1);
         assertThat(result.getIngredients().get(0).getName()).isEqualTo("Kimchi");
         assertThat(result.getIngredients().get(0).getQuantity()).isEqualTo("1 cup");
+        assertThat(result.isSaved()).isTrue();
     }
 
     @Test
     @DisplayName("getRecipeDetail - throws RecipeNotFoundException when recipe not found")
     void getRecipeDetail_shouldThrowIfRecipeNotFound() {
         // given
+        Long userId = 1L;
         given(recipeRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> recipeService.getRecipeDetail(999L))
+        assertThatThrownBy(() -> recipeService.getRecipeDetail(999L, userId))
                 .isInstanceOf(RecipeNotFoundException.class);
     }
 
