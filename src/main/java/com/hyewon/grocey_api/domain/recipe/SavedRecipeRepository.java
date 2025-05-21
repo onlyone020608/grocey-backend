@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SavedRecipeRepository extends JpaRepository<SavedRecipe, Long> {
     List<SavedRecipe> findByUser(User user);
+    boolean existsByUserAndRecipe(User user, Recipe recipe);
 }

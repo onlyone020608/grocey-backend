@@ -16,7 +16,8 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "Order not found."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request."),
     INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "Invalid enum value provided."),
-    RECIPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Recipe not found.");
+    RECIPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Recipe not found."),
+    DUPLICATE_SAVED_RECIPE(HttpStatus.CONFLICT, "Recipe already saved.");
 
 
 
