@@ -30,6 +30,7 @@ public class RecipeControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.recipeName").value(recipe.getRecipeName()))
                 .andExpect(jsonPath("$.descriptionSteps[0]").exists())
                 .andExpect(jsonPath("$.cookingTime").value(recipe.getCookingTime()))
-                .andExpect(jsonPath("$.servings").value(recipe.getServings()));
+                .andExpect(jsonPath("$.servings").value(recipe.getServings()))
+                .andExpect(jsonPath("$.saved").value(false));
     }
 }
