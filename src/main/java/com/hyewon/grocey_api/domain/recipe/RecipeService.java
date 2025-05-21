@@ -15,17 +15,20 @@ import java.util.stream.Collectors;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final SavedRecipeRepository savedRecipeRepository;
 
-    public RecipeDetailResponseDto getRecipeDetail(Long id) {
-        Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RecipeNotFoundException(id));
+    public RecipeDetailResponseDto getRecipeDetail(Long recipeId, Long userId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RecipeNotFoundException(recipeId));
 
-        List<RecipeIngredientDto> ingredients = recipeIngredientRepository.findByRecipeId(id).stream()
+        List<RecipeIngredientDto> ingredients = recipeIngredientRepository.findByRecipeId(recipeId).stream()
                 .map(ri -> new RecipeIngredientDto(
                         ri.getIngredient().getIngredientName(),
                         ri.getQuantity()
                 ))
                 .collect(Collectors.toList());
+
+        boolean isSaved = savedRecipeRepository.existsByUserIdAndRecipeId(userId, recipeId);
 
         return new RecipeDetailResponseDto(
                 recipe.getRecipeName(),
@@ -33,7 +36,8 @@ public class RecipeService {
                 recipe.getCookingTime(),
                 recipe.getServings(),
                 recipe.getImageUrl(),
-                ingredients
+                ingredients,
+                isSaved
         );
     }
 
