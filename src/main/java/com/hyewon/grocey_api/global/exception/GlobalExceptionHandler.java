@@ -63,6 +63,11 @@ public class GlobalExceptionHandler {
         return buildResponse(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+        return buildResponse(ErrorCode.INVALID_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponse> buildResponse(ErrorCode errorCode) {
         return ResponseEntity.status(errorCode.getStatus())
                 .body(new ErrorResponse(errorCode));

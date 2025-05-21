@@ -1,9 +1,6 @@
 package com.hyewon.grocey_api.auth;
 
-import com.hyewon.grocey_api.auth.dto.LoginRequest;
-import com.hyewon.grocey_api.auth.dto.SignupRequest;
-import com.hyewon.grocey_api.auth.dto.TokenRefreshRequest;
-import com.hyewon.grocey_api.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.auth.dto.*;
 import com.hyewon.grocey_api.security.CustomUserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +45,15 @@ public class AuthController {
     public ResponseEntity<Void> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
         authService.withdraw(userDetails.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody ChangePasswordRequest request
+    ) {
+        authService.changePassword(userDetails.getId(), request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.ok().build();
     }
 
 }

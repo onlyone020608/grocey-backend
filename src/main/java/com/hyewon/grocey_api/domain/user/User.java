@@ -88,5 +88,9 @@ public class User extends BaseTimeEntity {
         this.isVegan = isVegan;
     }
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
 
 }

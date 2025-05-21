@@ -43,8 +43,7 @@ public class AuthService {
         Fridge fridge = new Fridge(3.0, -18.0);
         fridgeRepository.save(fridge);
 
-//        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        String encodedPassword = request.getPassword();
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = new User(request.getName(), request.getEmail(), encodedPassword);
         user.assignFridge(fridge); // 연관관계 설정
@@ -93,12 +92,8 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
 
-//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-//            throw new IllegalArgumentException("Invalid credentials");
-//        }
-
-        if (!user.getPassword().equals(request.getPassword())) {
-           throw new IllegalArgumentException("Invalid credentials");
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials");
         }
 
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
@@ -139,5 +134,19 @@ public class AuthService {
         refreshTokenStore.remove(userId);
         userRepository.deleteById(userId);
     }
+
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Current password does not match");
+        }
+
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        user.updatePassword(encodedNewPassword);
+        userRepository.save(user);
+    }
+
 
 }
