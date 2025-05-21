@@ -6,6 +6,7 @@ import com.hyewon.grocey_api.domain.user.Gender;
 import com.hyewon.grocey_api.domain.user.User;
 import com.hyewon.grocey_api.domain.user.UserRepository;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
+import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -105,6 +106,38 @@ class SavedRecipeServiceTest {
                 .isInstanceOf(DuplicateSavedRecipeException.class)
                 .hasMessageContaining("Recipe already saved");
     }
+
+    @Test
+    @DisplayName("deleteRecipe - deletes saved recipe if exists")
+    void deleteRecipe_shouldDeleteIfExists() {
+        // given
+        SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
+
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
+        given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.of(savedRecipe));
+
+        // when
+        savedRecipeService.deleteRecipe(1L, 10L);
+
+        // then
+        verify(savedRecipeRepository).delete(savedRecipe);
+    }
+
+    @Test
+    @DisplayName("deleteRecipe - throws SavedRecipeNotFoundException if recipe not saved")
+    void deleteRecipe_shouldThrowIfNotSaved() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
+        given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> savedRecipeService.deleteRecipe(1L, 10L))
+                .isInstanceOf(SavedRecipeNotFoundException.class)
+                .hasMessageContaining("Saved recipe not found");
+    }
+
 
 
 }
