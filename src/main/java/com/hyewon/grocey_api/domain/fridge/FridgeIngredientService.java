@@ -7,6 +7,7 @@ import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class FridgeIngredientService {
     private final FridgeIngredientRepository fridgeIngredientRepository;
     private final FridgeRepository fridgeRepository;
 
+    @Transactional(readOnly = true)
     public List<FridgeIngredientResponseDto> getIngredientsByFridge(Long fridgeId, Boolean isFreezer) {
         if (!fridgeRepository.existsById(fridgeId)) {
             throw new FridgeNotFoundException(fridgeId);
@@ -39,6 +41,7 @@ public class FridgeIngredientService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public FridgeIngredientDetailResponseDto getIngredientDetail(Long id) {
         FridgeIngredient fi = fridgeIngredientRepository.findById(id)
                 .orElseThrow(() -> new FridgeIngredientNotFoundException(id));

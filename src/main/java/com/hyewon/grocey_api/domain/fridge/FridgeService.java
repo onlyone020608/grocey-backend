@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponseDto;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class FridgeService {
     private final FridgeRepository fridgeRepository;
 
+    @Transactional(readOnly = true)
     public FridgeResponseDto getFridgeInfo(Long userId) {
         Fridge fridge = fridgeRepository.findById(userId)
                 .orElseThrow(() -> new FridgeNotFoundException(userId));
