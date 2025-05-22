@@ -46,6 +46,7 @@ public class AuthService {
 
 
 
+    @Transactional
     public User signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
@@ -90,6 +91,7 @@ public class AuthService {
         return user;
     }
 
+    @Transactional
     public TokenResponse signupAndGenerateTokens(SignupRequest request) {
         User user = signup(request);
 
@@ -100,6 +102,7 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    @Transactional
     public TokenResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
@@ -116,6 +119,7 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse refresh(TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
@@ -134,6 +138,7 @@ public class AuthService {
         return new TokenResponse(newAccessToken, refreshToken);
     }
 
+    @Transactional(readOnly = true)
     public void logout(Long userId) {
         refreshTokenStore.remove(userId);
     }
@@ -162,6 +167,7 @@ public class AuthService {
         userRepository.delete(user);
     }
 
+    @Transactional
     public void changePassword(Long userId, String currentPassword, String newPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
