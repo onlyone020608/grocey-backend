@@ -34,6 +34,7 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
 
+    @Transactional
     public CartResponseDto getCart(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -55,6 +56,7 @@ public class CartService {
         return new CartResponseDto(cart.getId(), items);
     }
 
+    @Transactional
     public void addCartItem(Long userId, AddCartItemRequest request){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -82,6 +84,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public void updateCartItemQuantity(Long userId, UpdateCartItemRequest request) {
         CartItem cartItem = cartItemRepository.findById(request.getCartItemId())
                 .orElseThrow(() -> new CartItemNotFoundException(request.getCartItemId()));
@@ -93,6 +96,7 @@ public class CartService {
         cartItem.updateQuantity(request.getQuantity());
     }
 
+    @Transactional
     public void deleteCartItems(Long userId, List<Long> cartItemIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -112,6 +116,7 @@ public class CartService {
         cartItemRepository.deleteAll(itemsToDelete);
     }
 
+    @Transactional
     public void addCartItemsInBatch(Long userId, List<AddCartItemRequest> requests) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
