@@ -4,14 +4,15 @@ spring:
   application:
     name: grocey-api
   datasource:
-    url: jdbc:mysql://localhost:3306/grocey?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: sk020608!
+    datasource:
+      url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update  # 개발 중엔 update / 배포 시엔 validate 또는 none
+      ddl-auto: update
       physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
@@ -22,15 +23,12 @@ spring:
     init:
       mode: never
 
-
-
-
-  # 필요 시 (서버 포트)
+#Server port
   server:
     port: 8080
 
 jwt:
   secret: 9mN2lN7fVh3xN4qB8CzAvx1fRJwGhX2zjF6nVtcKpRZc3e8T7zNxyG7Hd2LRgBqM
-  access-token-expiration-ms: 3600000      # 1시간
+  access-token-expiration-ms: 3600000      # 1hour
   refresh-token-expiration-ms: 1209600000
 
