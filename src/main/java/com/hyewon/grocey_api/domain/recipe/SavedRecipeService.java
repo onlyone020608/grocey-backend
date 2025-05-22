@@ -9,6 +9,7 @@ import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class SavedRecipeService {
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
 
+    @Transactional(readOnly = true)
     public List<SavedRecipeDto> getSavedRecipes(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -31,6 +33,7 @@ public class SavedRecipeService {
 
     }
 
+    @Transactional
     public void saveRecipe(Long userId, Long recipeId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -47,6 +50,7 @@ public class SavedRecipeService {
         savedRecipeRepository.save(savedRecipe);
     }
 
+    @Transactional
     public void deleteRecipe(Long userId, Long recipeId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));

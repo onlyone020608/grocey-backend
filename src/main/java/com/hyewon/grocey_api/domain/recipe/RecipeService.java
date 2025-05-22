@@ -6,6 +6,7 @@ import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final SavedRecipeRepository savedRecipeRepository;
 
+    @Transactional(readOnly = true)
     public RecipeDetailResponseDto getRecipeDetail(Long recipeId, Long userId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
