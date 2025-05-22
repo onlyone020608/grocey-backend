@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
+    @Transactional(readOnly = true)
     public  List<OrderSummaryDto> getRecentOrderSummaryByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -42,7 +44,7 @@ public class OrderService {
                 .toList();
 
     }
-
+    @Transactional(readOnly = true)
     public OrderDetailDto getOrderDetail(Long userId, Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
@@ -55,6 +57,7 @@ public class OrderService {
 
     }
 
+    @Transactional(readOnly = true)
     public Page<OrderSummaryDto> getAllOrders(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -63,6 +66,7 @@ public class OrderService {
                 .map(OrderSummaryDto::new);
     }
 
+    @Transactional
     public Long placeOrder(Long userId, OrderRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
