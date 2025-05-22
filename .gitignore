@@ -33,6 +33,7 @@ replay_pid*
 /.gradle/
 
 .env
+!gradle/wrapper/gradle-wrapper.jar
 
 
 
