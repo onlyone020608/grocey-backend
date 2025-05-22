@@ -22,18 +22,21 @@ public class UserService {
     private final FoodPreferenceRepository foodPreferenceRepository;
     private final PreferenceIngredientRepository preferenceIngredientRepository;
 
+    @Transactional(readOnly = true)
     public UserSummaryDto getUserSummary(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         return new UserSummaryDto(user);
     }
 
+    @Transactional(readOnly = true)
     public UserDetailDto getUserDetail(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         return new UserDetailDto(user);
     }
 
+    @Transactional
     public void updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -47,24 +50,25 @@ public class UserService {
         }
 
     }
-
+    @Transactional
     public void updateGender(Long userId, GenderUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         user.updateGender(request.toEnum());
     }
-
+    @Transactional
     public void updateAgeGroup(Long userId, AgeGroupUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         user.updateAgeGroup(request.toEnum());
     }
 
+    @Transactional
     public void updateUserAllergies(Long userId, UserAllergyUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        // 기존 알러지 삭제
+
         userAllergyRepository.deleteByUser(user);
 
         List<Long> allergyIds = request.getAllergyIds();
@@ -79,16 +83,17 @@ public class UserService {
         userAllergyRepository.saveAll(newUserAllergies);
     }
 
+    @Transactional
     public void updateUserPreferences(Long userId, PreferenceUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        // 1. 기존 데이터 삭제
+
         userFoodPreferenceRepository.deleteByUser(user);
         userPreferredIngredientRepository.deleteByUser(user);
         userDislikedIngredientRepository.deleteByUser(user);
 
-        // 2. 선호 음식
+
         if (request.getFoodPreferenceIds() != null) {
             List<FoodPreference> foods = foodPreferenceRepository.findAllById(request.getFoodPreferenceIds());
             if (foods.size() != request.getFoodPreferenceIds().size()) {
@@ -100,7 +105,7 @@ public class UserService {
             userFoodPreferenceRepository.saveAll(userFoodPreferences);
         }
 
-        // 3. 선호 식재료
+
         if (request.getPreferredIngredientIds() != null) {
             List<Long> preferredIds = request.getPreferredIngredientIds();
             List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(preferredIds);
@@ -113,7 +118,6 @@ public class UserService {
             userPreferredIngredientRepository.saveAll(preferredEntities);
         }
 
-        // 4. 비선호 식재료
         if (request.getDislikedIngredientIds() != null) {
             List<Long> dislikedIds = request.getDislikedIngredientIds();
             List<PreferenceIngredient> dislikedIngredients = preferenceIngredientRepository.findAllById(dislikedIds);
@@ -126,7 +130,7 @@ public class UserService {
             userDislikedIngredientRepository.saveAll(dislikedEntities);
         }
     }
-
+    @Transactional
     public void updateVeganStatus(Long userId, VeganUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
