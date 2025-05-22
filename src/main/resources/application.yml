@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: optional:env[.env]
   application:
     name: grocey-api
   datasource:
