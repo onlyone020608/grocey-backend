@@ -15,6 +15,7 @@ import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,6 +33,7 @@ public class RecipeRecommendationService {
     private final RecipeRepository recipeRepository;
 
 
+    @Transactional
     public List<RecipeRecommendationDto> getRecommendationsByUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -54,6 +56,7 @@ public class RecipeRecommendationService {
 
     }
 
+    @Transactional
     public List<RecipeRecommendationDto> getRecommendationsByFridge(Long fridgeId) {
         Fridge fridge = fridgeRepository.findById(fridgeId)
                 .orElseThrow(() -> new FridgeNotFoundException(fridgeId));
