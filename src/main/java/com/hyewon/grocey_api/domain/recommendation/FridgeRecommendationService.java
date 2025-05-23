@@ -62,7 +62,7 @@ public class FridgeRecommendationService {
 
     public List<Long> fetchRecommendedIngredientIds(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:5001/api/recommend/" + userId;
+        String url = "http://grocey-ai:5001/api/recommend/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody(); // [1, 2, 3]
     }

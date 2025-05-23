@@ -85,14 +85,14 @@ public class RecipeRecommendationService {
 
     private List<Long> fetchFridgeBasedRecipeIds(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:5001/api/recommend/recipes/fridge/" + userId;
+        String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody();
     }
 
     private List<Long> fetchPreferenceBasedRecipeIds(Long userId) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:5001/api/recommend/recipes/preference/" + userId;
+        String url = "http://grocey-ai:5001/api/recommend/recipes/preference/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody();
     }
