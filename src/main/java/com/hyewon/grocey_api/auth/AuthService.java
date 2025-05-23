@@ -76,6 +76,20 @@ public class AuthService {
             fridgeIngredientRepository.save(fi);
         }
 
+        for (long ingredientId : List.of(7L, 8L)) {
+            Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                    .orElseThrow(() -> new IllegalArgumentException("Ingredient not found: " + ingredientId));
+
+            FridgeIngredient fi = new FridgeIngredient(
+                    fridge,
+                    ingredient,
+                    true,
+                    2,
+                    LocalDate.now().plusDays(30)
+            );
+            fridgeIngredientRepository.save(fi);
+        }
+
         List<FridgeIngredient> fridgeIngredients = fridgeIngredientRepository.findByFridgeId(fridge.getId());
 
         for (FridgeIngredient fi : fridgeIngredients) {
