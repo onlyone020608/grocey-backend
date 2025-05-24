@@ -37,6 +37,9 @@ public class User extends BaseTimeEntity {
     private AgeGroup ageGroup;
 
     private Boolean isVegan = false;
+
+    private Boolean isProfileCompleted = false;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
@@ -90,6 +93,10 @@ public class User extends BaseTimeEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void completeProfile() {
+        this.isProfileCompleted = true;
     }
 
 
