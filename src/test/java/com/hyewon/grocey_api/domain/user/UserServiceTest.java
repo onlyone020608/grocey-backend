@@ -278,6 +278,7 @@ class UserServiceTest {
         verify(userFoodPreferenceRepository).saveAll(any());
         verify(userPreferredIngredientRepository).saveAll(any());
         verify(userDislikedIngredientRepository).saveAll(any());
+        assertThat(user.getIsProfileCompleted()).isTrue();
     }
 
     @Test
