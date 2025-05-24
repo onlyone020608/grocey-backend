@@ -189,6 +189,28 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(updatedUser.getIsVegan()).isTrue();
     }
 
+    @Test
+    @DisplayName("GET /api/users/me/status - should return profile completion status")
+    void getUserStatus_shouldReturnProfileCompletionStatus() throws Exception {
+        // given
+        User user = createTestUser("Mary", "mary", "password123");
+        String token = generateTokenFor(user);
+
+
+        User initial = userRepository.findById(user.getId()).orElseThrow();
+        assertThat(initial.getIsProfileCompleted()).isFalse();
+
+        // when
+        ResultActions result = mockMvc.perform(get("/api/users/me/status")
+                .header("Authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.profileCompleted").value(false));
+    }
+
+
 
 
 
