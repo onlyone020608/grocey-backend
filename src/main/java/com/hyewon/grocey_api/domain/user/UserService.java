@@ -129,6 +129,8 @@ public class UserService {
                     .toList();
             userDislikedIngredientRepository.saveAll(dislikedEntities);
         }
+
+        user.completeProfile();
     }
     @Transactional
     public void updateVeganStatus(Long userId, VeganUpdateRequest request) {
