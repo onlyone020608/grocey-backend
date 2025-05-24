@@ -140,5 +140,12 @@ public class UserService {
         user.updateVeganStatus(request.isVegan());
     }
 
+    @Transactional(readOnly = true)
+    public boolean checkProfileCompletion(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        return Boolean.TRUE.equals(user.getIsProfileCompleted());
+    }
+
 
 }

@@ -64,6 +64,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/me/status")
+    public ResponseEntity<UserStatusDto> getUserStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        boolean isCompleted = userService.checkProfileCompletion(userDetails.getId());
+        return ResponseEntity.ok(new UserStatusDto(isCompleted));
+    }
+
 
 
 
