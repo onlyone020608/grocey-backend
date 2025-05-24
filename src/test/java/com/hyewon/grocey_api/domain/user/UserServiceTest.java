@@ -365,6 +365,45 @@ class UserServiceTest {
                 .isInstanceOf(UserNotFoundException.class);
     }
 
+    @Test
+    @DisplayName("checkProfileCompletion - returns true if profile is completed")
+    void checkProfileCompletion_shouldReturnTrueIfCompleted() {
+        // given
+        user.completeProfile();
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        // when
+        boolean result = userService.checkProfileCompletion(1L);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("checkProfileCompletion - returns false if profile is not completed")
+    void checkProfileCompletion_shouldReturnFalseIfNotCompleted() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+
+        // when
+        boolean result = userService.checkProfileCompletion(1L);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    @DisplayName("checkProfileCompletion - throws exception if user not found")
+    void checkProfileCompletion_shouldThrowIfUserNotFound() {
+        // given
+        given(userRepository.findById(1L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> userService.checkProfileCompletion(1L))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
+
 
 
 
