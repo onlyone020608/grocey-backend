@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: grocey-api
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        show_sql: true
+  sql:
+    init:
+      mode: never
+
+#Server port
+  server:
+    port: 8080
+
+jwt:
+  secret: 9mN2lN7fVh3xN4qB8CzAvx1fRJwGhX2zjF6nVtcKpRZc3e8T7zNxyG7Hd2LRgBqM
+  access-token-expiration-ms: 3600000      # 1hour
+  refresh-token-expiration-ms: 1209600000
+
