@@ -21,7 +21,11 @@
 **Grocey** is an AI-powered smart grocery assistant that learns from users' fridge contents and consumption patterns to recommend optimal shopping lists.
 The system is designed under the assumption that real-time ingredient data is provided by a smart fridge (e.g., Samsung Bespoke).
 Using reinforcement learning, Grocey predicts the ideal purchase timing and suggests items that minimize waste and maximize utility.
+
 For implementation and testing, dummy data was used to simulate realistic scenarios.
+To simulate consumption behavior, a post-recommendation event randomly removes a subset of fridge items.  
+This mimics ingredient usage, allowing the reinforcement learning agent to observe state transitions and learn effective policies.
+
 ### 2. Problem Statement
 Traditional supervised learning methods require large volumes of labeled data, which is often impractical in real-world applications. In contrast, **reinforcement learning (RL)** can model user behavior with minimal data by learning through interaction and feedback.
 While RL has shown strong results in fields such as gaming and robotics, its application to **everyday decision-making scenarios**—like consumer shopping habits—has been limited. This project explores how RL can be applied to **optimize grocery shopping behavior** based on real-time fridge inventory data.
@@ -42,8 +46,14 @@ To build a personalized grocery recommendation engine, the project adopts a **De
 * Actor-Critic methods (e.g., PPO, A3C) are optimized for **continuous or event-driven environments**, such as robotic control or real-time navigation.
 * In this project, **state transitions are event-triggered and sparse** (e.g., ingredient addition/removal), and **the reward signal is relatively delayed**, making policy-based methods prone to instability.
 * The added complexity and tuning cost of Actor-Critic was not justified given the relatively straightforward state-action structure.
-  ⠀
-  In summary, DQN offers a **simple yet effective solution** for modeling sequential decision-making over discrete fridge states. It enables the system to **adapt over time** based on user behavior, without requiring a large labeled dataset or continuous feedback.
+
+**Reward Design:**
+To train the DQN, a reward is assigned based on whether the recommended ingredient was actually consumed.  
+This is tracked by comparing fridge snapshots before and after the recommendation.  
+If the item was used within a certain time window, a positive reward is given; otherwise, a penalty is applied to encourage more accurate predictions.
+
+
+In summary, DQN offers a **simple yet effective solution** for modeling sequential decision-making over discrete fridge states. It enables the system to **adapt over time** based on user behavior, without requiring a large labeled dataset or continuous feedback.
 ### 4. Tech Stack
 #### 🧠 AI & Machine Learning
 - **TensorFlow** – Deep Q-Network (DQN) model for reinforcement learning
