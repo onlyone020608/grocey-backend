@@ -12,7 +12,8 @@
   <a href="#5-key-features">Features</a> • 
   <a href="#6-testing-strategy">Testing</a> • 
   <a href="#7-live-demo">Demo</a> • 
-  <a href="#8-deployment">Deployment</a>
+  <a href="#8-deployment">Deployment</a> •
+<a href="#9-api-documentation">API Docs</a>
 </p>
 
 
@@ -152,3 +153,6 @@ The entire system is fully containerized and deployed using cloud infrastructure
 - Each service exposes appropriate ports and runs with resource-limited configuration (e.g., `--cpus="0.5"` for AI)
 - System designed to be reproducible and portable on any Docker-compatible host
 
+### 9. API Documentation
+Full API reference including endpoints, parameters, and example responses:  
+📄 [View API Docs on Notion](https://www.notion.so/Grocey-API-Docs-1ffdf2486c75803e8921d6669be6e5c0?pvs=4)
