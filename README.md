@@ -122,7 +122,7 @@ This project adopts a layered testing strategy to ensure code reliability and sy
 
 ### 7. Live Demo
 The service is fully deployed and publicly accessible at:  
-🔗 **https://grocey-demo.web.app**
+🔗 **http://grocey-frontend.web.app**
 
 All backend APIs (Spring Boot) and the AI recommendation engine (Flask + TensorFlow) are hosted on AWS EC2 with Docker.  
 The frontend (React Native Web) is deployed via Firebase Hosting.
