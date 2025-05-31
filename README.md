@@ -52,6 +52,21 @@ To train the DQN, a reward is assigned based on whether the recommended ingredie
 This is tracked by comparing fridge snapshots before and after the recommendation.  
 If the item was used within a certain time window, a positive reward is given; otherwise, a penalty is applied to encourage more accurate predictions.
 
+#### 📈 Training Progress
+
+To evaluate the learning performance of the DQN agent, we tracked the cumulative reward over episodes:
+
+<p align="center">
+  <img src="assets/cumulative_reward_graph.png" alt="Cumulative Reward Graph" width="600"/>
+</p>
+
+The following table summarizes the learning trend:
+
+<p align="center">
+  <img src="assets/cumulative_reward_table.png" alt="Cumulative Reward Table" width="400"/>
+</p>
+
+As seen above, the agent gradually improves its policy over time, achieving significantly higher rewards by episode 100. This confirms the DQN model's ability to learn effective shopping strategies based on state transitions and reward feedback.
 
 In summary, DQN offers a **simple yet effective solution** for modeling sequential decision-making over discrete fridge states. It enables the system to **adapt over time** based on user behavior, without requiring a large labeled dataset or continuous feedback.
 ### 4. Tech Stack
