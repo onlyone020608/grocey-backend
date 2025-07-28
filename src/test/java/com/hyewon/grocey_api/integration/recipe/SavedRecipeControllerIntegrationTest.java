@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.integration.recipe;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
-import com.hyewon.grocey_api.domain.recipe.Recipe;
-import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
+import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;

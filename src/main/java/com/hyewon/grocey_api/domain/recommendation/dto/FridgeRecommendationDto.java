@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.recommendation.dto;
 
-import com.hyewon.grocey_api.domain.recommendation.FridgeRecommendation;
+import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

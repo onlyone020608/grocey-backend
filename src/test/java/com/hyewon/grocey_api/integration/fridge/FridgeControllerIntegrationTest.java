@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.integration.fridge;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
-import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

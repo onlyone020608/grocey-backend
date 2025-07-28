@@ -1,7 +1,6 @@
 package com.hyewon.grocey_api.domain.recommendation.dto;
 
-import com.hyewon.grocey_api.domain.recipe.Recipe;
-import com.hyewon.grocey_api.domain.recommendation.RecipeRecommendation;
+import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
 import lombok.Getter;
 
 @Getter

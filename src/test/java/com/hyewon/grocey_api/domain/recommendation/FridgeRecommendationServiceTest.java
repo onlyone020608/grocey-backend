@@ -1,8 +1,12 @@
 package com.hyewon.grocey_api.domain.recommendation;
 
-import com.hyewon.grocey_api.domain.fridge.Fridge;
-import com.hyewon.grocey_api.domain.product.Product;
+import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
+import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationDto;
+import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
+import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
+import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
+import com.hyewon.grocey_api.domain.recommendation.service.FridgeRecommendationService;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

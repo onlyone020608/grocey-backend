@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.user.dto;
 
-import com.hyewon.grocey_api.domain.user.AgeGroup;
+import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import lombok.Builder;
 import lombok.Getter;

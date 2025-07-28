@@ -1,6 +1,11 @@
 package com.hyewon.grocey_api.domain.product;
 
 import com.hyewon.grocey_api.domain.product.dto.ProductDto;
+import com.hyewon.grocey_api.domain.product.entity.Product;
+import com.hyewon.grocey_api.domain.product.entity.ProductTab;
+import com.hyewon.grocey_api.domain.product.entity.TabType;
+import com.hyewon.grocey_api.domain.product.repository.ProductTabRepository;
+import com.hyewon.grocey_api.domain.product.service.ProductTabService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

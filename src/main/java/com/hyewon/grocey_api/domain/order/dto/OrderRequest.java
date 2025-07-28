@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.order.dto;
 
-import com.hyewon.grocey_api.domain.order.PaymentMethod;
+import com.hyewon.grocey_api.domain.order.entity.PaymentMethod;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import lombok.Getter;
 

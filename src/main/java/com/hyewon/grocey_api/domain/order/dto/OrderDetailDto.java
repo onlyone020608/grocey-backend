@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.domain.order.dto;
 
-import com.hyewon.grocey_api.domain.order.Order;
-import com.hyewon.grocey_api.domain.order.OrderStatus;
-import com.hyewon.grocey_api.domain.order.PaymentMethod;
+import com.hyewon.grocey_api.domain.order.entity.Order;
+import com.hyewon.grocey_api.domain.order.entity.OrderStatus;
+import com.hyewon.grocey_api.domain.order.entity.PaymentMethod;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

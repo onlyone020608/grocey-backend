@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.order.dto;
 
-import com.hyewon.grocey_api.domain.order.OrderItem;
+import com.hyewon.grocey_api.domain.order.entity.OrderItem;
 import lombok.Getter;
 
 @Getter

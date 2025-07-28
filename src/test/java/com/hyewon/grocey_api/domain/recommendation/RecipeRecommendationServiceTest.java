@@ -1,13 +1,17 @@
 package com.hyewon.grocey_api.domain.recommendation;
 
-import com.hyewon.grocey_api.domain.fridge.Fridge;
-import com.hyewon.grocey_api.domain.fridge.FridgeRepository;
-import com.hyewon.grocey_api.domain.recipe.Recipe;
+import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
+import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
+import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationDto;
-import com.hyewon.grocey_api.domain.user.AgeGroup;
-import com.hyewon.grocey_api.domain.user.Gender;
-import com.hyewon.grocey_api.domain.user.User;
-import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
+import com.hyewon.grocey_api.domain.recommendation.entity.RecommendationType;
+import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
+import com.hyewon.grocey_api.domain.recommendation.service.RecipeRecommendationService;
+import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
+import com.hyewon.grocey_api.domain.user.entity.Gender;
+import com.hyewon.grocey_api.domain.user.entity.User;
+import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
@@ -25,7 +29,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

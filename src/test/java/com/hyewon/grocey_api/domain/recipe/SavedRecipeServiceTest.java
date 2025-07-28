@@ -1,10 +1,15 @@
 package com.hyewon.grocey_api.domain.recipe;
 
 import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeDto;
-import com.hyewon.grocey_api.domain.user.AgeGroup;
-import com.hyewon.grocey_api.domain.user.Gender;
-import com.hyewon.grocey_api.domain.user.User;
-import com.hyewon.grocey_api.domain.user.UserRepository;
+import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
+import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
+import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.service.SavedRecipeService;
+import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
+import com.hyewon.grocey_api.domain.user.entity.Gender;
+import com.hyewon.grocey_api.domain.user.entity.User;
+import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
@@ -22,7 +27,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;

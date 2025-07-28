@@ -1,10 +1,16 @@
 package com.hyewon.grocey_api.domain.recipe;
 
-import com.hyewon.grocey_api.domain.ingredient.Ingredient;
+import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponseDto;
-import com.hyewon.grocey_api.domain.user.AgeGroup;
-import com.hyewon.grocey_api.domain.user.Gender;
-import com.hyewon.grocey_api.domain.user.User;
+import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
+import com.hyewon.grocey_api.domain.recipe.entity.RecipeIngredient;
+import com.hyewon.grocey_api.domain.recipe.repository.RecipeIngredientRepository;
+import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.service.RecipeService;
+import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
+import com.hyewon.grocey_api.domain.user.entity.Gender;
+import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +26,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,11 +1,10 @@
 package com.hyewon.grocey_api.domain.order.dto;
 
-import com.hyewon.grocey_api.domain.order.Order;
-import com.hyewon.grocey_api.domain.order.OrderStatus;
+import com.hyewon.grocey_api.domain.order.entity.Order;
+import com.hyewon.grocey_api.domain.order.entity.OrderStatus;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

@@ -1,6 +1,5 @@
 package com.hyewon.grocey_api.domain.recipe.dto;
 
-import com.hyewon.grocey_api.domain.recipe.Recipe;
 import lombok.Getter;
 
 import java.util.Arrays;
