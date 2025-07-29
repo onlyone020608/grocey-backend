@@ -3,7 +3,7 @@ package com.hyewon.grocey_api.domain.recommendation;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
-import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationDto;
+import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecommendationType;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
@@ -67,7 +67,7 @@ class RecipeRecommendationServiceTest {
         given(recipeRecommendationRepository.findByUser(user)).willReturn(List.of(rr));
 
         // when
-        List<RecipeRecommendationDto> result = recipeRecommendationService.getRecommendationsByUser(1L);
+        List<RecipeRecommendationResponse> result = recipeRecommendationService.getRecommendationsByUser(1L);
 
         // then
         assertThat(result).hasSize(1);
@@ -103,7 +103,7 @@ class RecipeRecommendationServiceTest {
         given(recipeRecommendationRepository.findByFridge(fridge)).willReturn(List.of(rr));
 
         // when
-        List<RecipeRecommendationDto> result = recipeRecommendationService.getRecommendationsByFridge(2L);
+        List<RecipeRecommendationResponse> result = recipeRecommendationService.getRecommendationsByFridge(2L);
 
         // then
         assertThat(result).hasSize(1);

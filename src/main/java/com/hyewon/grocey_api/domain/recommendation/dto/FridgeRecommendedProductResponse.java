@@ -4,7 +4,7 @@ import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProdu
 import lombok.Getter;
 
 @Getter
-public class FridgeRecommendedProductDto {
+public class FridgeRecommendedProductResponse {
 
     private final Long productId;
     private final String productName;
@@ -12,7 +12,7 @@ public class FridgeRecommendedProductDto {
     private final double price;
     private final String imageUrl;
 
-    public FridgeRecommendedProductDto(FridgeRecommendedProduct recommendedProduct) {
+    public FridgeRecommendedProductResponse(FridgeRecommendedProduct recommendedProduct) {
         this.productId = recommendedProduct.getProduct().getId();
         this.productName = recommendedProduct.getProduct().getProductName();
         this.brand = recommendedProduct.getProduct().getBrandName();

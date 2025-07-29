@@ -5,11 +5,11 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class CartResponseDto {
+public class CartResponse {
     private long cartId;
-    private List<CartItemResponseDto> items;
+    private List<CartItemResponse> items;
 
-    public CartResponseDto(long cartId, List<CartItemResponseDto> items) {
+    public CartResponse(long cartId, List<CartItemResponse> items) {
         this.cartId = cartId;
         this.items = items;
     }

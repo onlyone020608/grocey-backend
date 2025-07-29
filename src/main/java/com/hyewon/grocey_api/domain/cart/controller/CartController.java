@@ -2,7 +2,7 @@ package com.hyewon.grocey_api.domain.cart.controller;
 
 import com.hyewon.grocey_api.domain.cart.service.CartService;
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
-import com.hyewon.grocey_api.domain.cart.dto.CartResponseDto;
+import com.hyewon.grocey_api.domain.cart.dto.CartResponse;
 import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class CartController {
     private final CartService cartService;
 
     @GetMapping
-    public CartResponseDto getCart(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public CartResponse getCart(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return cartService.getCart(userDetails.getId());
     }
 

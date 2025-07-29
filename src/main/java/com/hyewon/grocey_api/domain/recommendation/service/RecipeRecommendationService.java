@@ -6,7 +6,7 @@ import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
-import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationDto;
+import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecommendationType;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.UserRepository;
@@ -32,7 +32,7 @@ public class RecipeRecommendationService {
 
 
     @Transactional
-    public List<RecipeRecommendationDto> getRecommendationsByUser(Long userId) {
+    public List<RecipeRecommendationResponse> getRecommendationsByUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -49,13 +49,13 @@ public class RecipeRecommendationService {
         recipeRecommendationRepository.saveAll(saved);
 
         return saved.stream()
-                .map(RecipeRecommendationDto::new)
+                .map(RecipeRecommendationResponse::new)
                 .toList();
 
     }
 
     @Transactional
-    public List<RecipeRecommendationDto> getRecommendationsByFridge(Long fridgeId) {
+    public List<RecipeRecommendationResponse> getRecommendationsByFridge(Long fridgeId) {
         Fridge fridge = fridgeRepository.findById(fridgeId)
                 .orElseThrow(() -> new FridgeNotFoundException(fridgeId));
 
@@ -77,7 +77,7 @@ public class RecipeRecommendationService {
         recipeRecommendationRepository.saveAll(saved);
 
         return saved.stream()
-                .map(RecipeRecommendationDto::new)
+                .map(RecipeRecommendationResponse::new)
                 .toList();
     }
 

@@ -4,14 +4,14 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import lombok.Getter;
 
 @Getter
-public class ProductDto {
+public class ProductResponse {
     private Long productId;
     private String brandName;
     private String productName;
     private double price;
     private String imageUrl;
 
-    public ProductDto(Product product) {
+    public ProductResponse(Product product) {
         this.productId = product.getId();
         this.brandName = product.getBrandName();
         this.productName = product.getProductName();

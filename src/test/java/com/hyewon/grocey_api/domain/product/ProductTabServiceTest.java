@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.product;
 
-import com.hyewon.grocey_api.domain.product.dto.ProductDto;
+import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.entity.ProductTab;
 import com.hyewon.grocey_api.domain.product.entity.TabType;
@@ -45,7 +45,7 @@ class ProductTabServiceTest {
         given(productTabRepository.findByTabType(tab)).willReturn(List.of(productTab));
 
         // when
-        List<ProductDto> result = productTabService.getProductsByTab(tab);
+        List<ProductResponse> result = productTabService.getProductsByTab(tab);
 
         // then
         assertThat(result).hasSize(1);

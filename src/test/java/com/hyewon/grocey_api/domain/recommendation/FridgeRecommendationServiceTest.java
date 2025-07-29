@@ -2,7 +2,7 @@ package com.hyewon.grocey_api.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.product.entity.Product;
-import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationDto;
+import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
@@ -58,7 +58,7 @@ class FridgeRecommendationServiceTest {
                 .willReturn(Optional.of(recommendation));
 
         // when
-        FridgeRecommendationDto result = fridgeRecommendationService.getLatestRecommendation(1L);
+        FridgeRecommendationResponse result = fridgeRecommendationService.getLatestRecommendation(1L);
 
         // then
         assertThat(result.getRecommendationId()).isEqualTo(100L);

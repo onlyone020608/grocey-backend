@@ -4,9 +4,9 @@ import com.hyewon.grocey_api.domain.cart.entity.Cart;
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
-import com.hyewon.grocey_api.domain.order.dto.OrderDetailDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
-import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.order.entity.Order;
 import com.hyewon.grocey_api.domain.order.entity.OrderStatus;
 import com.hyewon.grocey_api.domain.order.entity.PaymentMethod;
@@ -163,7 +163,7 @@ class OrderServiceTest {
         given(orderRepository.findTop5ByUserOrderByCreatedAtDesc(user)).willReturn(List.of(order));
 
         // when
-        List<OrderSummaryDto> result = orderService.getRecentOrderSummaryByUserId(1L);
+        List<OrderSummaryResponse> result = orderService.getRecentOrderSummaryByUserId(1L);
 
         // then
         assertThat(result).hasSize(1);
@@ -184,7 +184,7 @@ class OrderServiceTest {
         given(orderRepository.findById(101L)).willReturn(Optional.of(order));
 
         // when
-        OrderDetailDto result = orderService.getOrderDetail(userId, 101L);
+        OrderDetailResponse result = orderService.getOrderDetail(userId, 101L);
 
         // then
         assertThat(result.getOrderId()).isEqualTo(101L);
@@ -226,7 +226,7 @@ class OrderServiceTest {
         given(orderRepository.findByUser(user, pageable)).willReturn(mockPage);
 
         // when
-        Page<OrderSummaryDto> result = orderService.getAllOrders(1L, pageable);
+        Page<OrderSummaryResponse> result = orderService.getAllOrders(1L, pageable);
 
         // then
         assertThat(result.getTotalElements()).isEqualTo(1);

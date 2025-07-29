@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.recipe;
 
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
-import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponseDto;
+import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.entity.RecipeIngredient;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeIngredientRepository;
@@ -66,7 +66,7 @@ class RecipeServiceTest {
         given(savedRecipeRepository.existsByUserIdAndRecipeId(1L, 1L)).willReturn(true);
 
         // when
-        RecipeDetailResponseDto result = recipeService.getRecipeDetail(1L, 1L);
+        RecipeDetailResponse result = recipeService.getRecipeDetail(1L, 1L);
 
         // then
         assertThat(result.getRecipeName()).isEqualTo("Kimchi Fried Rice");

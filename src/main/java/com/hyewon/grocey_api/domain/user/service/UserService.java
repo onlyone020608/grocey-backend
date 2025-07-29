@@ -25,17 +25,17 @@ public class UserService {
     private final PreferenceIngredientRepository preferenceIngredientRepository;
 
     @Transactional(readOnly = true)
-    public UserSummaryDto getUserSummary(Long userId) {
+    public UserSummaryResponse getUserSummary(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        return new UserSummaryDto(user);
+        return new UserSummaryResponse(user);
     }
 
     @Transactional(readOnly = true)
-    public UserDetailDto getUserDetail(Long userId) {
+    public UserDetailResponse getUserDetail(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        return new UserDetailDto(user);
+        return new UserDetailResponse(user);
     }
 
     @Transactional

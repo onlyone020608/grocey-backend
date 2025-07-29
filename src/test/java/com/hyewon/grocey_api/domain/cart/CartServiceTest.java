@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.cart;
 
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
-import com.hyewon.grocey_api.domain.cart.dto.CartResponseDto;
+import com.hyewon.grocey_api.domain.cart.dto.CartResponse;
 import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import com.hyewon.grocey_api.domain.cart.entity.Cart;
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
@@ -250,7 +250,7 @@ class CartServiceTest {
         given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
 
         // when
-        CartResponseDto response = cartService.getCart(userId);
+        CartResponse response = cartService.getCart(userId);
 
         // then
         assertThat(response.getCartId()).isEqualTo(100L);

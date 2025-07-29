@@ -8,7 +8,7 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
-import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationDto;
+import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
@@ -34,7 +34,7 @@ public class FridgeRecommendationService {
 
 
     @Transactional
-    public FridgeRecommendationDto getLatestRecommendation(Long fridgeId) {
+    public FridgeRecommendationResponse getLatestRecommendation(Long fridgeId) {
         Fridge fridge = fridgeRepository.findById(fridgeId)
                 .orElseThrow(() -> new FridgeNotFoundException(fridgeId));
 
@@ -61,7 +61,7 @@ public class FridgeRecommendationService {
         recommendation.getRecommendedProducts().addAll(savedProducts);
 
 
-        return new FridgeRecommendationDto(recommendation);
+        return new FridgeRecommendationResponse(recommendation);
     }
 
     public List<Long> fetchRecommendedIngredientIds(Long userId) {

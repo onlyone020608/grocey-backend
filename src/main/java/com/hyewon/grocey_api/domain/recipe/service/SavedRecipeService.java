@@ -2,7 +2,7 @@ package com.hyewon.grocey_api.domain.recipe.service;
 
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
-import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeDto;
+import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
 import com.hyewon.grocey_api.domain.user.entity.User;
@@ -25,14 +25,14 @@ public class SavedRecipeService {
     private final RecipeRepository recipeRepository;
 
     @Transactional(readOnly = true)
-    public List<SavedRecipeDto> getSavedRecipes(Long userId) {
+    public List<SavedRecipeResponse> getSavedRecipes(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         List<SavedRecipe> savedRecipes = savedRecipeRepository.findByUser(user);
 
         return savedRecipes.stream()
-                .map(SavedRecipeDto::new)
+                .map(SavedRecipeResponse::new)
                 .toList();
 
     }

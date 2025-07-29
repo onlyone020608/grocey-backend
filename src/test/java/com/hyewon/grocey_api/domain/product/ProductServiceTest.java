@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.product;
 
-import com.hyewon.grocey_api.domain.product.dto.ProductDto;
+import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.product.service.ProductService;
@@ -43,7 +43,7 @@ public class ProductServiceTest {
         given(productRepository.findById(1L)).willReturn(Optional.of(product));
 
         // when
-        ProductDto result = productService.getProductDetail(1L);
+        ProductResponse result = productService.getProductDetail(1L);
 
         // then
         assertThat(result.getProductId()).isEqualTo(1L);

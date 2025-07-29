@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.fridge.service;
 
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
-import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponseDto;
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.UserRepository;
@@ -19,7 +19,7 @@ public class FridgeService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public FridgeResponseDto getFridgeInfo(Long userId) {
+    public FridgeResponse getFridgeInfo(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -28,7 +28,7 @@ public class FridgeService {
             throw new FridgeNotFoundException(userId);
         }
 
-        return new FridgeResponseDto(fridge.getFridgeTemperature(), fridge.getFreezerTemperature());
+        return new FridgeResponse(fridge.getFridgeTemperature(), fridge.getFreezerTemperature());
     }
 
 

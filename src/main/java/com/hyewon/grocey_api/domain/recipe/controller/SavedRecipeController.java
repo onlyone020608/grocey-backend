@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.recipe.controller;
 
 
-import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeDto;
+import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.recipe.service.SavedRecipeService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class SavedRecipeController {
     private final SavedRecipeService savedRecipeService;
 
     @GetMapping("/me/recipes")
-    public List<SavedRecipeDto> getSavedRecipes(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<SavedRecipeResponse> getSavedRecipes(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return savedRecipeService.getSavedRecipes(userDetails.getId());
     }
 

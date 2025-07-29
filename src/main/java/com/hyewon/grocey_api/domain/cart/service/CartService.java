@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.domain.cart.service;
 
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
-import com.hyewon.grocey_api.domain.cart.dto.CartItemResponseDto;
-import com.hyewon.grocey_api.domain.cart.dto.CartResponseDto;
+import com.hyewon.grocey_api.domain.cart.dto.CartItemResponse;
+import com.hyewon.grocey_api.domain.cart.dto.CartResponse;
 import com.hyewon.grocey_api.domain.cart.dto.UpdateCartItemRequest;
 import com.hyewon.grocey_api.domain.cart.entity.Cart;
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
@@ -36,15 +36,15 @@ public class CartService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public CartResponseDto getCart(Long userId) {
+    public CartResponse getCart(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new CartNotFoundException(userId));
 
-        List<CartItemResponseDto> items = cart.getCartItems().stream()
-                .map(item -> new CartItemResponseDto(
+        List<CartItemResponse> items = cart.getCartItems().stream()
+                .map(item -> new CartItemResponse(
                         item.getId(),
                         item.getProduct().getId(),
                         item.getProduct().getProductName(),
@@ -54,7 +54,7 @@ public class CartService {
                 ))
                 .collect(Collectors.toList());
 
-        return new CartResponseDto(cart.getId(), items);
+        return new CartResponse(cart.getId(), items);
     }
 
     @Transactional

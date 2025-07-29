@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge.controller;
 
-import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponseDto;
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class FridgeController {
     private final FridgeService fridgeService;
 
     @GetMapping
-    public ResponseEntity<FridgeResponseDto> getFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<FridgeResponse> getFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(fridgeService.getFridgeInfo(userDetails.getId()));
 
     }

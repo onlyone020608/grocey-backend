@@ -3,7 +3,7 @@ package com.hyewon.grocey_api.domain.cart.dto;
 import lombok.Getter;
 
 @Getter
-public class CartItemResponseDto {
+public class CartItemResponse {
     private Long productId;
     private Long cartItemId;
     private String productName;
@@ -11,7 +11,7 @@ public class CartItemResponseDto {
     private double price;
     private int quantity;
 
-    public CartItemResponseDto(Long cartItemId, Long productId, String productName, String imageUrl, double price, int quantity) {
+    public CartItemResponse(Long cartItemId, Long productId, String productName, String imageUrl, double price, int quantity) {
         this.cartItemId = cartItemId;
         this.productId = productId;
         this.productName = productName;

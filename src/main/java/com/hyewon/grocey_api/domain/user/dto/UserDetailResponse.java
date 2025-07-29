@@ -4,11 +4,11 @@ import com.hyewon.grocey_api.domain.user.entity.User;
 import lombok.Getter;
 
 @Getter
-public class UserDetailDto {
+public class UserDetailResponse {
     private String userName;
     private String email;
 
-    public UserDetailDto(User user) {
+    public UserDetailResponse(User user) {
         this.userName = user.getUserName();
         this.email = user.getEmail();
     }

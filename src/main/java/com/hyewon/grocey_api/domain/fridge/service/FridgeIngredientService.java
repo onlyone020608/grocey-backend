@@ -2,8 +2,8 @@ package com.hyewon.grocey_api.domain.fridge.service;
 
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
-import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponseDto;
-import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponseDto;
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponse;
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
@@ -22,7 +22,7 @@ public class FridgeIngredientService {
     private final FridgeRepository fridgeRepository;
 
     @Transactional(readOnly = true)
-    public List<FridgeIngredientResponseDto> getIngredientsByFridge(Long fridgeId, Boolean isFreezer) {
+    public List<FridgeIngredientResponse> getIngredientsByFridge(Long fridgeId, Boolean isFreezer) {
         if (!fridgeRepository.existsById(fridgeId)) {
             throw new FridgeNotFoundException(fridgeId);
         }
@@ -35,7 +35,7 @@ public class FridgeIngredientService {
         }
 
         return ingredients.stream()
-                .map(fi -> new FridgeIngredientResponseDto(
+                .map(fi -> new FridgeIngredientResponse(
                         fi.getIngredient().getId(),
                         fi.getIngredient().getIngredientName(),
                         fi.getIngredient().getImageUrl()
@@ -44,9 +44,9 @@ public class FridgeIngredientService {
     }
 
     @Transactional(readOnly = true)
-    public FridgeIngredientDetailResponseDto getIngredientDetail(Long id) {
+    public FridgeIngredientDetailResponse getIngredientDetail(Long id) {
         FridgeIngredient fi = fridgeIngredientRepository.findById(id)
                 .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
-        return new FridgeIngredientDetailResponseDto(fi);
+        return new FridgeIngredientDetailResponse(fi);
     }
 }

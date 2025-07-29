@@ -5,14 +5,14 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 @Getter
-public class FridgeIngredientDetailResponseDto {
+public class FridgeIngredientDetailResponse {
         private String ingredientName;
         private String imageUrl;
         private int quantity;
         private Boolean isFreezer;
         private LocalDate expirationDate;
 
-        public FridgeIngredientDetailResponseDto(FridgeIngredient fi) {
+        public FridgeIngredientDetailResponse(FridgeIngredient fi) {
             this.ingredientName = fi.getIngredient().getIngredientName();
             this.imageUrl = fi.getIngredient().getImageUrl();
             this.quantity = fi.getQuantity();

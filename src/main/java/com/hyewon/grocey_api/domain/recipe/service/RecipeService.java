@@ -3,8 +3,8 @@ package com.hyewon.grocey_api.domain.recipe.service;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeIngredientRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
-import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponseDto;
-import com.hyewon.grocey_api.domain.recipe.dto.RecipeIngredientDto;
+import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponse;
+import com.hyewon.grocey_api.domain.recipe.dto.RecipeIngredientResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +22,12 @@ public class RecipeService {
     private final SavedRecipeRepository savedRecipeRepository;
 
     @Transactional(readOnly = true)
-    public RecipeDetailResponseDto getRecipeDetail(Long recipeId, Long userId) {
+    public RecipeDetailResponse getRecipeDetail(Long recipeId, Long userId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
 
-        List<RecipeIngredientDto> ingredients = recipeIngredientRepository.findByRecipeId(recipeId).stream()
-                .map(ri -> new RecipeIngredientDto(
+        List<RecipeIngredientResponse> ingredients = recipeIngredientRepository.findByRecipeId(recipeId).stream()
+                .map(ri -> new RecipeIngredientResponse(
                         ri.getIngredient().getIngredientName(),
                         ri.getQuantity()
                 ))
@@ -35,7 +35,7 @@ public class RecipeService {
 
         boolean isSaved = savedRecipeRepository.existsByUserIdAndRecipeId(userId, recipeId);
 
-        return new RecipeDetailResponseDto(
+        return new RecipeDetailResponse(
                 recipe.getRecipeName(),
                 recipe.getDescription(),
                 recipe.getCookingTime(),

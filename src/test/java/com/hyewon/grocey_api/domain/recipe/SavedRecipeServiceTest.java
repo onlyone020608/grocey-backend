@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.recipe;
 
-import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeDto;
+import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
@@ -62,7 +62,7 @@ class SavedRecipeServiceTest {
         given(savedRecipeRepository.findByUser(user)).willReturn(List.of(savedRecipe));
 
         // when
-        List<SavedRecipeDto> result = savedRecipeService.getSavedRecipes(1L);
+        List<SavedRecipeResponse> result = savedRecipeService.getSavedRecipes(1L);
 
         // then
         assertThat(result).hasSize(1);

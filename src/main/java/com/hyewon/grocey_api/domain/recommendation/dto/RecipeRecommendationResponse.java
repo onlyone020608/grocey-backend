@@ -4,12 +4,12 @@ import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
 import lombok.Getter;
 
 @Getter
-public class RecipeRecommendationDto {
+public class RecipeRecommendationResponse {
     private String recipeName;
     private String recipeImageUrl;
     private Long recipeId;
 
-    public RecipeRecommendationDto(RecipeRecommendation recommendation) {
+    public RecipeRecommendationResponse(RecipeRecommendation recommendation) {
         this.recipeId = recommendation.getRecipe().getId();
         this.recipeName = recommendation.getRecipe().getRecipeName();
         this.recipeImageUrl = recommendation.getRecipe().getImageUrl();

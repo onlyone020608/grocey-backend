@@ -56,7 +56,7 @@ class UserServiceTest {
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
         // when
-        UserSummaryDto result = userService.getUserSummary(1L);
+        UserSummaryResponse result = userService.getUserSummary(1L);
 
         // then
         assertThat(result.getName()).isEqualTo("tester");
@@ -80,7 +80,7 @@ class UserServiceTest {
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
         // when
-        UserDetailDto result = userService.getUserDetail(1L);
+        UserDetailResponse result = userService.getUserDetail(1L);
 
         // then
         assertThat(result.getUserName()).isEqualTo("tester");

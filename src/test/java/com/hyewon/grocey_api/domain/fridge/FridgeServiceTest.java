@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge;
 
-import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponseDto;
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeService;
@@ -36,7 +36,7 @@ class FridgeServiceTest {
         given(fridgeRepository.findById(userId)).willReturn(Optional.of(fridge));
 
         // when
-        FridgeResponseDto response = fridgeService.getFridgeInfo(userId);
+        FridgeResponse response = fridgeService.getFridgeInfo(userId);
 
         // then
         assertThat(response.getFridgeTemperature()).isEqualTo(4.0);

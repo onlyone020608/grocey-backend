@@ -1,9 +1,9 @@
 package com.hyewon.grocey_api.domain.order.controller;
 
 import com.hyewon.grocey_api.domain.order.service.OrderService;
-import com.hyewon.grocey_api.domain.order.dto.OrderDetailDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
-import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,18 +26,18 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("summary")
-    public List<OrderSummaryDto> getSummary(@AuthenticationPrincipal CustomUserDetails userDetails){
+    public List<OrderSummaryResponse> getSummary(@AuthenticationPrincipal CustomUserDetails userDetails){
         return orderService.getRecentOrderSummaryByUserId(userDetails.getId());
     }
 
 
     @GetMapping("{orderId}")
-    public OrderDetailDto getOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long orderId){
+    public OrderDetailResponse getOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long orderId){
         return orderService.getOrderDetail(userDetails.getId(), orderId);
     }
 
     @GetMapping
-    public Page<OrderSummaryDto> getAllOrders(
+    public Page<OrderSummaryResponse> getAllOrders(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return orderService.getAllOrders(userDetails.getId(), pageable);

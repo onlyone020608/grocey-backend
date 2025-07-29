@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge;
 
-import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponseDto;
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
@@ -49,7 +49,7 @@ class FridgeIngredientServiceTest {
                 .willReturn(singletonList(fi));
 
         // when
-        List<FridgeIngredientResponseDto> result =
+        List<FridgeIngredientResponse> result =
                 fridgeIngredientService.getIngredientsByFridge(fridgeId, isFreezer);
 
         // then

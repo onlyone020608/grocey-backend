@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.product.service;
 
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
-import com.hyewon.grocey_api.domain.product.dto.ProductDto;
+import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,9 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional(readOnly = true)
-    public ProductDto getProductDetail(Long productId) {
+    public ProductResponse getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
-        return new ProductDto(product);
+        return new ProductResponse(product);
     }
 }

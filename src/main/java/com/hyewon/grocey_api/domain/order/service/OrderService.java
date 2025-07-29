@@ -4,9 +4,9 @@ import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
-import com.hyewon.grocey_api.domain.order.dto.OrderDetailDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
-import com.hyewon.grocey_api.domain.order.dto.OrderSummaryDto;
+import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.order.entity.Order;
 import com.hyewon.grocey_api.domain.order.entity.OrderItem;
 import com.hyewon.grocey_api.domain.user.entity.User;
@@ -32,19 +32,19 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
 
     @Transactional(readOnly = true)
-    public  List<OrderSummaryDto> getRecentOrderSummaryByUserId(Long userId) {
+    public  List<OrderSummaryResponse> getRecentOrderSummaryByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         List<Order> recentOrders = orderRepository.findTop5ByUserOrderByCreatedAtDesc(user);
 
         return recentOrders.stream()
-                .map(OrderSummaryDto::new)
+                .map(OrderSummaryResponse::new)
                 .toList();
 
     }
     @Transactional(readOnly = true)
-    public OrderDetailDto getOrderDetail(Long userId, Long orderId) {
+    public OrderDetailResponse getOrderDetail(Long userId, Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
@@ -52,17 +52,17 @@ public class OrderService {
             throw new AccessDeniedException("You are not authorized to view this order.");
         }
 
-        return new OrderDetailDto(order);
+        return new OrderDetailResponse(order);
 
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderSummaryDto> getAllOrders(Long userId, Pageable pageable) {
+    public Page<OrderSummaryResponse> getAllOrders(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
         return orderRepository.findByUser(user, pageable)
-                .map(OrderSummaryDto::new);
+                .map(OrderSummaryResponse::new);
     }
 
     @Transactional

@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserStatusDto {
+public class UserStatusResponse {
     private boolean ProfileCompleted;
 }

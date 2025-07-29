@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.recommendation.controller;
 
-import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationDto;
+import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.recommendation.service.RecipeRecommendationService;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +19,12 @@ public class RecipeRecommendationController {
     private final RecipeRecommendationService recommendationService;
 
     @GetMapping("/personal")
-    public List<RecipeRecommendationDto> recommendByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<RecipeRecommendationResponse> recommendByUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return recommendationService.getRecommendationsByUser(userDetails.getId());
     }
 
     @GetMapping("/fridge")
-    public List<RecipeRecommendationDto> recommendByFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<RecipeRecommendationResponse> recommendByFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return recommendationService.getRecommendationsByFridge(userDetails.getUser().getFridge().getId());
     }
 

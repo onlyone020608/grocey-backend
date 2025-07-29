@@ -15,12 +15,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me/summary")
-    public UserSummaryDto getSummary(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public UserSummaryResponse getSummary(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return userService.getUserSummary(userDetails.getId());
     }
 
     @GetMapping("/me")
-    public UserDetailDto getUserDetail(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public UserDetailResponse getUserDetail(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return userService.getUserDetail(userDetails.getId());
     }
 
@@ -66,10 +66,10 @@ public class UserController {
     }
 
     @GetMapping("/me/status")
-    public ResponseEntity<UserStatusDto> getUserStatus(
+    public ResponseEntity<UserStatusResponse> getUserStatus(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         boolean isCompleted = userService.checkProfileCompletion(userDetails.getId());
-        return ResponseEntity.ok(new UserStatusDto(isCompleted));
+        return ResponseEntity.ok(new UserStatusResponse(isCompleted));
     }
 
 
