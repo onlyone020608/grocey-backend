@@ -12,6 +12,7 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.UserRepository;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.CartItemNotFoundException;
 import com.hyewon.grocey_api.global.exception.CartNotFoundException;
 import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
@@ -31,14 +32,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class CartService {
     private final CartRepository cartRepository;
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
 
     @Transactional
     public CartResponse getCart(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new CartNotFoundException(userId));
@@ -59,8 +59,7 @@ public class CartService {
 
     @Transactional
     public void addCartItem(Long userId, AddCartItemRequest request){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(request.getProductId()));
@@ -99,8 +98,7 @@ public class CartService {
 
     @Transactional
     public void deleteCartItems(Long userId, List<Long> cartItemIds) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new CartNotFoundException(userId));
@@ -119,8 +117,7 @@ public class CartService {
 
     @Transactional
     public void addCartItemsInBatch(Long userId, List<AddCartItemRequest> requests) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> cartRepository.save(new Cart(user, user.getFridge())));

@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.domain.product.repository;
 
-import com.hyewon.grocey_api.domain.product.QProduct;
+import com.hyewon.grocey_api.domain.product.entity.QProduct;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
