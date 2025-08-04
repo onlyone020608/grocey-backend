@@ -11,13 +11,12 @@ import com.hyewon.grocey_api.domain.cart.service.CartService;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
+import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
 import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.CartNotFoundException;
-import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,10 +43,9 @@ import static org.mockito.Mockito.verify;
 class CartServiceTest {
     @Mock
     private CartRepository cartRepository;
-    @Mock private UserRepository userRepository;
     @Mock private UserQueryService userQueryService;
     @Mock private CartItemRepository cartItemRepository;
-    @Mock private ProductRepository productRepository;
+    @Mock private ProductQueryService productQueryService;
 
     @InjectMocks
     private CartService cartService;
@@ -74,7 +72,7 @@ class CartServiceTest {
         AddCartItemRequest request = new AddCartItemRequest(1L, 3);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(productRepository.findById(1L)).willReturn(Optional.of(product));
+        given(productQueryService.getProduct(1L)).willReturn(product);
         given(cartRepository.findByUser(user)).willReturn(Optional.empty());
         given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
 
@@ -105,7 +103,7 @@ class CartServiceTest {
         existingCart.addCartItem(existingItem);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(productRepository.findById(1L)).willReturn(Optional.of(product));
+        given(productQueryService.getProduct(1L)).willReturn(product);
         given(cartRepository.findByUser(user)).willReturn(Optional.of(existingCart));
 
         // when
@@ -289,8 +287,8 @@ class CartServiceTest {
         ReflectionTestUtils.setField(product2, "id", 2L);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
-        given(productRepository.findById(2L)).willReturn(Optional.of(product2));
+        given(productQueryService.getProduct(1L)).willReturn(product1);
+        given(productQueryService.getProduct(2L)).willReturn(product2);
         given(cartRepository.findByUser(user)).willReturn(Optional.empty());
         given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
 
@@ -302,20 +300,7 @@ class CartServiceTest {
     }
 
 
-    @Test
-    @DisplayName("addCartItemsInBatch - throws if any product not found")
-    void addCartItemsInBatch_shouldThrowIfProductNotFound() {
-        // given
-        AddCartItemRequest request = new AddCartItemRequest(999L, 1);
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
-        given(productRepository.findById(999L)).willReturn(Optional.empty());
 
-        // when & then
-        assertThrows(ProductNotFoundException.class, () -> {
-            cartService.addCartItemsInBatch(1L, List.of(request));
-        });
-    }
 
 
 

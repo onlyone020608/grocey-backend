@@ -10,6 +10,7 @@ import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
+import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
@@ -34,7 +35,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final UserQueryService userQueryService;
     private final CartItemRepository cartItemRepository;
-    private final ProductRepository productRepository;
+    private final ProductQueryService productQueryService;
 
     @Transactional
     public CartResponse getCart(Long userId) {
@@ -61,9 +62,7 @@ public class CartService {
     public void addCartItem(Long userId, AddCartItemRequest request){
         User user = userQueryService.getUserById(userId);
 
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(request.getProductId()));
-
+        Product product = productQueryService.getProduct(request.getProductId());
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
                     Cart newCart = new Cart(user, user.getFridge());
@@ -125,9 +124,7 @@ public class CartService {
         List<CartItem> itemsToSave = new ArrayList<>();
 
         for (AddCartItemRequest request : requests) {
-            Product product = productRepository.findById(request.getProductId())
-                    .orElseThrow(() -> new ProductNotFoundException(request.getProductId()));
-
+            Product product = productQueryService.getProduct(request.getProductId());
             Optional<CartItem> existingItemOpt = cart.getCartItems().stream()
                     .filter(item -> item.getProduct().getId().equals(product.getId()))
                     .findFirst();
