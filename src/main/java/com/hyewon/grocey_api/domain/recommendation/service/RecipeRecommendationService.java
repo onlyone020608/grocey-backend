@@ -9,7 +9,7 @@ import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendati
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecommendationType;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
@@ -26,15 +26,15 @@ import java.util.List;
 public class RecipeRecommendationService {
 
     private final RecipeRecommendationRepository recipeRecommendationRepository;
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
+    private final RestTemplate restTemplate;
     private final FridgeRepository fridgeRepository;
     private final RecipeRepository recipeRepository;
 
 
     @Transactional
     public List<RecipeRecommendationResponse> getRecommendationsByUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         List<Long> recipeIds = fetchPreferenceBasedRecipeIds(userId); // AI 호출
         if (recipeIds.isEmpty()) {
@@ -82,14 +82,12 @@ public class RecipeRecommendationService {
     }
 
     private List<Long> fetchFridgeBasedRecipeIds(Long userId) {
-        RestTemplate restTemplate = new RestTemplate();
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody();
     }
 
     private List<Long> fetchPreferenceBasedRecipeIds(Long userId) {
-        RestTemplate restTemplate = new RestTemplate();
         String url = "http://grocey-ai:5001/api/recommend/recipes/preference/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody();
