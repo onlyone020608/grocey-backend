@@ -2,7 +2,7 @@ package com.hyewon.grocey_api.domain.recommendation.service;
 
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientManager;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
@@ -29,7 +29,7 @@ public class FridgeRecommendationService {
     private final FridgeQueryService fridgeQueryService;
     private final ProductQueryService productQueryService;
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
-    private final FridgeIngredientRepository  fridgeIngredientRepository;
+    private final FridgeIngredientManager fridgeIngredientManager;
 
 
     @Transactional
@@ -70,12 +70,13 @@ public class FridgeRecommendationService {
     }
 
     public void simulateFridgeChange(Long fridgeId) {
-        List<FridgeIngredient> ingredients = fridgeIngredientRepository.findByFridgeId(fridgeId);
+        List<FridgeIngredient> ingredients = fridgeIngredientManager.getByFridgeId(fridgeId);
 
         if (ingredients.size() <= 2) return;
 
         Collections.shuffle(ingredients);
         List<FridgeIngredient> toRemove = ingredients.subList(0, 2);
-        fridgeIngredientRepository.deleteAll(toRemove);
+        fridgeIngredientManager.deleteAll(toRemove);
+
     }
 }
