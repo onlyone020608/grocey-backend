@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.order;
+package com.hyewon.grocey_api.unit.domain.order;
 
 import com.hyewon.grocey_api.domain.cart.entity.Cart;
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;

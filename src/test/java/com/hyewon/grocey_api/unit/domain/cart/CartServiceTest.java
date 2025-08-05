@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.cart;
+package com.hyewon.grocey_api.unit.domain.cart;
 
 import com.hyewon.grocey_api.domain.cart.dto.AddCartItemRequest;
 import com.hyewon.grocey_api.domain.cart.dto.CartResponse;

@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.recommendation;
+package com.hyewon.grocey_api.unit.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.product.entity.Product;

@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.user;
+package com.hyewon.grocey_api.unit.domain.user;
 
 import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.user.entity.*;

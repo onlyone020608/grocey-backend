@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.product;
+package com.hyewon.grocey_api.unit.domain.product;
 
 import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
 import com.hyewon.grocey_api.domain.product.entity.Product;

@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.auth;
+package com.hyewon.grocey_api.unit.domain.auth;
 
 import com.hyewon.grocey_api.domain.auth.service.AuthService;
 import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;

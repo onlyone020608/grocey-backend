@@ -1,4 +1,4 @@
-package com.hyewon.grocey_api.domain.recipe;
+package com.hyewon.grocey_api.unit.domain.recipe;
 
 import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
