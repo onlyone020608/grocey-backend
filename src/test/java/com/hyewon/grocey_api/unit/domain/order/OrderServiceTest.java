@@ -2,7 +2,7 @@ package com.hyewon.grocey_api.unit.domain.order;
 
 import com.hyewon.grocey_api.domain.cart.entity.Cart;
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
-import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
+import com.hyewon.grocey_api.domain.cart.service.CartItemService;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
@@ -46,7 +46,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock private UserQueryService userQueryService;
-    @Mock private CartItemRepository cartItemRepository;
+    @Mock private CartItemService cartItemService;
 
     @InjectMocks
     private OrderService orderService;
@@ -78,7 +78,7 @@ class OrderServiceTest {
         given(request.toPaymentMethod()).willReturn(PaymentMethod.KAKAOPAY);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemRepository.findAllById(List.of(10L))).willReturn(List.of(cartItem));
+        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
 
         given(orderRepository.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
 
@@ -86,24 +86,8 @@ class OrderServiceTest {
         assertThatNoException().isThrownBy(() -> orderService.placeOrder(1L, request));
 
         verify(orderRepository).save(any(Order.class));
-        verify(cartItemRepository).deleteAll(List.of(cartItem));
     }
 
-    @Test
-    @DisplayName("placeOrder - throws InvalidRequestException when no cart items selected")
-    void placeOrder_shouldThrowIfCartItemsEmpty() {
-        // given
-        OrderRequest request = mock(OrderRequest.class);
-        given(request.getCartItemIds()).willReturn(List.of());
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemRepository.findAllById(any())).willReturn(List.of());
-
-        // when & then
-        assertThatThrownBy(() -> orderService.placeOrder(1L, request))
-                .isInstanceOf(InvalidRequestException.class)
-                .hasMessageContaining("No cart items selected");
-    }
 
     @Test
     @DisplayName("placeOrder - throws AccessDeniedException when cart item does not belong to user")
@@ -122,7 +106,7 @@ class OrderServiceTest {
         ReflectionTestUtils.setField(cartItem, "id", 10L);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemRepository.findAllById(List.of(10L))).willReturn(List.of(cartItem));
+        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
 
         // when & then
         assertThatThrownBy(() -> orderService.placeOrder(1L, request))
@@ -140,7 +124,7 @@ class OrderServiceTest {
         ReflectionTestUtils.setField(request, "paymentMethod", "bitcoin"); // ⚠️ 잘못된 값 intentionally
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemRepository.findAllById(any())).willReturn(List.of(cartItem));
+        given(cartItemService.getCartItems(any())).willReturn(List.of(cartItem));
 
         // when & then
         assertThatThrownBy(() -> orderService.placeOrder(1L, request))

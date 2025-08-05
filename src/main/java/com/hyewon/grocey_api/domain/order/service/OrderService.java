@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.order.service;
 
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
-import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
+import com.hyewon.grocey_api.domain.cart.service.CartItemService;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
@@ -10,7 +10,6 @@ import com.hyewon.grocey_api.domain.order.entity.Order;
 import com.hyewon.grocey_api.domain.order.entity.OrderItem;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +25,7 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final UserQueryService userQueryService;
-    private final CartItemRepository cartItemRepository;
+    private final CartItemService cartItemService;
 
     @Transactional(readOnly = true)
     public  List<OrderSummaryResponse> getRecentOrderSummaryByUserId(Long userId) {
@@ -65,10 +64,8 @@ public class OrderService {
         User user = userQueryService.getUserById(userId);
 
 
-        List<CartItem> selectedItems = cartItemRepository.findAllById(request.getCartItemIds());
-        if (selectedItems.isEmpty()) {
-            throw new InvalidRequestException("No cart items selected.");
-        }
+        List<CartItem> selectedItems = cartItemService.getCartItems(request.getCartItemIds());
+
 
         for (CartItem item : selectedItems) {
             if (!item.getCart().getUser().getId().equals(userId)) {
@@ -84,7 +81,7 @@ public class OrderService {
         }
 
         orderRepository.save(order);
-        cartItemRepository.deleteAll(selectedItems);
+        cartItemService.deleteCartItems(selectedItems);
         return order.getId();
     }
 
