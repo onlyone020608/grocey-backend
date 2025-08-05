@@ -3,7 +3,7 @@ package com.hyewon.grocey_api.unit.domain.recommendation;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
-import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.service.RecipeQueryService;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.service.RecipeRecommendationService;
@@ -41,7 +41,7 @@ class RecipeRecommendationServiceTest {
     @Mock
     private RestTemplate restTemplate;
     @Mock private FridgeQueryService fridgeQueryService;
-    @Mock private RecipeRepository recipeRepository;
+    @Mock private RecipeQueryService recipeQueryService;
     @InjectMocks
     private RecipeRecommendationService recipeRecommendationService;
 
@@ -75,7 +75,7 @@ class RecipeRecommendationServiceTest {
 
         given(userQueryService.getUserById(userId)).willReturn(user);
 
-        given(recipeRepository.findAllById(aiReturnedIds)).willReturn(List.of(recipe));
+        given(recipeQueryService.getRecipes(aiReturnedIds)).willReturn(List.of(recipe));
 
         given(recipeRecommendationRepository.saveAll(anyList()))
                 .willAnswer(invocation -> invocation.getArgument(0));
@@ -116,8 +116,7 @@ class RecipeRecommendationServiceTest {
 
         // recipe mock
         ReflectionTestUtils.setField(recipe, "id", 101L);
-        given(recipeRepository.findAllById(List.of(101L)))
-                .willReturn(List.of(recipe));
+        given(recipeQueryService.getRecipes(List.of(101L))).willReturn(List.of(recipe));
 
         // saveAll mock
         given(recipeRecommendationRepository.saveAll(anyList()))

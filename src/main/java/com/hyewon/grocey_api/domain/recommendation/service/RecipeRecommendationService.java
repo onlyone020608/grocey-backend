@@ -3,7 +3,7 @@ package com.hyewon.grocey_api.domain.recommendation.service;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
-import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.service.RecipeQueryService;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
@@ -28,7 +28,7 @@ public class RecipeRecommendationService {
     private final UserQueryService userQueryService;
     private final RestTemplate restTemplate;
     private final FridgeQueryService fridgeQueryService;
-    private final RecipeRepository recipeRepository;
+    private final RecipeQueryService recipeQueryService;
 
 
     @Transactional
@@ -40,7 +40,7 @@ public class RecipeRecommendationService {
             throw RecommendationNotFoundException.forUserRecipe(userId);
         }
 
-        List<Recipe> recipes = recipeRepository.findAllById(recipeIds);
+        List<Recipe> recipes = recipeQueryService.getRecipes(recipeIds);
 
         List<RecipeRecommendation> saved = recipes.stream()
                 .map(recipe -> new RecipeRecommendation(user, recipe, RecommendationType.PREFERENCE_BASED))
@@ -67,7 +67,7 @@ public class RecipeRecommendationService {
             throw RecommendationNotFoundException.forFridgeRecipe(fridgeId);
         }
 
-        List<Recipe> recipes = recipeRepository.findAllById(recipeIds);
+        List<Recipe> recipes = recipeQueryService.getRecipes(recipeIds);
 
         List<RecipeRecommendation> saved = recipes.stream()
                 .map(recipe -> new RecipeRecommendation(fridge, recipe, RecommendationType.FRIDGE_BASED))
