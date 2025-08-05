@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
@@ -27,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FridgeRecommendationService {
     private final FridgeRecommendationRepository fridgeRecommendationRepository;
-    private final FridgeRepository fridgeRepository;
+    private final FridgeQueryService fridgeQueryService;
     private final ProductRepository productRepository;
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final FridgeIngredientRepository  fridgeIngredientRepository;
@@ -35,8 +36,7 @@ public class FridgeRecommendationService {
 
     @Transactional
     public FridgeRecommendationResponse getLatestRecommendation(Long fridgeId) {
-        Fridge fridge = fridgeRepository.findById(fridgeId)
-                .orElseThrow(() -> new FridgeNotFoundException(fridgeId));
+        Fridge fridge = fridgeQueryService.getFridge(fridgeId);
 
         Long userId = fridge.getUsers().stream()
                 .findFirst()
