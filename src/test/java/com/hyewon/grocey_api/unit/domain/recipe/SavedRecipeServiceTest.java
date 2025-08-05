@@ -9,7 +9,7 @@ import com.hyewon.grocey_api.domain.recipe.service.SavedRecipeService;
 import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
 import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 class SavedRecipeServiceTest {
     @Mock
     private SavedRecipeRepository savedRecipeRepository;
-    @Mock private UserRepository userRepository;
+    @Mock private UserQueryService userQueryService;
     @Mock private RecipeRepository recipeRepository;
     @InjectMocks
     private SavedRecipeService savedRecipeService;
@@ -58,7 +58,7 @@ class SavedRecipeServiceTest {
     void getSavedRecipes_shouldReturnList() {
         // given
         SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(savedRecipeRepository.findByUser(user)).willReturn(List.of(savedRecipe));
 
         // when
@@ -71,22 +71,12 @@ class SavedRecipeServiceTest {
         assertThat(result.get(0).getImageUrl()).isEqualTo("img.jpg");
     }
 
-    @Test
-    @DisplayName("getSavedRecipes - throws UserNotFoundException when user does not exist")
-    void getSavedRecipes_shouldThrowIfUserNotFound() {
-        // given
-        given(userRepository.findById(1L)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> savedRecipeService.getSavedRecipes(1L))
-                .isInstanceOf(UserNotFoundException.class);
-    }
 
     @Test
     @DisplayName("saveRecipe - saves new recipe when not already saved")
     void saveRecipe_shouldSaveRecipeIfNotExists() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
         given(savedRecipeRepository.existsByUserAndRecipe(user, recipe)).willReturn(false);
 
@@ -101,7 +91,7 @@ class SavedRecipeServiceTest {
     @DisplayName("saveRecipe - throws DuplicateSavedRecipeException when recipe already saved")
     void saveRecipe_shouldThrowIfRecipeAlreadySaved() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
         given(savedRecipeRepository.existsByUserAndRecipe(user, recipe)).willReturn(true);
 
@@ -117,7 +107,7 @@ class SavedRecipeServiceTest {
         // given
         SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
         given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.of(savedRecipe));
 
@@ -132,7 +122,7 @@ class SavedRecipeServiceTest {
     @DisplayName("deleteRecipe - throws SavedRecipeNotFoundException if recipe not saved")
     void deleteRecipe_shouldThrowIfNotSaved() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
         given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.empty());
 

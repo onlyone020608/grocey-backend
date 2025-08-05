@@ -6,11 +6,10 @@ import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SavedRecipeService {
     private final SavedRecipeRepository savedRecipeRepository;
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
     private final RecipeRepository recipeRepository;
 
     @Transactional(readOnly = true)
     public List<SavedRecipeResponse> getSavedRecipes(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         List<SavedRecipe> savedRecipes = savedRecipeRepository.findByUser(user);
 
@@ -39,8 +37,7 @@ public class SavedRecipeService {
 
     @Transactional
     public void saveRecipe(Long userId, Long recipeId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
@@ -56,8 +53,7 @@ public class SavedRecipeService {
 
     @Transactional
     public void deleteRecipe(Long userId, Long recipeId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
