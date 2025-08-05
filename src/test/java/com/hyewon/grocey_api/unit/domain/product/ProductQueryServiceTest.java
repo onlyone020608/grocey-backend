@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -62,5 +63,20 @@ public class ProductQueryServiceTest {
         // when & then
         assertThrows(ProductNotFoundException.class,
                 () ->  productQueryService.getProduct(productId));
+    }
+
+    @Test
+    @DisplayName("findRandomOnePerIngredient - should return random product per ingredient")
+    void findRandomOnePerIngredient_shouldSucceed() {
+        // given
+        List<Long> ingredientIds = List.of(1L, 2L);
+        given(productRepository.findRandomOneEachByIngredient(ingredientIds)).willReturn(
+                List.of(product));
+
+        // when
+        List<Product> resultProducts = productQueryService.findRandomOnePerIngredient(ingredientIds);
+
+        // then
+        assertThat(resultProducts).isEqualTo(List.of(product));
     }
 }
