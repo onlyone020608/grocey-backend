@@ -3,16 +3,14 @@ package com.hyewon.grocey_api.domain.recommendation.service;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.product.entity.Product;
-import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
+import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
-import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +27,7 @@ import java.util.List;
 public class FridgeRecommendationService {
     private final FridgeRecommendationRepository fridgeRecommendationRepository;
     private final FridgeQueryService fridgeQueryService;
-    private final ProductRepository productRepository;
+    private final ProductQueryService productQueryService;
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final FridgeIngredientRepository  fridgeIngredientRepository;
 
@@ -49,7 +47,7 @@ public class FridgeRecommendationService {
         }
 
 
-        List<Product> products = productRepository.findRandomOneEachByIngredient(ingredientIds);
+        List<Product> products =  productQueryService.findRandomOnePerIngredient(ingredientIds);
 
 
         FridgeRecommendation recommendation = fridgeRecommendationRepository.save(new FridgeRecommendation(fridge));

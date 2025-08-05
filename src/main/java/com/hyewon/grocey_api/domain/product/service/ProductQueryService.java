@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductQueryService {
@@ -18,4 +20,10 @@ public class ProductQueryService {
                 .orElseThrow(() -> new ProductNotFoundException(productId));
 
     }
+
+    @Transactional(readOnly = true)
+    public List<Product> findRandomOnePerIngredient(List<Long> ingredientIds){
+        return productRepository.findRandomOneEachByIngredient(ingredientIds);
+    }
+
 }
