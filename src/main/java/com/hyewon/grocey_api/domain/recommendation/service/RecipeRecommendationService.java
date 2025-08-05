@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.recommendation.service;
 
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
@@ -10,7 +10,6 @@ import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationRespo
 import com.hyewon.grocey_api.domain.recommendation.entity.RecommendationType;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class RecipeRecommendationService {
     private final RecipeRecommendationRepository recipeRecommendationRepository;
     private final UserQueryService userQueryService;
     private final RestTemplate restTemplate;
-    private final FridgeRepository fridgeRepository;
+    private final FridgeQueryService fridgeQueryService;
     private final RecipeRepository recipeRepository;
 
 
@@ -56,8 +55,7 @@ public class RecipeRecommendationService {
 
     @Transactional
     public List<RecipeRecommendationResponse> getRecommendationsByFridge(Long fridgeId) {
-        Fridge fridge = fridgeRepository.findById(fridgeId)
-                .orElseThrow(() -> new FridgeNotFoundException(fridgeId));
+        Fridge fridge = fridgeQueryService.getFridge(fridgeId);
 
         Long userId = fridge.getUsers().stream()
                 .findFirst()

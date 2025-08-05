@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.unit.domain.recommendation;
 
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
@@ -11,7 +11,6 @@ import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
 import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +25,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,7 +40,7 @@ class RecipeRecommendationServiceTest {
     @Mock private UserQueryService userQueryService;
     @Mock
     private RestTemplate restTemplate;
-    @Mock private FridgeRepository fridgeRepository;
+    @Mock private FridgeQueryService fridgeQueryService;
     @Mock private RecipeRepository recipeRepository;
     @InjectMocks
     private RecipeRecommendationService recipeRecommendationService;
@@ -109,7 +107,7 @@ class RecipeRecommendationServiceTest {
         // given
         Long fridgeId = 2L;
         Long userId = 1L;
-        given(fridgeRepository.findById(fridgeId)).willReturn(Optional.of(fridge));
+        given(fridgeQueryService.getFridge(fridgeId)).willReturn(fridge);
 
         // AI 응답 mock
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + userId;
@@ -134,18 +132,9 @@ class RecipeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getRecommendationsByFridge - throws when fridge not found")
-    void getRecommendationsByFridge_shouldThrowIfFridgeNotFound() {
-        given(fridgeRepository.findById(2L)).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> recipeRecommendationService.getRecommendationsByFridge(2L))
-                .isInstanceOf(FridgeNotFoundException.class);
-    }
-
-    @Test
     @DisplayName("getRecommendationsByFridge - throws when no recommendations")
     void getRecommendationsByFridge_shouldThrowIfEmpty() {
-        given(fridgeRepository.findById(2L)).willReturn(Optional.of(fridge));
+        given(fridgeQueryService.getFridge(2L)).willReturn(fridge);
 
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + user.getId();
         given(restTemplate.getForEntity(url, List.class))
