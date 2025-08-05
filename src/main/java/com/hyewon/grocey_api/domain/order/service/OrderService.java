@@ -2,7 +2,6 @@ package com.hyewon.grocey_api.domain.order.service;
 
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
-import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
@@ -10,10 +9,9 @@ import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.order.entity.Order;
 import com.hyewon.grocey_api.domain.order.entity.OrderItem;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.OrderNotFoundException;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,14 +25,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
-    private final CartRepository cartRepository;
+    private final UserQueryService userQueryService;
     private final CartItemRepository cartItemRepository;
 
     @Transactional(readOnly = true)
     public  List<OrderSummaryResponse> getRecentOrderSummaryByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         List<Order> recentOrders = orderRepository.findTop5ByUserOrderByCreatedAtDesc(user);
 
@@ -58,8 +54,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Page<OrderSummaryResponse> getAllOrders(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         return orderRepository.findByUser(user, pageable)
                 .map(OrderSummaryResponse::new);
@@ -67,8 +62,7 @@ public class OrderService {
 
     @Transactional
     public Long placeOrder(Long userId, OrderRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
 
         List<CartItem> selectedItems = cartItemRepository.findAllById(request.getCartItemIds());

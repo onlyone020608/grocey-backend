@@ -3,7 +3,6 @@ package com.hyewon.grocey_api.unit.domain.order;
 import com.hyewon.grocey_api.domain.cart.entity.Cart;
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
-import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
@@ -16,7 +15,7 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
 import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,8 +45,7 @@ import static org.mockito.Mockito.verify;
 class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
-    @Mock private UserRepository userRepository;
-    @Mock private CartRepository cartRepository;
+    @Mock private UserQueryService userQueryService;
     @Mock private CartItemRepository cartItemRepository;
 
     @InjectMocks
@@ -79,7 +77,7 @@ class OrderServiceTest {
         given(request.getAddress()).willReturn("123 Seoul Street");
         given(request.toPaymentMethod()).willReturn(PaymentMethod.KAKAOPAY);
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartItemRepository.findAllById(List.of(10L))).willReturn(List.of(cartItem));
 
         given(orderRepository.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
@@ -98,7 +96,7 @@ class OrderServiceTest {
         OrderRequest request = mock(OrderRequest.class);
         given(request.getCartItemIds()).willReturn(List.of());
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartItemRepository.findAllById(any())).willReturn(List.of());
 
         // when & then
@@ -123,7 +121,7 @@ class OrderServiceTest {
         anotherCart.addCartItem(cartItem);
         ReflectionTestUtils.setField(cartItem, "id", 10L);
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartItemRepository.findAllById(List.of(10L))).willReturn(List.of(cartItem));
 
         // when & then
@@ -141,7 +139,7 @@ class OrderServiceTest {
         ReflectionTestUtils.setField(request, "address", "Somewhere");
         ReflectionTestUtils.setField(request, "paymentMethod", "bitcoin"); // ⚠️ 잘못된 값 intentionally
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartItemRepository.findAllById(any())).willReturn(List.of(cartItem));
 
         // when & then
@@ -159,7 +157,7 @@ class OrderServiceTest {
         Order order = new Order(user, "Seoul", PaymentMethod.KAKAOPAY);
         ReflectionTestUtils.setField(order, "id", 100L);
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(orderRepository.findTop5ByUserOrderByCreatedAtDesc(user)).willReturn(List.of(order));
 
         // when
@@ -222,7 +220,7 @@ class OrderServiceTest {
 
         Page<Order> mockPage = new PageImpl<>(List.of(order), pageable, 1);
 
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(1L)).willReturn(user);
         given(orderRepository.findByUser(user, pageable)).willReturn(mockPage);
 
         // when
