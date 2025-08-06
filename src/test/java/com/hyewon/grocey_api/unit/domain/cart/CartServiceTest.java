@@ -10,7 +10,6 @@ import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.cart.service.CartService;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.product.entity.Product;
-import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
 import com.hyewon.grocey_api.domain.user.entity.Gender;
@@ -27,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +40,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceTest {
-    @Mock
-    private CartRepository cartRepository;
+    @Mock private CartRepository cartRepository;
     @Mock private UserQueryService userQueryService;
     @Mock private CartItemRepository cartItemRepository;
     @Mock private ProductQueryService productQueryService;
@@ -50,19 +48,44 @@ class CartServiceTest {
     @InjectMocks
     private CartService cartService;
 
-
     private User user;
     private Product product;
+    private CartItem cartItem1;
+    private CartItem cartItem2;
 
     @BeforeEach
     void setUp() {
         Fridge fridge = new Fridge(4.0, -18.0);
-        user = new User("tester", "test@email.com", "password", AgeGroup.TWENTIES, Gender.FEMALE);
-        user.assignFridge(fridge);
-        ReflectionTestUtils.setField(user, "id", 1L);
 
-        product = new Product("Milk", "Seoul Daily", 2000, "image-url");
-        ReflectionTestUtils.setField(product, "id", 1L);
+        user = User.builder()
+                .id(1L)
+                .userName("tester")
+                .email("test@email.com")
+                .password("password")
+                .ageGroup(AgeGroup.TWENTIES)
+                .gender(Gender.FEMALE)
+                .build();
+        user.assignFridge(fridge);
+
+        product = Product.builder()
+                .id(1L)
+                .productName("Milk")
+                .brandName("Seoul Daily")
+                .price(2000)
+                .imageUrl("image-url")
+                .build();
+
+        cartItem1 = CartItem.builder()
+                .id(10L)
+                .product(product)
+                .quantity(1)
+                .build();
+
+        cartItem2 = CartItem.builder()
+                .id(20L)
+                .product(product)
+                .quantity(2)
+                .build();
     }
 
     @Test
@@ -119,29 +142,22 @@ class CartServiceTest {
     void deleteCartItems_shouldRemoveItemsIfUserOwnsThem() {
         // given
         Long userId = 1L;
-        ReflectionTestUtils.setField(user, "id", userId);
-
         Cart cart = new Cart(user, user.getFridge());
         ReflectionTestUtils.setField(cart, "id", 777L);
 
-        CartItem item1 = new CartItem(product, 1);
-        CartItem item2 = new CartItem(product, 2);
-        cart.addCartItem(item1);
-        cart.addCartItem(item2);
+        cart.addCartItem(cartItem1);
+        cart.addCartItem(cartItem2);
 
-        ReflectionTestUtils.setField(item1, "id", 101L);
-        ReflectionTestUtils.setField(item2, "id", 102L);
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
+        given(userQueryService.getUserById(userId)).willReturn(user);
         given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
-        given(cartItemRepository.findAllById(List.of(101L, 102L))).willReturn(List.of(item1, item2));
+        given(cartItemRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(cartItem1, cartItem2));
 
         // when
-        cartService.deleteCartItems(userId, List.of(101L, 102L));
+        cartService.deleteCartItems(userId, List.of(10L, 20L));
 
         // then
-        assertThat(cart.getCartItems()).doesNotContain(item1, item2);
-        verify(cartItemRepository).deleteAll(List.of(item1, item2));
+        assertThat(cart.getCartItems()).doesNotContain(cartItem1, cartItem2);
+        verify(cartItemRepository).deleteAll(List.of(cartItem1, cartItem2));
     }
 
     @Test
@@ -176,50 +192,73 @@ class CartServiceTest {
         });
     }
 
+    @Test
+    @DisplayName("deleteCartItems - throws AccessDeniedException when user does not own one of the items")
+    void deleteCartItems_shouldThrowIfItemNotBelongsToUserCart2() {
+        // given
+        Long userId = 1L;
 
+        Cart cart = Cart.builder()
+                .id(20L)
+                .user(user)
+                .fridge(user.getFridge())
+                .cartItems(new ArrayList<>())
+                .build();
+
+        Cart cart2 = Cart.builder()
+                .id(30L)
+                .build();
+
+        cartItem1.assignCart(cart2);
+
+
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+        given(cartItemRepository.findAllById(List.of(20L))).willReturn(List.of(cartItem1));
+
+        // when & then
+        assertThrows(AccessDeniedException.class, () -> {
+            cartService.deleteCartItems(userId, List.of(20L));
+        });
+    }
 
     @Test
     @DisplayName("updateCartItemQuantity - updates quantity successfully when cart item belongs to user")
     void updateCartItemQuantity_shouldUpdateQuantityIfUserOwnsItem() {
         // given
         Long userId = 1L;
-        Long cartItemId = 100L;
         int newQuantity = 5;
 
-        UpdateCartItemRequest request = new UpdateCartItemRequest(cartItemId, newQuantity);
+        UpdateCartItemRequest request = new UpdateCartItemRequest(10L, newQuantity);
 
         Cart cart = new Cart(user, user.getFridge());
-        ReflectionTestUtils.setField(user, "id", userId);
-        CartItem cartItem = new CartItem(product, 2);
-        cart.addCartItem(cartItem);
-        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
+        cart.addCartItem(cartItem1);
 
-        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
+        given(cartItemRepository.findById(10L)).willReturn(Optional.of(cartItem1));
 
         // when
         cartService.updateCartItemQuantity(userId, request);
 
         // then
-        assertThat(cartItem.getQuantity()).isEqualTo(newQuantity);
+        assertThat(cartItem1.getQuantity()).isEqualTo(newQuantity);
     }
+
 
     @Test
     @DisplayName("updateCartItemQuantity - throws AccessDeniedException if user does not own the cart item")
     void updateCartItemQuantity_shouldThrowIfUserDoesNotOwnItem() {
         // given
-        Long actualOwnerId = 1L;
         Long attackerId = 999L; // 다른 사용자
-        Long cartItemId = 100L;
+        Long cartItemId = 10L;
 
-        User anotherUser = new User("other", "other@email.com", "pass", AgeGroup.TWENTIES, Gender.MALE);
-        ReflectionTestUtils.setField(anotherUser, "id", actualOwnerId);
+        Cart cart = Cart.builder()
+                .user(user)
+                .fridge(user.getFridge())
+                .cartItems(new ArrayList<>())
+                .build();
 
-        Cart cart = new Cart(anotherUser, anotherUser.getFridge());
-        CartItem cartItem = new CartItem(product, 2);
-        cart.addCartItem(cartItem);
-        ReflectionTestUtils.setField(cartItem, "id", cartItemId);
-
-        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem));
+        cart.addCartItem(cartItem1);
+        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem1));
 
         UpdateCartItemRequest request = new UpdateCartItemRequest(cartItemId, 5);
 
@@ -236,14 +275,14 @@ class CartServiceTest {
     void getCart_shouldReturnCartWithItems() {
         // given
         Long userId = 1L;
-        ReflectionTestUtils.setField(user, "id", userId);
+        Cart cart = Cart.builder()
+               .id(10L)
+               .user(user)
+               .fridge(user.getFridge())
+                .cartItems(new ArrayList<>())
+                .build();
 
-        Cart cart = new Cart(user, user.getFridge());
-        ReflectionTestUtils.setField(cart, "id", 100L);
-
-        CartItem item1 = new CartItem(product, 2);
-        ReflectionTestUtils.setField(item1, "id", 10L);
-        cart.addCartItem(item1);
+        cart.addCartItem(cartItem1);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
@@ -252,10 +291,10 @@ class CartServiceTest {
         CartResponse response = cartService.getCart(userId);
 
         // then
-        assertThat(response.getCartId()).isEqualTo(100L);
+        assertThat(response.getCartId()).isEqualTo(10L);
         assertThat(response.getItems()).hasSize(1);
         assertThat(response.getItems().get(0).getProductName()).isEqualTo(product.getProductName());
-        assertThat(response.getItems().get(0).getQuantity()).isEqualTo(2);
+        assertThat(response.getItems().get(0).getQuantity()).isEqualTo(1);
     }
 
     @Test
@@ -263,7 +302,6 @@ class CartServiceTest {
     void getCart_shouldThrowWhenCartDoesNotExist() {
         // given
         Long userId = 1L;
-        ReflectionTestUtils.setField(user, "id", userId);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartRepository.findByUser(user)).willReturn(Optional.empty());
@@ -281,10 +319,21 @@ class CartServiceTest {
         AddCartItemRequest request1 = new AddCartItemRequest(1L, 2);
         AddCartItemRequest request2 = new AddCartItemRequest(2L, 1);
 
-        Product product1 = new Product("Milk", "BrandA", 1000, "image1");
-        Product product2 = new Product("Bread", "BrandB", 2000, "image2");
-        ReflectionTestUtils.setField(product1, "id", 1L);
-        ReflectionTestUtils.setField(product2, "id", 2L);
+        Product product1 = Product.builder()
+                .id(1L)
+                .productName("Milk")
+                .brandName("BrandA")
+                .price(1000)
+                .imageUrl("image1")
+                .build();
+
+        Product product2 = Product.builder()
+                .id(2L)
+                .productName("Bread")
+                .brandName("BrandB")
+                .price(2000)
+                .imageUrl("image2")
+                .build();
 
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(productQueryService.getProduct(1L)).willReturn(product1);
@@ -298,15 +347,4 @@ class CartServiceTest {
         // then
         verify(cartItemRepository).saveAll(anyList());
     }
-
-
-
-
-
-
-
-
-
-
-
 }
