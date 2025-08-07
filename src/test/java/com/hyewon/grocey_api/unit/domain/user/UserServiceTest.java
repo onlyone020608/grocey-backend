@@ -28,8 +28,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserRepository userRepository;
     @Mock private UserAllergyRepository userAllergyRepository;
     @Mock private AllergyRepository allergyRepository;
     @Mock private UserFoodPreferenceRepository userFoodPreferenceRepository;
@@ -42,11 +41,42 @@ class UserServiceTest {
     private UserService userService;
 
     private User user;
+    private FoodPreference foodPreference;
+    private Allergy allergy1;
+    private Allergy allergy2;
+    private PreferenceIngredient preferenceIngredient1;
+    private PreferenceIngredient preferenceIngredient2;
 
     @BeforeEach
     void setUp() {
-        user = new User("tester", "tester@email.com", "pw", AgeGroup.TWENTIES, Gender.FEMALE);
-        ReflectionTestUtils.setField(user, "id", 1L);
+        user = User.builder()
+                .id(1L)
+                .userName("tester")
+                .email("tester@email.com")
+                .password("pw")
+                .gender(Gender.FEMALE)
+                .ageGroup(AgeGroup.TWENTIES)
+                .build();
+        foodPreference = FoodPreference.builder()
+                .id(10L)
+                .name("Meat")
+                .build();
+        allergy1 = Allergy.builder()
+                .id(10L)
+                .allergyName("Egg")
+                .build();
+        allergy2 = Allergy.builder()
+                .id(20L)
+                .allergyName("Milk")
+                .build();
+        preferenceIngredient1 = PreferenceIngredient.builder()
+                .id(20L)
+                .name("Garlic")
+                .build();
+        preferenceIngredient2 = PreferenceIngredient.builder()
+                .id(30L)
+                .name("Cucumber")
+                .build();
     }
 
     @Test
@@ -104,9 +134,7 @@ class UserServiceTest {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
-        UserUpdateRequest request = new UserUpdateRequest();
-        ReflectionTestUtils.setField(request, "userName", "newName");
-        ReflectionTestUtils.setField(request, "email", "new@email.com");
+        UserUpdateRequest request = new UserUpdateRequest("newName", "new@email.com");
 
         // when
         userService.updateUser(1L, request);
@@ -122,9 +150,7 @@ class UserServiceTest {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
-        UserUpdateRequest request = new UserUpdateRequest();
-        ReflectionTestUtils.setField(request, "userName", null);
-        ReflectionTestUtils.setField(request, "email", "updated@email.com");
+        UserUpdateRequest request = new UserUpdateRequest(null, "updated@email.com");
 
         // when
         userService.updateUser(1L, request);
@@ -140,9 +166,7 @@ class UserServiceTest {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 
-        UserUpdateRequest request = new UserUpdateRequest();
-        ReflectionTestUtils.setField(request, "userName", "ignored");
-
+        UserUpdateRequest request = new UserUpdateRequest("ignored", "new@email.con");
         // when & then
         assertThatThrownBy(() -> userService.updateUser(1L, request))
                 .isInstanceOf(UserNotFoundException.class);
@@ -153,9 +177,7 @@ class UserServiceTest {
     void updateGender_shouldUpdateGender() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        GenderUpdateRequest request = new GenderUpdateRequest();
-        ReflectionTestUtils.setField(request, "gender", "male");
+        GenderUpdateRequest request = new GenderUpdateRequest("male");
 
         // when
         userService.updateGender(1L, request);
@@ -167,9 +189,10 @@ class UserServiceTest {
     @Test
     @DisplayName("updateGender - throws exception for invalid gender value")
     void updateGender_shouldThrowForInvalidGender() {
-        GenderUpdateRequest request = new GenderUpdateRequest();
-        ReflectionTestUtils.setField(request, "gender", "invalid");
+        // given
+        GenderUpdateRequest request = new GenderUpdateRequest("invalid");
 
+        // when & then
         assertThatThrownBy(() -> request.toEnum())
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("Invalid gender value");
@@ -181,8 +204,7 @@ class UserServiceTest {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
-        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest();
-        ReflectionTestUtils.setField(request, "ageValue", 30);
+        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest(30);
 
         // when
         userService.updateAgeGroup(1L, request);
@@ -194,9 +216,10 @@ class UserServiceTest {
     @Test
     @DisplayName("updateAgeGroup - throws exception for invalid age group value")
     void updateAgeGroup_shouldThrowForInvalidAge() {
-        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest();
-        ReflectionTestUtils.setField(request, "ageValue", 999); // 유효하지 않은 값
+        // given
+        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest(999);
 
+        //when & then
         assertThatThrownBy(() -> request.toEnum())
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("Invalid age group value");
@@ -208,15 +231,8 @@ class UserServiceTest {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
-        Allergy allergy1 = new Allergy("Egg");
-        Allergy allergy2 = new Allergy("Milk");
-        ReflectionTestUtils.setField(allergy1, "id", 100L);
-        ReflectionTestUtils.setField(allergy2, "id", 200L);
-
-        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest();
-        ReflectionTestUtils.setField(request, "allergyIds", List.of(100L, 200L));
-
-        given(allergyRepository.findAllById(List.of(100L, 200L))).willReturn(List.of(allergy1, allergy2));
+        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(10L, 20L));
+        given(allergyRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(allergy1, allergy2));
 
         // when
         userService.updateUserAllergies(1L, request);
@@ -235,15 +251,8 @@ class UserServiceTest {
     void updateUserAllergies_shouldThrowIfAllergyIdInvalid() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        Allergy allergy = new Allergy("Egg");
-        ReflectionTestUtils.setField(allergy, "id", 100L);
-
-        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest();
-        ReflectionTestUtils.setField(request, "allergyIds", List.of(100L, 999L));
-
-        // only one found
-        given(allergyRepository.findAllById(List.of(100L, 999L))).willReturn(List.of(allergy));
+        given(allergyRepository.findAllById(List.of(10L, 999L))).willReturn(List.of(allergy1));
+        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(10L, 999L));
 
         // when & then
         assertThatThrownBy(() -> userService.updateUserAllergies(1L, request))
@@ -256,22 +265,14 @@ class UserServiceTest {
     void updateUserPreferences_shouldUpdateAll() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        FoodPreference food1 = new FoodPreference("Meat");
-        PreferenceIngredient pi1 = new PreferenceIngredient("Garlic");
-        PreferenceIngredient pi2 = new PreferenceIngredient("Cucumber");
-        ReflectionTestUtils.setField(food1, "id", 10L);
-        ReflectionTestUtils.setField(pi1, "id", 20L);
-        ReflectionTestUtils.setField(pi2, "id", 30L);
-
-        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
-        ReflectionTestUtils.setField(request, "foodPreferenceIds", List.of(10L));
-        ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(20L));
-        ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(30L));
-
-        given(foodPreferenceRepository.findAllById(List.of(10L))).willReturn(List.of(food1));
-        given(preferenceIngredientRepository.findAllById(List.of(20L))).willReturn(List.of(pi1));
-        given(preferenceIngredientRepository.findAllById(List.of(30L))).willReturn(List.of(pi2));
+        PreferenceUpdateRequest request = new PreferenceUpdateRequest(
+                List.of(10L),
+                List.of(20L),
+                List.of(30L)
+        );
+        given(foodPreferenceRepository.findAllById(List.of(10L))).willReturn(List.of(foodPreference));
+        given(preferenceIngredientRepository.findAllById(List.of(20L))).willReturn(List.of(preferenceIngredient1));
+        given(preferenceIngredientRepository.findAllById(List.of(30L))).willReturn(List.of(preferenceIngredient2));
 
         // when
         userService.updateUserPreferences(1L, request);
@@ -286,18 +287,12 @@ class UserServiceTest {
     @Test
     @DisplayName("updateUserPreferences - throws if foodPreferenceIds are invalid")
     void updateUserPreferences_shouldThrowForInvalidFoodPreference() {
+        // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(foodPreferenceRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(foodPreference));
+        PreferenceUpdateRequest request = new PreferenceUpdateRequest(List.of(10L, 99L), List.of(), List.of());
 
-        ReflectionTestUtils.setField(user, "id", 1L);
-
-        FoodPreference food = new FoodPreference("Meat");
-        ReflectionTestUtils.setField(food, "id", 10L);
-
-        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
-        ReflectionTestUtils.setField(request, "foodPreferenceIds", List.of(10L, 99L));
-
-        given(foodPreferenceRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(food));
-
+        // when & then
         assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("food preference");
@@ -306,16 +301,14 @@ class UserServiceTest {
     @Test
     @DisplayName("updateUserPreferences - throws if preferredIngredientIds are invalid")
     void updateUserPreferences_shouldThrowForInvalidPreferredIngredient() {
+        // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        PreferenceIngredient pi = new PreferenceIngredient("Onion");
-        ReflectionTestUtils.setField(pi, "id", 10L);
+        given(preferenceIngredientRepository.findAllById(List.of(20L, 99L))).willReturn(List.of(preferenceIngredient1));
 
         PreferenceUpdateRequest request = new PreferenceUpdateRequest();
-        ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(10L, 99L));
+        ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(20L, 99L));
 
-        given(preferenceIngredientRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(pi));
-
+        // when & then
         assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("preferred ingredient");
@@ -324,16 +317,14 @@ class UserServiceTest {
     @Test
     @DisplayName("updateUserPreferences - throws if dislikedIngredientIds are invalid")
     void updateUserPreferences_shouldThrowForInvalidDislikedIngredient() {
+        // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        PreferenceIngredient pi = new PreferenceIngredient("Mushroom");
-        ReflectionTestUtils.setField(pi, "id", 10L);
+        given(preferenceIngredientRepository.findAllById(List.of(20L, 999L))).willReturn(List.of(preferenceIngredient1));
 
         PreferenceUpdateRequest request = new PreferenceUpdateRequest();
-        ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(10L, 999L));
+        ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(20L, 999L));
 
-        given(preferenceIngredientRepository.findAllById(List.of(10L, 999L))).willReturn(List.of(pi));
-
+        // when & then
         assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("disliked ingredient");
@@ -344,7 +335,6 @@ class UserServiceTest {
     void updateVeganStatus_shouldUpdateIsVegan() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
         VeganUpdateRequest request = new VeganUpdateRequest(true);
 
         // when
@@ -359,7 +349,6 @@ class UserServiceTest {
     void updateVeganStatus_shouldThrowIfUserNotFound() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
-
         VeganUpdateRequest request = new VeganUpdateRequest(true);
 
         // when & then
