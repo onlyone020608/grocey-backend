@@ -6,13 +6,10 @@ import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.service.SavedRecipeService;
-import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
-import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,22 +38,36 @@ class SavedRecipeServiceTest {
 
     private User user;
     private Recipe recipe;
+    private SavedRecipe savedRecipe;
 
     @BeforeEach
     void setUp() {
-        user = new User("tester", "test@email.com", "pw", AgeGroup.TWENTIES, Gender.FEMALE);
-        ReflectionTestUtils.setField(user, "id", 1L);
+        user = User.builder()
+                .id(1L)
+                .userName("tester")
+                .email("test@email.com")
+                .password("pw")
+                .build();
 
-        recipe = new Recipe("Kimchi Fried Rice", "step1\nstep2", 15, 2);
-        ReflectionTestUtils.setField(recipe, "id", 10L);
-        ReflectionTestUtils.setField(recipe, "imageUrl", "img.jpg");
+        recipe = Recipe.builder()
+                .id(10L)
+                .recipeName("Kimchi Fried Rice")
+                .description("step1\nstep2")
+                .cookingTime(15)
+                .servings(2)
+                .imageUrl("img.jpg")
+                .build();
+
+        savedRecipe = SavedRecipe.builder()
+                .user(user)
+                .recipe(recipe)
+                .build();
     }
 
     @Test
     @DisplayName("getSavedRecipes - returns saved recipe list for user")
     void getSavedRecipes_shouldReturnList() {
         // given
-        SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(savedRecipeRepository.findByUser(user)).willReturn(List.of(savedRecipe));
 
@@ -105,8 +115,6 @@ class SavedRecipeServiceTest {
     @DisplayName("deleteRecipe - deletes saved recipe if exists")
     void deleteRecipe_shouldDeleteIfExists() {
         // given
-        SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
-
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
         given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.of(savedRecipe));
