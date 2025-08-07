@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -33,21 +32,34 @@ class FridgeRecommendationServiceTest {
 
     private Fridge fridge;
     private Product product;
-    private FridgeRecommendation recommendation;
+    private FridgeRecommendation fridgeRecommendation;
 
     @BeforeEach
     void setUp() {
-        fridge = new Fridge(4.0, -18.0);
-        ReflectionTestUtils.setField(fridge, "id", 1L);
+        fridge = Fridge.builder()
+                .id(1L)
+                .fridgeTemperature(4.0)
+                .freezerTemperature(-18.0)
+                .build();
 
-        product = new Product("Milk", "SeoulDairy", 2000, "milk.png");
-        ReflectionTestUtils.setField(product, "id", 10L);
+        product = Product.builder()
+                .id(10L)
+                .productName("Milk")
+                .brandName("SeoulDairy")
+                .price(2000)
+                .imageUrl("milk.png")
+                .build();
 
-        recommendation = new FridgeRecommendation(fridge);
-        ReflectionTestUtils.setField(recommendation, "id", 100L);
+        fridgeRecommendation = FridgeRecommendation.builder()
+                .id(100L)
+                .fridge(fridge)
+                .build();
 
-        FridgeRecommendedProduct rp = new FridgeRecommendedProduct(product, recommendation);
-        recommendation.getRecommendedProducts().add(rp);
+        FridgeRecommendedProduct recommendedProduct = FridgeRecommendedProduct.builder()
+                .product(product)
+                .fridgeRecommendation(fridgeRecommendation)
+                .build();
+        fridgeRecommendation.addRecommendationProduct(recommendedProduct);
     }
 
     @Test
@@ -55,7 +67,7 @@ class FridgeRecommendationServiceTest {
     void getLatestRecommendation_shouldReturnDto() {
         // given
         given(fridgeRecommendationRepository.findTopByFridgeIdOrderByCreatedAtDesc(1L))
-                .willReturn(Optional.of(recommendation));
+                .willReturn(Optional.of(fridgeRecommendation));
 
         // when
         FridgeRecommendationResponse result = fridgeRecommendationService.getLatestRecommendation(1L);

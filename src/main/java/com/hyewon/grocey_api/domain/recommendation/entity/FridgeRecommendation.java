@@ -3,9 +3,7 @@ package com.hyewon.grocey_api.domain.recommendation.entity;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class FridgeRecommendation extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -28,5 +28,9 @@ public class FridgeRecommendation extends BaseTimeEntity {
 
     public FridgeRecommendation(Fridge fridge) {
         this.fridge = fridge;
+    }
+
+    public void addRecommendationProduct(FridgeRecommendedProduct product) {
+        recommendedProducts.add(product);
     }
 }
