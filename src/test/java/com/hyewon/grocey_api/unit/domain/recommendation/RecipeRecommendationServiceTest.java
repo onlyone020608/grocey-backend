@@ -7,8 +7,6 @@ import com.hyewon.grocey_api.domain.recipe.service.RecipeQueryService;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.service.RecipeRecommendationService;
-import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
-import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
@@ -24,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,11 +36,14 @@ class RecipeRecommendationServiceTest {
 
     @Mock
     private RecipeRecommendationRepository recipeRecommendationRepository;
-    @Mock private UserQueryService userQueryService;
+    @Mock
+    private UserQueryService userQueryService;
     @Mock
     private RestTemplate restTemplate;
-    @Mock private FridgeQueryService fridgeQueryService;
-    @Mock private RecipeQueryService recipeQueryService;
+    @Mock
+    private FridgeQueryService fridgeQueryService;
+    @Mock
+    private RecipeQueryService recipeQueryService;
     @InjectMocks
     private RecipeRecommendationService recipeRecommendationService;
 
@@ -51,15 +53,27 @@ class RecipeRecommendationServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = new User("tester", "test@email.com", "pw", AgeGroup.TWENTIES, Gender.FEMALE);
-        ReflectionTestUtils.setField(user, "id", 1L);
-
-        fridge = new Fridge(4.0, -18.0);
-        ReflectionTestUtils.setField(fridge, "id", 2L);
+        user = User.builder()
+                .id(1L)
+                .userName("tester")
+                .email("test@email.com")
+                .password("pw")
+                .build();
+        fridge = Fridge.builder()
+                .id(2L)
+                .fridgeTemperature(4.0)
+                .freezerTemperature(-18.0)
+                .users(new ArrayList<>())
+                .build();
         user.assignFridge(fridge);
 
-        recipe = new Recipe("Bibimbap", "step1\nstep2", 20, 2);
-        ReflectionTestUtils.setField(recipe, "imageUrl", "bibimbap.jpg");
+        recipe = Recipe.builder()
+                .recipeName("Bibimbap")
+                .description("step1\nstep2")
+                .cookingTime(20)
+                .servings(2)
+                .imageUrl("bibimbap.jpg")
+                .build();
     }
 
     @Test
@@ -143,8 +157,4 @@ class RecipeRecommendationServiceTest {
         assertThatThrownBy(() -> recipeRecommendationService.getRecommendationsByFridge(2L))
                 .isInstanceOf(RecommendationNotFoundException.class);
     }
-
-
-
-
 }
