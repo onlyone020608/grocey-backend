@@ -2,12 +2,16 @@ package com.hyewon.grocey_api.domain.recipe.entity;
 
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 public class RecipeIngredient {
 
     @Id

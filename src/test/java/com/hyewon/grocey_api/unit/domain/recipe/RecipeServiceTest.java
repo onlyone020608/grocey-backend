@@ -8,9 +8,6 @@ import com.hyewon.grocey_api.domain.recipe.repository.RecipeIngredientRepository
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.service.RecipeService;
-import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
-import com.hyewon.grocey_api.domain.user.entity.Gender;
-import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,37 +28,45 @@ import static org.mockito.BDDMockito.given;
 class RecipeServiceTest {
     @Mock
     private RecipeRepository recipeRepository;
-    @Mock private RecipeIngredientRepository recipeIngredientRepository;
-
-    @Mock private SavedRecipeRepository savedRecipeRepository;
+    @Mock
+    private RecipeIngredientRepository recipeIngredientRepository;
+    @Mock
+    private SavedRecipeRepository savedRecipeRepository;
     @InjectMocks
     private RecipeService recipeService;
 
     private Recipe recipe;
+    private Ingredient ingredient;
+    private RecipeIngredient recipeIngredient;
 
     @BeforeEach
     void setUp() {
-        recipe = new Recipe(
-                "Kimchi Fried Rice",
-                "1. Put oil\n2. Add kimchi\n3. Stir-fry with rice",
-                15,
-                2
-        );
-        ReflectionTestUtils.setField(recipe, "id", 1L);
+        recipe = Recipe.builder()
+                .id(1L)
+                .recipeName("Kimchi Fried Rice")
+                .cookingTime(15)
+                .servings(2)
+                .description("1. Put oil\n2. Add kimchi\n3. Stir-fry with rice")
+                .build();
+
+        ingredient = Ingredient.builder()
+                .ingredientName("Kimchi")
+                .imageUrl("url.com/kimchi")
+                .build();
+
+        recipeIngredient = RecipeIngredient.builder()
+                .recipe(recipe)
+                .ingredient(ingredient)
+                .quantity("1 cup")
+                .build();
     }
 
     @Test
     @DisplayName("getRecipeDetail - returns detailed recipe with ingredients")
     void getRecipeDetail_shouldReturnDetail() {
         // given
-        User user = new User("tester", "email@test.com", "pw", AgeGroup.TWENTIES, Gender.FEMALE);
-        ReflectionTestUtils.setField(user, "id", 1L);
-
-        Ingredient ingredient = new Ingredient("Kimchi", "url.com/kimchi");
-        RecipeIngredient ri = new RecipeIngredient(recipe, ingredient, "1 cup");
-
         given(recipeRepository.findById(1L)).willReturn(Optional.of(recipe));
-        given(recipeIngredientRepository.findByRecipeId(1L)).willReturn(List.of(ri));
+        given(recipeIngredientRepository.findByRecipeId(1L)).willReturn(List.of(recipeIngredient));
         given(savedRecipeRepository.existsByUserIdAndRecipeId(1L, 1L)).willReturn(true);
 
         // when
