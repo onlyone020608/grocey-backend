@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -24,16 +23,19 @@ import static org.mockito.BDDMockito.given;
 public class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
-
     @InjectMocks
     private ProductService productService;
-
     private Product product;
 
     @BeforeEach
     void setUp() {
-        product = new Product("Milk", "SeoulDairy", 2000, "milk.png");
-        ReflectionTestUtils.setField(product, "id", 1L);
+        product = Product.builder()
+                .id(1L)
+                .productName("Milk")
+                .brandName("SeoulDairy")
+                .price(2000)
+                .imageUrl("milk.png")
+                .build();
     }
 
     @Test
