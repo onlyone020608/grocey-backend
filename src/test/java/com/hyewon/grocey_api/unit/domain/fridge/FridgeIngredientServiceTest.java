@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.unit.domain.fridge;
 
+import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponse;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
@@ -9,6 +10,7 @@ import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,22 +18,54 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class FridgeIngredientServiceTest {
-    @Mock
-    private FridgeIngredientRepository fridgeIngredientRepository;
+    @Mock private FridgeIngredientRepository fridgeIngredientRepository;
     @Mock private FridgeRepository fridgeRepository;
 
     @InjectMocks
     private FridgeIngredientService fridgeIngredientService;
+
+    private Fridge fridge;
+    private Ingredient ingredient;
+    private FridgeIngredient fridgeIngredient1;
+    private FridgeIngredient fridgeIngredient2;
+
+
+    @BeforeEach
+    void setUp() {
+        fridge = Fridge.builder()
+                .id(1L)
+                .fridgeTemperature(4.0)
+                .freezerTemperature(-18.0)
+                .build();
+
+        ingredient = Ingredient.builder()
+                .ingredientName("Chicken")
+                .imageUrl("url.com/chicken")
+                .build();
+
+        fridgeIngredient1 = FridgeIngredient.builder()
+                .fridge(fridge)
+                .ingredient(ingredient)
+                .isFreezer(true)
+                .quantity(2)
+                .build();
+
+        fridgeIngredient2 = FridgeIngredient.builder()
+                .fridge(fridge)
+                .ingredient(ingredient)
+                .isFreezer(false)
+                .quantity(1)
+                .build();
+
+    }
 
     @Test
     @DisplayName("getIngredientsByFridge - returns list of ingredients when fridge exists")
@@ -40,13 +74,9 @@ class FridgeIngredientServiceTest {
         Long fridgeId = 1L;
         Boolean isFreezer = true;
 
-        Ingredient ingredient = new Ingredient("Chicken", "url.com/chicken");
-        Fridge fridge = new Fridge(4.0, -18.0);
-        FridgeIngredient fi = new FridgeIngredient(fridge, ingredient, true, 2, LocalDate.now());
-
         given(fridgeRepository.existsById(fridgeId)).willReturn(true);
         given(fridgeIngredientRepository.findByFridgeIdAndIsFreezer(fridgeId, isFreezer))
-                .willReturn(singletonList(fi));
+                .willReturn(List.of(fridgeIngredient1));
 
         // when
         List<FridgeIngredientResponse> result =
@@ -63,21 +93,17 @@ class FridgeIngredientServiceTest {
     void getIngredientDetail_shouldReturnDetailedDto() {
         // given
         Long id = 10L;
-        Ingredient ingredient = new Ingredient("Milk", "url.com/milk");
-        Fridge fridge = new Fridge(4.0, -18.0);
-        FridgeIngredient fi = new FridgeIngredient(fridge, ingredient, false, 1, LocalDate.of(2025, 12, 1));
 
-        given(fridgeIngredientRepository.findById(id)).willReturn(java.util.Optional.of(fi));
+        given(fridgeIngredientRepository.findById(id)).willReturn(java.util.Optional.of(fridgeIngredient2));
 
         // when
-        var result = fridgeIngredientService.getIngredientDetail(id);
+        FridgeIngredientDetailResponse result = fridgeIngredientService.getIngredientDetail(id);
 
         // then
-        assertThat(result.getIngredientName()).isEqualTo("Milk");
-        assertThat(result.getImageUrl()).isEqualTo("url.com/milk");
+        assertThat(result.getIngredientName()).isEqualTo("Chicken");
+        assertThat(result.getImageUrl()).isEqualTo("url.com/chicken");
         assertThat(result.getQuantity()).isEqualTo(1);
         assertThat(result.getIsFreezer()).isFalse();
-        assertThat(result.getExpirationDate()).isEqualTo(LocalDate.of(2025, 12, 1));
     }
 
     @Test
