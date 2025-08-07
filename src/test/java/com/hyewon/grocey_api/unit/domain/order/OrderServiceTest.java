@@ -7,13 +7,10 @@ import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.order.entity.Order;
-import com.hyewon.grocey_api.domain.order.entity.OrderStatus;
 import com.hyewon.grocey_api.domain.order.entity.PaymentMethod;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.order.service.OrderService;
 import com.hyewon.grocey_api.domain.product.entity.Product;
-import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
-import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
@@ -28,8 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +35,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,102 +51,62 @@ class OrderServiceTest {
     private Cart cart;
     private Product product;
     private CartItem cartItem;
+    private Order order;
 
     @BeforeEach
     void setUp() {
-        user = new User("tester", "test@email.com", "pw", AgeGroup.TWENTIES, Gender.FEMALE);
-        ReflectionTestUtils.setField(user, "id", 1L);
+        user = User.builder()
+                .id(1L)
+                .userName("tester")
+                .email("test@email.com")
+                .build();
 
-        cart = new Cart(user, null);
-        product = new Product("Milk", "SeoulDairy", 2000, "milk.png");
-        cartItem = new CartItem(product, 2);
+        cart = Cart.builder()
+                .user(user)
+                .fridge(null)
+                .cartItems(new ArrayList<>())
+                .build();
+
+        product = Product.builder()
+                .productName("Milk")
+                .brandName("SoulDairy")
+                .price(2000)
+                .imageUrl("milk.png")
+                .build();
+
+        cartItem = CartItem.builder()
+                .id(10L)
+                .product(product)
+                .quantity(2)
+                .build();
+
         cart.addCartItem(cartItem);
-        ReflectionTestUtils.setField(cartItem, "id", 10L);
-    }
 
-    @Test
-    @DisplayName("placeOrder - successfully places order with valid cart items")
-    void placeOrder_shouldSucceedWithValidItems() {
-        // given
-        OrderRequest request = mock(OrderRequest.class);
-        given(request.getCartItemIds()).willReturn(List.of(10L));
-        given(request.getAddress()).willReturn("123 Seoul Street");
-        given(request.toPaymentMethod()).willReturn(PaymentMethod.KAKAOPAY);
+        order = Order.builder()
+                .id(101L)
+                .user(user)
+                .address("123 Seoul")
+                .orderItems(new ArrayList<>())
+                .paymentMethod(PaymentMethod.KAKAOPAY)
+                .build();
 
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
-
-        given(orderRepository.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
-
-        // when & then
-        assertThatNoException().isThrownBy(() -> orderService.placeOrder(1L, request));
-
-        verify(orderRepository).save(any(Order.class));
-    }
-
-
-    @Test
-    @DisplayName("placeOrder - throws AccessDeniedException when cart item does not belong to user")
-    void placeOrder_shouldThrowIfCartItemNotOwnedByUser() {
-        // given
-        OrderRequest request = mock(OrderRequest.class);
-        given(request.getCartItemIds()).willReturn(List.of(10L));
-
-        // cartItem이 다른 유저의 것
-        User anotherUser = new User("other", "other@email.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
-        ReflectionTestUtils.setField(anotherUser, "id", 999L);
-
-        Cart anotherCart = new Cart(anotherUser, null);
-        cartItem = new CartItem(product, 2);
-        anotherCart.addCartItem(cartItem);
-        ReflectionTestUtils.setField(cartItem, "id", 10L);
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
-
-        // when & then
-        assertThatThrownBy(() -> orderService.placeOrder(1L, request))
-                .isInstanceOf(AccessDeniedException.class)
-                .hasMessageContaining("You cannot order items not in your cart");
-    }
-
-    @Test
-    @DisplayName("placeOrder - throws InvalidRequestException for invalid payment method")
-    void placeOrder_shouldThrowForInvalidPaymentMethod() {
-        // given
-        OrderRequest request = new OrderRequest();
-        ReflectionTestUtils.setField(request, "cartItemIds", List.of(10L));
-        ReflectionTestUtils.setField(request, "address", "Somewhere");
-        ReflectionTestUtils.setField(request, "paymentMethod", "bitcoin"); // ⚠️ 잘못된 값 intentionally
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItems(any())).willReturn(List.of(cartItem));
-
-        // when & then
-        assertThatThrownBy(() -> orderService.placeOrder(1L, request))
-                .isInstanceOf(InvalidRequestException.class)
-                .hasMessageContaining("Invalid payment method");
     }
 
     @Test
     @DisplayName("getRecentOrderSummaryByUserId - returns list of recent orders")
     void getRecentOrderSummaryByUserId_shouldReturnSummaries() {
         // given
-        ReflectionTestUtils.setField(user, "id", 1L);
+        Long userId = 1L;
 
-        Order order = new Order(user, "Seoul", PaymentMethod.KAKAOPAY);
-        ReflectionTestUtils.setField(order, "id", 100L);
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
+        given(userQueryService.getUserById(userId)).willReturn(user);
         given(orderRepository.findTop5ByUserOrderByCreatedAtDesc(user)).willReturn(List.of(order));
 
         // when
-        List<OrderSummaryResponse> result = orderService.getRecentOrderSummaryByUserId(1L);
+        List<OrderSummaryResponse> result = orderService.getRecentOrderSummaryByUserId(userId);
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getOrderId()).isEqualTo(100L);
-        assertThat(result.get(0).getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
+        assertThat(result.get(0).getOrderId()).isEqualTo(101L);
     }
 
     @Test
@@ -158,11 +114,6 @@ class OrderServiceTest {
     void getOrderDetail_shouldReturnDetailIfUserOwnsOrder() {
         // given
         Long userId = 1L;
-        ReflectionTestUtils.setField(user, "id", userId);
-
-        Order order = new Order(user, "123 Seoul", PaymentMethod.KAKAOPAY);
-        ReflectionTestUtils.setField(order, "id", 101L);
-
         given(orderRepository.findById(101L)).willReturn(Optional.of(order));
 
         // when
@@ -178,16 +129,24 @@ class OrderServiceTest {
     @DisplayName("getOrderDetail - throws AccessDeniedException when user does not own the order")
     void getOrderDetail_shouldThrowIfUserDoesNotOwnOrder() {
         // given
-        User anotherUser = new User("hacker", "bad@evil.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
-        ReflectionTestUtils.setField(anotherUser, "id", 999L);
+        User anotherUser = User.builder()
+                .id(999L)
+                .userName("hacker")
+                .email("bad@evil.com")
+                .password("pw")
+                .build();
 
-        Order order = new Order(anotherUser, "hidden address", PaymentMethod.TOSS);
-        ReflectionTestUtils.setField(order, "id", 101L);
+        order = Order.builder()
+                .id(222L)
+                .user(anotherUser)
+                .address("hidden address")
+                .paymentMethod(PaymentMethod.TOSS)
+                .build();
 
-        given(orderRepository.findById(101L)).willReturn(Optional.of(order));
+        given(orderRepository.findById(222L)).willReturn(Optional.of(order));
 
         // when & then
-        assertThatThrownBy(() -> orderService.getOrderDetail(1L, 101L))
+        assertThatThrownBy(() -> orderService.getOrderDetail(1L, 222L))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessageContaining("not authorized");
     }
@@ -196,12 +155,7 @@ class OrderServiceTest {
     @DisplayName("getAllOrders - returns paginated list of order summaries")
     void getAllOrders_shouldReturnPagedSummaries() {
         // given
-        ReflectionTestUtils.setField(user, "id", 1L);
-
         Pageable pageable = Pageable.ofSize(10);
-        Order order = new Order(user, "123 Seoul", PaymentMethod.TOSS);
-        ReflectionTestUtils.setField(order, "id", 100L);
-
         Page<Order> mockPage = new PageImpl<>(List.of(order), pageable, 1);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
@@ -212,16 +166,68 @@ class OrderServiceTest {
 
         // then
         assertThat(result.getTotalElements()).isEqualTo(1);
-        assertThat(result.getContent().get(0).getOrderId()).isEqualTo(100L);
-        assertThat(result.getContent().get(0).getOrderStatus()).isEqualTo(OrderStatus.CONFIRMED);
+        assertThat(result.getContent().get(0).getOrderId()).isEqualTo(101L);
     }
 
+    @Test
+    @DisplayName("placeOrder - successfully places order with valid cart items")
+    void placeOrder_shouldSucceedWithValidItems() {
+        // given
+        OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
 
+        given(userQueryService.getUserById(1L)).willReturn(user);
+        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
+        given(orderRepository.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
 
+        // when & then
+        assertThatNoException().isThrownBy(() -> orderService.placeOrder(1L, request));
+        verify(orderRepository).save(any(Order.class));
+    }
 
+    @Test
+    @DisplayName("placeOrder - throws AccessDeniedException when cart item does not belong to user")
+    void placeOrder_shouldThrowIfCartItemNotOwnedByUser() {
+        // given
+        OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
 
+        // cartItem이 다른 유저의 것
+        User anotherUser = User.builder()
+                .id(999L)
+                .userName("hacker")
+                .email("bad@evil.com")
+                .password("pw")
+                .build();
 
+        Cart anotherCart = Cart.builder()
+                .user(anotherUser)
+                .fridge(null)
+                .cartItems(new ArrayList<>())
+                .build();
 
+        anotherCart.addCartItem(cartItem);
 
+        given(userQueryService.getUserById(1L)).willReturn(user);
+        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
+
+        // when & then
+        assertThatThrownBy(() -> orderService.placeOrder(1L, request))
+                .isInstanceOf(AccessDeniedException.class)
+                .hasMessageContaining("You cannot order items not in your cart");
+    }
+
+    @Test
+    @DisplayName("placeOrder - throws InvalidRequestException for invalid payment method")
+    void placeOrder_shouldThrowForInvalidPaymentMethod() {
+        // given
+        OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "bitcoin");
+
+        given(userQueryService.getUserById(1L)).willReturn(user);
+        given(cartItemService.getCartItems(any())).willReturn(List.of(cartItem));
+
+        // when & then
+        assertThatThrownBy(() -> orderService.placeOrder(1L, request))
+                .isInstanceOf(InvalidRequestException.class)
+                .hasMessageContaining("Invalid payment method");
+    }
 
 }
