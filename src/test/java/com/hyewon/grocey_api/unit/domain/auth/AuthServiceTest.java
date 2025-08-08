@@ -8,10 +8,9 @@ import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
-import com.hyewon.grocey_api.domain.ingredient.repository.IngredientRepository;
+import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
@@ -32,7 +31,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,7 +51,7 @@ class AuthServiceTest {
     @Mock private UserPreferredIngredientRepository userPreferredIngredientRepository;
     @Mock private SavedRecipeRepository savedRecipeRepository;
     @Mock private RecipeRecommendationRepository recipeRecommendationRepository;
-    @Mock private IngredientRepository ingredientRepository;
+    @Mock private IngredientQueryService ingredientQueryService;
     @Mock private OrderRepository orderRepository;
     @Mock private FridgeIngredientRepository fridgeIngredientRepository;
     @Mock private CartRepository cartRepository;
@@ -91,7 +89,6 @@ class AuthServiceTest {
         ingredient8 = Ingredient.builder()
                 .id(8L)
                 .build();
-
     }
 
     @Test
@@ -99,11 +96,11 @@ class AuthServiceTest {
     void signup_shouldSucceed() {
         // given
         given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(false);
-        given(ingredientRepository.findById(1L)).willReturn(Optional.of(ingredient1));
-        given(ingredientRepository.findById(2L)).willReturn(Optional.of(ingredient2));
-        given(ingredientRepository.findById(3L)).willReturn(Optional.of(ingredient3));
-        given(ingredientRepository.findById(7L)).willReturn(Optional.of(ingredient7));
-        given(ingredientRepository.findById(8L)).willReturn(Optional.of(ingredient8));
+        given(ingredientQueryService.getIngredientById(1L)).willReturn(ingredient1);
+        given(ingredientQueryService.getIngredientById(2L)).willReturn(ingredient2);
+        given(ingredientQueryService.getIngredientById(3L)).willReturn(ingredient3);
+        given(ingredientQueryService.getIngredientById(7L)).willReturn(ingredient7);
+        given(ingredientQueryService.getIngredientById(8L)).willReturn(ingredient8);
 
         // when
         authService.signup(signupRequest);

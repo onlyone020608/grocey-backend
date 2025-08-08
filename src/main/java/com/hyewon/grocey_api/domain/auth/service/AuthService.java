@@ -12,7 +12,7 @@ import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeSnapshotRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
-import com.hyewon.grocey_api.domain.ingredient.repository.IngredientRepository;
+import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
@@ -37,7 +37,7 @@ public class AuthService {
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final FridgeCommandService fridgeCommandService;
-    private final IngredientRepository ingredientRepository;
+    private final IngredientQueryService ingredientQueryService;
     private final FridgeIngredientRepository fridgeIngredientRepository;
     private final FridgeSnapshotRepository fridgeSnapshotRepository;
     private final UserAllergyRepository userAllergyRepository;
@@ -68,8 +68,7 @@ public class AuthService {
 
 
         for (long ingredientId : List.of(1L, 2L, 3L)) {
-            Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                    .orElseThrow(() -> new IllegalArgumentException("Ingredient not found: " + ingredientId));
+            Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);
 
             FridgeIngredient fi = new FridgeIngredient(
                     fridge,
@@ -82,8 +81,7 @@ public class AuthService {
         }
 
         for (long ingredientId : List.of(7L, 8L)) {
-            Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                    .orElseThrow(() -> new IllegalArgumentException("Ingredient not found: " + ingredientId));
+            Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);;
 
             FridgeIngredient fi = new FridgeIngredient(
                     fridge,
