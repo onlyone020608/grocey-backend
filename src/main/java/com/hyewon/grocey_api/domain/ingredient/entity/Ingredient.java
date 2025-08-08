@@ -16,12 +16,12 @@ public class Ingredient {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
-    private String ingredientName;
+    private String name;
 
     private String imageUrl;
 
-    public Ingredient(String ingredientName, String imageUrl) {
-        this.ingredientName = ingredientName;
+    public Ingredient(String name, String imageUrl) {
+        this.name = name;
         this.imageUrl = imageUrl;
     }
 }

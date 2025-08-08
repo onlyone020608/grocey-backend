@@ -13,7 +13,7 @@ public class FridgeIngredientDetailResponse {
         private LocalDate expirationDate;
 
         public FridgeIngredientDetailResponse(FridgeIngredient fi) {
-            this.ingredientName = fi.getIngredient().getIngredientName();
+            this.ingredientName = fi.getIngredient().getName();
             this.imageUrl = fi.getIngredient().getImageUrl();
             this.quantity = fi.getQuantity();
             this.isFreezer = fi.getFreezer();

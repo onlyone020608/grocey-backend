@@ -31,7 +31,7 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
                         .header("Authorization", "Bearer " + token)
                         .param("isFreezer", "false"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].ingredientName").value(ingredient.getIngredientName()))
+                .andExpect(jsonPath("$[0].ingredientName").value(ingredient.getName()))
                 .andExpect(jsonPath("$[0].imageUrl").value(ingredient.getImageUrl()));
     }
 
@@ -48,7 +48,7 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
         mockMvc.perform(get("/api/fridge/ingredients/" + fridgeIngredient.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.ingredientName").value(ingredient.getIngredientName()))
+                .andExpect(jsonPath("$.ingredientName").value(ingredient.getName()))
                 .andExpect(jsonPath("$.imageUrl").value(ingredient.getImageUrl()))
                 .andExpect(jsonPath("$.quantity").value(2))
                 .andExpect(jsonPath("$.isFreezer").value(false))

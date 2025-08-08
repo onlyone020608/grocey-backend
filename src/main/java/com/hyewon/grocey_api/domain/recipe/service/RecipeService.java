@@ -28,7 +28,7 @@ public class RecipeService {
 
         List<RecipeIngredientResponse> ingredients = recipeIngredientRepository.findByRecipeId(recipeId).stream()
                 .map(ri -> new RecipeIngredientResponse(
-                        ri.getIngredient().getIngredientName(),
+                        ri.getIngredient().getName(),
                         ri.getQuantity()
                 ))
                 .collect(Collectors.toList());
