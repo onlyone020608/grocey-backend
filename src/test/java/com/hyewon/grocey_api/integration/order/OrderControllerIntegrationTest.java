@@ -74,7 +74,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].orderId").exists())
                 .andExpect(jsonPath("$[0].orderStatus").value("CONFIRMED"))
-                .andExpect(jsonPath("$[0].items[0].productName").value(product.getProductName()));
+                .andExpect(jsonPath("$[0].items[0].productName").value(product.getName()));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.orderStatus").value("CONFIRMED"))
                 .andExpect(jsonPath("$.paymentMethod").value("KAKAOPAY"))
                 .andExpect(jsonPath("$.shippingAddress").value("Gangnam-gu, Seoul"))
-                .andExpect(jsonPath("$.items[0].productName").value(product.getProductName()));
+                .andExpect(jsonPath("$.items[0].productName").value(product.getName()));
     }
     @Test
     @DisplayName("GET /api/orders - should return paged order list")
@@ -143,7 +143,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.content[0].orderId").exists())
                 .andExpect(jsonPath("$.content[0].createdAt").exists())
                 .andExpect(jsonPath("$.content[0].orderStatus").value("CONFIRMED"))
-                .andExpect(jsonPath("$.content[0].items[0].productName").value(product.getProductName()));
+                .andExpect(jsonPath("$.content[0].items[0].productName").value(product.getName()));
     }
 
 

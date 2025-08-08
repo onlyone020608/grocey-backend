@@ -14,8 +14,8 @@ public class FridgeRecommendedProductResponse {
 
     public FridgeRecommendedProductResponse(FridgeRecommendedProduct recommendedProduct) {
         this.productId = recommendedProduct.getProduct().getId();
-        this.productName = recommendedProduct.getProduct().getProductName();
-        this.brand = recommendedProduct.getProduct().getBrandName();
+        this.productName = recommendedProduct.getProduct().getName();
+        this.brand = recommendedProduct.getProduct().getBrand();
         this.price = recommendedProduct.getProduct().getPrice();
         this.imageUrl = recommendedProduct.getProduct().getImageUrl();
     }

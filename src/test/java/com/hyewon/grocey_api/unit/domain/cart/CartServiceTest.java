@@ -293,7 +293,7 @@ class CartServiceTest {
         // then
         assertThat(response.getCartId()).isEqualTo(10L);
         assertThat(response.getItems()).hasSize(1);
-        assertThat(response.getItems().get(0).getProductName()).isEqualTo(product.getProductName());
+        assertThat(response.getItems().get(0).getProductName()).isEqualTo(product.getName());
         assertThat(response.getItems().get(0).getQuantity()).isEqualTo(1);
     }
 

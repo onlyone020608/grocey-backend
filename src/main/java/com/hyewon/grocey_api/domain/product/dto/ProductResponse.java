@@ -13,8 +13,8 @@ public class ProductResponse {
 
     public ProductResponse(Product product) {
         this.productId = product.getId();
-        this.brandName = product.getBrandName();
-        this.productName = product.getProductName();
+        this.brandName = product.getBrand();
+        this.productName = product.getName();
         this.price = product.getPrice();
         this.imageUrl = product.getImageUrl();
     }

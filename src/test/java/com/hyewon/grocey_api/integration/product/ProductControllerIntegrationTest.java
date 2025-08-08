@@ -33,8 +33,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .param("tab", "NEW"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(product.getId()))
-                .andExpect(jsonPath("$[0].brandName").value(product.getBrandName()))
-                .andExpect(jsonPath("$[0].productName").value(product.getProductName()))
+                .andExpect(jsonPath("$[0].brandName").value(product.getBrand()))
+                .andExpect(jsonPath("$[0].productName").value(product.getName()))
                 .andExpect(jsonPath("$[0].price").value(product.getPrice()))
                 .andExpect(jsonPath("$[0].imageUrl").value(product.getImageUrl()));
     }
@@ -53,8 +53,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .param("tab", "BEST"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(product.getId()))
-                .andExpect(jsonPath("$[0].brandName").value(product.getBrandName()))
-                .andExpect(jsonPath("$[0].productName").value(product.getProductName()))
+                .andExpect(jsonPath("$[0].brandName").value(product.getBrand()))
+                .andExpect(jsonPath("$[0].productName").value(product.getName()))
                 .andExpect(jsonPath("$[0].price").value(product.getPrice()))
                 .andExpect(jsonPath("$[0].imageUrl").value(product.getImageUrl()));
     }
@@ -72,8 +72,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(product.getId()))
-                .andExpect(jsonPath("$.brandName").value(product.getBrandName()))
-                .andExpect(jsonPath("$.productName").value(product.getProductName()))
+                .andExpect(jsonPath("$.brandName").value(product.getBrand()))
+                .andExpect(jsonPath("$.productName").value(product.getName()))
                 .andExpect(jsonPath("$.price").value(product.getPrice()))
                 .andExpect(jsonPath("$.imageUrl").value(product.getImageUrl()));
     }

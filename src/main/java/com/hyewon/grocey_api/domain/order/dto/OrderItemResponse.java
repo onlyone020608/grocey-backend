@@ -13,7 +13,7 @@ public class OrderItemResponse {
 
     public OrderItemResponse(OrderItem item) {
         this.orderItemId = item.getId();
-        this.productName = item.getProduct().getProductName(); // 필요에 따라 수정
+        this.productName = item.getProduct().getName(); // 필요에 따라 수정
         this.quantity = item.getQuantity();
         this.price = item.getPrice();
         this.imageUrl = item.getProduct().getImageUrl();

@@ -35,8 +35,8 @@ public class FridgeRecommendationControllerIntegrationTest extends AbstractInteg
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.recommendationId").value(recommendation.getId()))
                 .andExpect(jsonPath("$.products[0].productId").value(product.getId()))
-                .andExpect(jsonPath("$.products[0].productName").value(product.getProductName()))
-                .andExpect(jsonPath("$.products[0].brand").value(product.getBrandName()))
+                .andExpect(jsonPath("$.products[0].productName").value(product.getName()))
+                .andExpect(jsonPath("$.products[0].brand").value(product.getBrand()))
                 .andExpect(jsonPath("$.products[0].price").value(product.getPrice()))
                 .andExpect(jsonPath("$.products[0].imageUrl").value(product.getImageUrl()));
     }

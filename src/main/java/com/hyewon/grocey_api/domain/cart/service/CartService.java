@@ -9,15 +9,11 @@ import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.cart.repository.CartItemRepository;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.product.entity.Product;
-import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.CartItemNotFoundException;
 import com.hyewon.grocey_api.global.exception.CartNotFoundException;
-import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -48,7 +44,7 @@ public class CartService {
                 .map(item -> new CartItemResponse(
                         item.getId(),
                         item.getProduct().getId(),
-                        item.getProduct().getProductName(),
+                        item.getProduct().getName(),
                         item.getProduct().getImageUrl(),
                         item.getProduct().getPrice(),
                         item.getQuantity()

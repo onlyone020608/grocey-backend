@@ -15,8 +15,8 @@ public class Product extends BaseTimeEntity {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
-    private String brandName;
-    private String productName;
+    private String name;
+    private String brand;
     private double price;
     private String imageUrl;
 
@@ -24,11 +24,11 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    public Product(String productName, String brandName, double price, String imageUrl) {
+    public Product(String name, String brand, double price, String imageUrl) {
         this.imageUrl = imageUrl;
         this.price = price;
-        this.productName = productName;
-        this.brandName = brandName;
+        this.name = name;
+        this.brand = brand;
     }
 
     public void assignIngredient(Ingredient ingredient) {

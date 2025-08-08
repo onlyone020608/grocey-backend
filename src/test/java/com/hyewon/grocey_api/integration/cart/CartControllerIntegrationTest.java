@@ -61,7 +61,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items[0].productId").value(product.getId()))
-                .andExpect(jsonPath("$.items[0].productName").value(product.getProductName()));
+                .andExpect(jsonPath("$.items[0].productName").value(product.getName()));
     }
 
     @Test
