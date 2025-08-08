@@ -27,9 +27,9 @@ public class RecipeControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/recipes/" + recipe.getId())
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.recipeName").value(recipe.getRecipeName()))
+                .andExpect(jsonPath("$.recipeName").value(recipe.getName()))
                 .andExpect(jsonPath("$.descriptionSteps[0]").exists())
-                .andExpect(jsonPath("$.cookingTime").value(recipe.getCookingTime()))
+                .andExpect(jsonPath("$.cookingTime").value(recipe.getCookingTimeInMinutes()))
                 .andExpect(jsonPath("$.servings").value(recipe.getServings()))
                 .andExpect(jsonPath("$.saved").value(false));
     }

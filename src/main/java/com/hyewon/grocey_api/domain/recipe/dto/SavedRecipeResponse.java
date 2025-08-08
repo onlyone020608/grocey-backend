@@ -12,7 +12,7 @@ public class SavedRecipeResponse {
 
     public SavedRecipeResponse(SavedRecipe savedRecipe) {
         this.recipeId = savedRecipe.getRecipe().getId();
-        this.recipeName = savedRecipe.getRecipe().getRecipeName();
+        this.recipeName = savedRecipe.getRecipe().getName();
         this.imageUrl = savedRecipe.getRecipe().getImageUrl();
     }
 }

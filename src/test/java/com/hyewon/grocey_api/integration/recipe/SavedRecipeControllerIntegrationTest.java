@@ -29,7 +29,7 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].recipeId").value(recipe.getId()))
-                .andExpect(jsonPath("$[0].recipeName").value(recipe.getRecipeName()))
+                .andExpect(jsonPath("$[0].recipeName").value(recipe.getName()))
                 .andExpect(jsonPath("$[0].imageUrl").value(recipe.getImageUrl()));
     }
 

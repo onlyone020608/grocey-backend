@@ -11,7 +11,7 @@ public class RecipeRecommendationResponse {
 
     public RecipeRecommendationResponse(RecipeRecommendation recommendation) {
         this.recipeId = recommendation.getRecipe().getId();
-        this.recipeName = recommendation.getRecipe().getRecipeName();
+        this.recipeName = recommendation.getRecipe().getName();
         this.recipeImageUrl = recommendation.getRecipe().getImageUrl();
     }
 

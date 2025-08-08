@@ -18,11 +18,11 @@ public class Recipe {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
 
-    private String recipeName;
+    private String name;
 
     private String description;
 
-    private Integer cookingTime;
+    private Integer cookingTimeInMinutes;
 
     private Integer servings;
 
@@ -30,17 +30,17 @@ public class Recipe {
 
     private LocalDateTime savedAt;
 
-    public Recipe(String recipeName, String description, Integer cookingTime, Integer servings) {
-        this.recipeName = recipeName;
+    public Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings) {
+        this.name = name;
         this.description = description;
-        this.cookingTime = cookingTime;
+        this.cookingTimeInMinutes = cookingTimeInMinutes;
         this.servings = servings;
     }
 
-    public Recipe(String recipeName, String description, Integer cookingTime, Integer servings, String imageUrl) {
-        this.recipeName = recipeName;
+    public Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings, String imageUrl) {
+        this.name = name;
         this.description = description;
-        this.cookingTime = cookingTime;
+        this.cookingTimeInMinutes = cookingTimeInMinutes;
         this.servings = servings;
         this.imageUrl = imageUrl;
     }

@@ -36,9 +36,9 @@ public class RecipeService {
         boolean isSaved = savedRecipeRepository.existsByUserIdAndRecipeId(userId, recipeId);
 
         return new RecipeDetailResponse(
-                recipe.getRecipeName(),
+                recipe.getName(),
                 recipe.getDescription(),
-                recipe.getCookingTime(),
+                recipe.getCookingTimeInMinutes(),
                 recipe.getServings(),
                 recipe.getImageUrl(),
                 ingredients,
