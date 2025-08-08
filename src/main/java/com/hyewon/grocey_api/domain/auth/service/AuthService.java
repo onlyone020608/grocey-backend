@@ -9,8 +9,8 @@ import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeSnapshotRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeSnapshotCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
@@ -39,7 +39,7 @@ public class AuthService {
     private final FridgeCommandService fridgeCommandService;
     private final IngredientQueryService ingredientQueryService;
     private final FridgeIngredientRepository fridgeIngredientRepository;
-    private final FridgeSnapshotRepository fridgeSnapshotRepository;
+    private final FridgeSnapshotCommandService fridgeSnapshotCommandService;
     private final UserAllergyRepository userAllergyRepository;
     private final UserDislikedIngredientRepository userDislikedIngredientRepository;
     private final UserPreferredIngredientRepository userPreferredIngredientRepository;
@@ -102,7 +102,7 @@ public class AuthService {
                     fi.getFreezer(),
                     fi.getQuantity()
             );
-            fridgeSnapshotRepository.save(snapshot);
+            fridgeSnapshotCommandService.createFridgeSnapshot(snapshot);
         }
         userCommandService.createUser(user);
         return user;

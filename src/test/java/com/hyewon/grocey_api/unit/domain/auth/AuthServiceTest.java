@@ -7,8 +7,10 @@ import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
+import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeSnapshotCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
@@ -55,6 +57,7 @@ class AuthServiceTest {
     @Mock private OrderRepository orderRepository;
     @Mock private FridgeIngredientRepository fridgeIngredientRepository;
     @Mock private CartRepository cartRepository;
+    @Mock private FridgeSnapshotCommandService fridgeSnapshotCommandService;
 
     @Mock private JwtTokenProvider jwtTokenProvider;
 
