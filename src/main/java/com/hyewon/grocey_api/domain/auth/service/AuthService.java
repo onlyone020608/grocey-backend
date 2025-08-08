@@ -18,7 +18,8 @@ import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.*;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
+import com.hyewon.grocey_api.domain.user.service.UserCommandService;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +34,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository;
+    private final UserQueryService userQueryService;
+    private final UserCommandService userCommandService;
     private final FridgeRepository fridgeRepository;
     private final IngredientRepository ingredientRepository;
     private final FridgeIngredientRepository fridgeIngredientRepository;
@@ -50,14 +52,11 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final Map<Long, String> refreshTokenStore = new HashMap<>();
 
-
-
     @Transactional
     public User signup(SignupRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userQueryService.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
         }
-
 
         Fridge fridge = new Fridge(3.0, -18.0);
         fridgeRepository.save(fridge);
@@ -107,7 +106,7 @@ public class AuthService {
             );
             fridgeSnapshotRepository.save(snapshot);
         }
-        userRepository.save(user);
+        userCommandService.createUser(user);
         return user;
     }
 
@@ -124,8 +123,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+        User user = userQueryService.getUserByEmail(request.getEmail());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid credentials");
@@ -165,32 +163,26 @@ public class AuthService {
 
     @Transactional
     public void withdraw(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-
+        User user = userQueryService.getUserById(userId);
 
         userAllergyRepository.deleteByUser(user);
         userDislikedIngredientRepository.deleteByUser(user);
         userFoodPreferenceRepository.deleteByUser(user);
         userPreferredIngredientRepository.deleteByUser(user);
 
-
         savedRecipeRepository.deleteByUser(user);
         recipeRecommendationRepository.deleteByUser(user);
-
 
         orderRepository.deleteByUser(user);
         cartRepository.deleteByUser(user);
 
-
         refreshTokenStore.remove(userId);
-        userRepository.delete(user);
+        userCommandService.deleteUser(user);
     }
 
     @Transactional
     public void changePassword(Long userId, String currentPassword, String newPassword) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userQueryService.getUserById(userId);
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new IllegalArgumentException("Current password does not match");
@@ -198,7 +190,6 @@ public class AuthService {
 
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         user.updatePassword(encodedNewPassword);
-        userRepository.save(user);
     }
 
 

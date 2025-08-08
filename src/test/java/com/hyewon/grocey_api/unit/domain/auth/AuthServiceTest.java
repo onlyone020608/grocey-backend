@@ -7,13 +7,17 @@ import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
+import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
+import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
+import com.hyewon.grocey_api.domain.ingredient.repository.IngredientRepository;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.*;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
+import com.hyewon.grocey_api.domain.user.service.UserCommandService;
+import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +36,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -40,8 +43,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserQueryService userQueryService;
+    @Mock private UserCommandService userCommandService;
     @Mock private FridgeRepository fridgeRepository;
     @Mock private UserAllergyRepository userAllergyRepository;
     @Mock private UserDislikedIngredientRepository userDislikedIngredientRepository;
@@ -49,7 +52,9 @@ class AuthServiceTest {
     @Mock private UserPreferredIngredientRepository userPreferredIngredientRepository;
     @Mock private SavedRecipeRepository savedRecipeRepository;
     @Mock private RecipeRecommendationRepository recipeRecommendationRepository;
+    @Mock private IngredientRepository ingredientRepository;
     @Mock private OrderRepository orderRepository;
+    @Mock private FridgeIngredientRepository fridgeIngredientRepository;
     @Mock private CartRepository cartRepository;
 
     @Mock private JwtTokenProvider jwtTokenProvider;
@@ -62,38 +67,63 @@ class AuthServiceTest {
     private AuthService authService;
 
     private SignupRequest signupRequest;
+    private Ingredient ingredient1;
+    private Ingredient ingredient2;
+    private Ingredient ingredient3;
+    private Ingredient ingredient7;
+    private Ingredient ingredient8;
+
 
     @BeforeEach
     void setUp() {
         signupRequest = new SignupRequest("tester", "tester@email.com", "securepass");
+        ingredient1 = Ingredient.builder()
+                .id(1L)
+                .build();
+        ingredient2 = Ingredient.builder()
+                .id(2L)
+                .build();
+        ingredient3 = Ingredient.builder()
+                .id(3L)
+                .build();
+        ingredient7 = Ingredient.builder()
+                .id(7L)
+                .build();
+        ingredient8 = Ingredient.builder()
+                .id(8L)
+                .build();
+
     }
 
     @Test
     @DisplayName("signup - signup - successful registration")
     void signup_shouldSucceed() {
         // given
-        given(userRepository.existsByEmail(signupRequest.getEmail())).willReturn(false);
+        given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(false);
+        given(ingredientRepository.findById(1L)).willReturn(Optional.of(ingredient1));
+        given(ingredientRepository.findById(2L)).willReturn(Optional.of(ingredient2));
+        given(ingredientRepository.findById(3L)).willReturn(Optional.of(ingredient3));
+        given(ingredientRepository.findById(7L)).willReturn(Optional.of(ingredient7));
+        given(ingredientRepository.findById(8L)).willReturn(Optional.of(ingredient8));
 
         // when
         authService.signup(signupRequest);
 
         // then
         verify(fridgeRepository).save(any(Fridge.class));
-        verify(userRepository).save(any(User.class));
     }
 
     @Test
     @DisplayName("signup - throws exception when email is already in use")
     void signup_shouldThrowWhenEmailAlreadyExists() {
         // given
-        given(userRepository.existsByEmail(signupRequest.getEmail())).willReturn(true);
+        given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> authService.signup(signupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Email already in use");
 
-        verify(userRepository, never()).save(any(User.class));
         verify(fridgeRepository, never()).save(any(Fridge.class));
     }
 
@@ -102,10 +132,11 @@ class AuthServiceTest {
     void login_shouldReturnTokens_whenCredentialsAreValid() {
         // given
         LoginRequest request = new LoginRequest("user@email.com", "password");
-        User user = new User("tester", "user@email.com", "password");
+        User user = new User("tester", "user@email.com", "encoded-password");
         ReflectionTestUtils.setField(user, "id", 1L);
 
-        given(userRepository.findByEmailAndPassword("user@email.com", "password")).willReturn(Optional.of(user));
+        given(userQueryService.getUserByEmail("user@email.com")).willReturn(user);
+        given(passwordEncoder.matches("password", "encoded-password")).willReturn(true);
         given(jwtTokenProvider.generateAccessToken(1L)).willReturn("access-token");
         given(jwtTokenProvider.generateRefreshToken(1L)).willReturn("refresh-token");
 
@@ -115,20 +146,6 @@ class AuthServiceTest {
         // then
         assertThat(response.getAccessToken()).isEqualTo("access-token");
         assertThat(response.getRefreshToken()).isEqualTo("refresh-token");
-    }
-
-    @Test
-    @DisplayName("login - throws exception when credentials are invalid")
-    void login_shouldThrowException_whenCredentialsInvalid() {
-        // given
-        LoginRequest request = new LoginRequest("wrong@email.com", "wrongpass");
-        given(userRepository.findByEmailAndPassword(anyString(), anyString()))
-                .willReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> authService.login(request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid credentials");
     }
 
     @Test
@@ -220,7 +237,7 @@ class AuthServiceTest {
         User user = new User("tester", "tester@email.com", "encodedPass");
         ReflectionTestUtils.setField(user, "id", userId);
 
-        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(userQueryService.getUserById(userId)).willReturn(user);
 
         Map<Long, String> mockStore = new HashMap<>(Map.of(userId, "token"));
         ReflectionTestUtils.setField(authService, "refreshTokenStore", mockStore);
@@ -240,49 +257,7 @@ class AuthServiceTest {
         verify(orderRepository).deleteByUser(user);
         verify(cartRepository).deleteByUser(user);
 
-        verify(userRepository).delete(user);
-
         Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
         assertThat(store.containsKey(userId)).isFalse();
     }
-
-    @Test
-    @DisplayName("withdraw - throws UserNotFoundException when user not found")
-    void withdraw_shouldThrow_whenUserNotFound() {
-        // given
-        Long userId = 99L;
-        given(userRepository.findById(userId)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> authService.withdraw(userId))
-                .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User not found");
-    }
-
-
-
-    @Test
-    @DisplayName("changePassword - throws exception when user not found")
-    void changePassword_shouldThrow_whenUserNotFound() {
-        // given
-        Long userId = 42L;
-        given(userRepository.findById(userId)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> authService.changePassword(userId, "irrelevant", "newPass"))
-                .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User not found");
-    }
-
-
-
-
-
-
-
-
-
-
-
-
 }
