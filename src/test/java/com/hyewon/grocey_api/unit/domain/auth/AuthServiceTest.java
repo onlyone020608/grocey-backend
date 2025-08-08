@@ -9,6 +9,7 @@ import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.repository.IngredientRepository;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
@@ -45,7 +46,7 @@ class AuthServiceTest {
 
     @Mock private UserQueryService userQueryService;
     @Mock private UserCommandService userCommandService;
-    @Mock private FridgeRepository fridgeRepository;
+    @Mock private FridgeCommandService fridgeCommandService;
     @Mock private UserAllergyRepository userAllergyRepository;
     @Mock private UserDislikedIngredientRepository userDislikedIngredientRepository;
     @Mock private UserFoodPreferenceRepository userFoodPreferenceRepository;
@@ -59,7 +60,6 @@ class AuthServiceTest {
 
     @Mock private JwtTokenProvider jwtTokenProvider;
 
-
     @Mock
     private PasswordEncoder passwordEncoder;
 
@@ -72,7 +72,6 @@ class AuthServiceTest {
     private Ingredient ingredient3;
     private Ingredient ingredient7;
     private Ingredient ingredient8;
-
 
     @BeforeEach
     void setUp() {
@@ -110,7 +109,8 @@ class AuthServiceTest {
         authService.signup(signupRequest);
 
         // then
-        verify(fridgeRepository).save(any(Fridge.class));
+        verify(userQueryService).existsByEmail(signupRequest.getEmail());
+        verify(fridgeCommandService).createFridge(any(Fridge.class));
     }
 
     @Test
@@ -124,7 +124,8 @@ class AuthServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Email already in use");
 
-        verify(fridgeRepository, never()).save(any(Fridge.class));
+        verify(fridgeCommandService, never()).createFridge(any());
+        verify(userCommandService, never()).createUser(any());
     }
 
     @Test

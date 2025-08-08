@@ -9,8 +9,8 @@ import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeSnapshotRepository;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.repository.IngredientRepository;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class AuthService {
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
-    private final FridgeRepository fridgeRepository;
+    private final FridgeCommandService fridgeCommandService;
     private final IngredientRepository ingredientRepository;
     private final FridgeIngredientRepository fridgeIngredientRepository;
     private final FridgeSnapshotRepository fridgeSnapshotRepository;
@@ -59,7 +59,7 @@ public class AuthService {
         }
 
         Fridge fridge = new Fridge(3.0, -18.0);
-        fridgeRepository.save(fridge);
+        fridgeCommandService.createFridge(fridge);
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
