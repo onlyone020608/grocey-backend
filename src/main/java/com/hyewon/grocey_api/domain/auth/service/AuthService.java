@@ -102,7 +102,7 @@ public class AuthService {
             FridgeSnapshot snapshot = new FridgeSnapshot(
                     fridge,
                     fi.getIngredient().getId(),
-                    fi.getIsFreezer(),
+                    fi.getFreezer(),
                     fi.getQuantity()
             );
             fridgeSnapshotRepository.save(snapshot);

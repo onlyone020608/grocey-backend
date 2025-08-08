@@ -16,7 +16,7 @@ public class FridgeIngredientDetailResponse {
             this.ingredientName = fi.getIngredient().getIngredientName();
             this.imageUrl = fi.getIngredient().getImageUrl();
             this.quantity = fi.getQuantity();
-            this.isFreezer = fi.getIsFreezer();
+            this.isFreezer = fi.getFreezer();
             this.expirationDate = fi.getExpirationDate();
         }
 

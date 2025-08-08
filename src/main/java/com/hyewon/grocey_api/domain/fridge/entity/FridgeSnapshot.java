@@ -18,14 +18,14 @@ public class FridgeSnapshot extends BaseTimeEntity {
 
     private Long ingredient_id;
 
-    private Boolean isFreezer;
+    private Boolean freezer;
 
     private int quantity;
 
-    public FridgeSnapshot(Fridge fridge, Long ingredient_id, Boolean isFreezer, int quantity) {
+    public FridgeSnapshot(Fridge fridge, Long ingredient_id, Boolean freezer, int quantity) {
         this.fridge = fridge;
         this.ingredient_id = ingredient_id;
-        this.isFreezer = isFreezer;
+        this.freezer = freezer;
         this.quantity = quantity;
     }
 

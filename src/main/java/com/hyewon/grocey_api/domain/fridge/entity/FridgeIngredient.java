@@ -25,14 +25,14 @@ public class FridgeIngredient extends BaseTimeEntity {
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    private Boolean isFreezer;
+    private Boolean freezer;
     private int quantity;
     private LocalDate expirationDate;
 
-    public FridgeIngredient(Fridge fridge, Ingredient ingredient, Boolean isFreezer, int quantity, LocalDate expirationDate) {
+    public FridgeIngredient(Fridge fridge, Ingredient ingredient, Boolean freezer, int quantity, LocalDate expirationDate) {
         this.fridge = fridge;
         this.ingredient = ingredient;
-        this.isFreezer = isFreezer;
+        this.freezer = freezer;
         this.quantity = quantity;
         this.expirationDate = expirationDate;
     }
