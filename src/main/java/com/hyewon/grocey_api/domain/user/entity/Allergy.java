@@ -16,9 +16,9 @@ public class Allergy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String allergyName;
+    private String name;
 
-    public Allergy(String allergyName) {
-        this.allergyName = allergyName;
+    public Allergy(String name) {
+        this.name = name;
     }
 }
