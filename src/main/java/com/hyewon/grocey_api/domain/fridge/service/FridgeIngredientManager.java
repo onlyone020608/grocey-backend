@@ -23,4 +23,9 @@ public class FridgeIngredientManager {
     public void deleteAll(List<FridgeIngredient> toRemove) {
         fridgeIngredientRepository.deleteAll(toRemove);
     }
+
+    @Transactional
+    public void createFridgeIngredient(FridgeIngredient fridgeIngredient) {
+        fridgeIngredientRepository.save(fridgeIngredient);
+    }
 }

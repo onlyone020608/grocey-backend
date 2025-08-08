@@ -9,6 +9,7 @@ import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientManager;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeSnapshotCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
@@ -34,7 +35,7 @@ public class AuthService {
     private final UserCommandService userCommandService;
     private final FridgeCommandService fridgeCommandService;
     private final IngredientQueryService ingredientQueryService;
-    private final FridgeIngredientRepository fridgeIngredientRepository;
+    private final FridgeIngredientManager fridgeIngredientManager;
     private final FridgeSnapshotCommandService fridgeSnapshotCommandService;
     private final UserWithdrawalService userWithdrawalService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -66,7 +67,7 @@ public class AuthService {
                     2, // 수량
                     LocalDate.now().plusDays(7)
             );
-            fridgeIngredientRepository.save(fi);
+            fridgeIngredientManager.createFridgeIngredient(fi);
         }
 
         for (long ingredientId : List.of(7L, 8L)) {
@@ -79,10 +80,10 @@ public class AuthService {
                     2,
                     LocalDate.now().plusDays(30)
             );
-            fridgeIngredientRepository.save(fi);
+            fridgeIngredientManager.createFridgeIngredient(fi);
         }
 
-        List<FridgeIngredient> fridgeIngredients = fridgeIngredientRepository.findByFridgeId(fridge.getId());
+        List<FridgeIngredient> fridgeIngredients = fridgeIngredientManager.getByFridgeId(fridge.getId());
 
         for (FridgeIngredient fi : fridgeIngredients) {
             FridgeSnapshot snapshot = new FridgeSnapshot(
