@@ -51,7 +51,7 @@ class UserServiceTest {
     void setUp() {
         user = User.builder()
                 .id(1L)
-                .userName("tester")
+                .username("tester")
                 .email("tester@email.com")
                 .password("pw")
                 .gender(Gender.FEMALE)
@@ -63,11 +63,11 @@ class UserServiceTest {
                 .build();
         allergy1 = Allergy.builder()
                 .id(10L)
-                .allergyName("Egg")
+                .name("Egg")
                 .build();
         allergy2 = Allergy.builder()
                 .id(20L)
-                .allergyName("Milk")
+                .name("Milk")
                 .build();
         preferenceIngredient1 = PreferenceIngredient.builder()
                 .id(20L)

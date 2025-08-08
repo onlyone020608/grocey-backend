@@ -43,14 +43,14 @@ class RecipeServiceTest {
     void setUp() {
         recipe = Recipe.builder()
                 .id(1L)
-                .recipeName("Kimchi Fried Rice")
-                .cookingTime(15)
+                .name("Kimchi Fried Rice")
+                .cookingTimeInMinutes(15)
                 .servings(2)
                 .description("1. Put oil\n2. Add kimchi\n3. Stir-fry with rice")
                 .build();
 
         ingredient = Ingredient.builder()
-                .ingredientName("Kimchi")
+                .name("Kimchi")
                 .imageUrl("url.com/kimchi")
                 .build();
 

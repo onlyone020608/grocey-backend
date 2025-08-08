@@ -57,7 +57,7 @@ class OrderServiceTest {
     void setUp() {
         user = User.builder()
                 .id(1L)
-                .userName("tester")
+                .username("tester")
                 .email("test@email.com")
                 .build();
 
@@ -68,8 +68,8 @@ class OrderServiceTest {
                 .build();
 
         product = Product.builder()
-                .productName("Milk")
-                .brandName("SoulDairy")
+                .name("Milk")
+                .name("SoulDairy")
                 .price(2000)
                 .imageUrl("milk.png")
                 .build();
@@ -131,7 +131,7 @@ class OrderServiceTest {
         // given
         User anotherUser = User.builder()
                 .id(999L)
-                .userName("hacker")
+                .username("hacker")
                 .email("bad@evil.com")
                 .password("pw")
                 .build();
@@ -193,7 +193,7 @@ class OrderServiceTest {
         // cartItem이 다른 유저의 것
         User anotherUser = User.builder()
                 .id(999L)
-                .userName("hacker")
+                .username("hacker")
                 .email("bad@evil.com")
                 .password("pw")
                 .build();

@@ -59,7 +59,7 @@ class CartServiceTest {
 
         user = User.builder()
                 .id(1L)
-                .userName("tester")
+                .username("tester")
                 .email("test@email.com")
                 .password("password")
                 .ageGroup(AgeGroup.TWENTIES)
@@ -69,8 +69,8 @@ class CartServiceTest {
 
         product = Product.builder()
                 .id(1L)
-                .productName("Milk")
-                .brandName("Seoul Daily")
+                .name("Milk")
+                .brand("Seoul Daily")
                 .price(2000)
                 .imageUrl("image-url")
                 .build();
@@ -321,16 +321,16 @@ class CartServiceTest {
 
         Product product1 = Product.builder()
                 .id(1L)
-                .productName("Milk")
-                .brandName("BrandA")
+                .name("Milk")
+                .brand("BrandA")
                 .price(1000)
                 .imageUrl("image1")
                 .build();
 
         Product product2 = Product.builder()
                 .id(2L)
-                .productName("Bread")
-                .brandName("BrandB")
+                .name("Bread")
+                .brand("BrandB")
                 .price(2000)
                 .imageUrl("image2")
                 .build();

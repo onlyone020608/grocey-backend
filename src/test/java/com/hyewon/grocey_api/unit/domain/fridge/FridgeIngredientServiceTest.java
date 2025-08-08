@@ -47,21 +47,21 @@ class FridgeIngredientServiceTest {
                 .build();
 
         ingredient = Ingredient.builder()
-                .ingredientName("Chicken")
+                .name("Chicken")
                 .imageUrl("url.com/chicken")
                 .build();
 
         fridgeIngredient1 = FridgeIngredient.builder()
                 .fridge(fridge)
                 .ingredient(ingredient)
-                .isFreezer(true)
+                .freezer(true)
                 .quantity(2)
                 .build();
 
         fridgeIngredient2 = FridgeIngredient.builder()
                 .fridge(fridge)
                 .ingredient(ingredient)
-                .isFreezer(false)
+                .freezer(false)
                 .quantity(1)
                 .build();
 

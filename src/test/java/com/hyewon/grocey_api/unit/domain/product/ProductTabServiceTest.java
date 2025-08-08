@@ -32,8 +32,8 @@ class ProductTabServiceTest {
     void setUp() {
         product = Product.builder()
                 .id(1L)
-                .productName("Milk")
-                .brandName("SeoulDairy")
+                .name("Milk")
+                .name("SeoulDairy")
                 .price(2000)
                 .imageUrl("milk.png")
                 .build();

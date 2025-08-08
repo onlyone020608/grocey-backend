@@ -44,16 +44,16 @@ class SavedRecipeServiceTest {
     void setUp() {
         user = User.builder()
                 .id(1L)
-                .userName("tester")
+                .username("tester")
                 .email("test@email.com")
                 .password("pw")
                 .build();
 
         recipe = Recipe.builder()
                 .id(10L)
-                .recipeName("Kimchi Fried Rice")
+                .name("Kimchi Fried Rice")
                 .description("step1\nstep2")
-                .cookingTime(15)
+                .cookingTimeInMinutes(15)
                 .servings(2)
                 .imageUrl("img.jpg")
                 .build();

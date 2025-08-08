@@ -55,7 +55,7 @@ class RecipeRecommendationServiceTest {
     void setUp() {
         user = User.builder()
                 .id(1L)
-                .userName("tester")
+                .username("tester")
                 .email("test@email.com")
                 .password("pw")
                 .build();
@@ -68,9 +68,9 @@ class RecipeRecommendationServiceTest {
         user.assignFridge(fridge);
 
         recipe = Recipe.builder()
-                .recipeName("Bibimbap")
+                .name("Bibimbap")
                 .description("step1\nstep2")
-                .cookingTime(20)
+                .cookingTimeInMinutes(20)
                 .servings(2)
                 .imageUrl("bibimbap.jpg")
                 .build();
