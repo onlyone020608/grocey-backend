@@ -38,7 +38,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
         // then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(user.getUserName()));
+                .andExpect(jsonPath("$.name").value(user.getUsername()));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/api/users/me")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userName").value(user.getUserName()))
+                .andExpect(jsonPath("$.userName").value(user.getUsername()))
                 .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
 
@@ -76,7 +76,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk());
 
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
-        assertThat(updatedUser.getUserName()).isEqualTo("New Name");
+        assertThat(updatedUser.getUsername()).isEqualTo("New Name");
         assertThat(updatedUser.getEmail()).isEqualTo("new");
     }
 
@@ -167,7 +167,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
-        assertThat(updatedUser.getIsProfileCompleted()).isTrue();
+        assertThat(updatedUser.getProfileCompleted()).isTrue();
     }
 
     @Test
@@ -187,7 +187,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk());
 
         User updatedUser = userRepository.findById(user.getId()).orElseThrow();
-        assertThat(updatedUser.getIsVegan()).isTrue();
+        assertThat(updatedUser.getVegan()).isTrue();
     }
 
     @Test
@@ -199,7 +199,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
 
 
         User initial = userRepository.findById(user.getId()).orElseThrow();
-        assertThat(initial.getIsProfileCompleted()).isFalse();
+        assertThat(initial.getProfileCompleted()).isFalse();
 
         // when
         ResultActions result = mockMvc.perform(get("/api/users/me/status")

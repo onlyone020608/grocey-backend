@@ -1,6 +1,5 @@
 package com.hyewon.grocey_api.domain.user.entity;
 
-
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
@@ -24,7 +23,7 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @NotEmpty
-    private String userName;
+    private String username;
 
     @NotEmpty
     private String email;
@@ -35,9 +34,9 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private AgeGroup ageGroup;
 
-    private Boolean isVegan = false;
+    private Boolean vegan = false;
 
-    private Boolean isProfileCompleted = false;
+    private Boolean profileCompleted = false;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -54,8 +53,8 @@ public class User extends BaseTimeEntity {
         fridge.getUsers().add(this); // 양방향이라면 양쪽 연결
     }
 
-    public User(String userName, String email, String password, AgeGroup ageGroup, Gender gender) {
-        this.userName = userName;
+    public User(String username, String email, String password, AgeGroup ageGroup, Gender gender) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.ageGroup = ageGroup;
@@ -63,16 +62,14 @@ public class User extends BaseTimeEntity {
     }
 
     @Builder
-    public User(String userName, String email, String password) {
-        this.userName = userName;
+    public User(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
     }
 
-
-
     public void updateName(String name) {
-        this.userName = name;
+        this.username = name;
     }
 
     public void updateEmail(String email) {
@@ -87,7 +84,7 @@ public class User extends BaseTimeEntity {
         this.ageGroup = ageGroup;
     }
     public void updateVeganStatus(boolean isVegan) {
-        this.isVegan = isVegan;
+        this.vegan = isVegan;
     }
 
     public void updatePassword(String newPassword) {
@@ -95,8 +92,7 @@ public class User extends BaseTimeEntity {
     }
 
     public void completeProfile() {
-        this.isProfileCompleted = true;
+        this.profileCompleted = true;
     }
-
 
 }

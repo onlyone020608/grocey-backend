@@ -146,7 +146,7 @@ public class UserService {
     public boolean checkProfileCompletion(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        return Boolean.TRUE.equals(user.getIsProfileCompleted());
+        return Boolean.TRUE.equals(user.getProfileCompleted());
     }
 
 

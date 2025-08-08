@@ -8,6 +8,6 @@ public class UserSummaryResponse {
     private final String name;
 
     public UserSummaryResponse(User user) {
-        this.name = user.getUserName();
+        this.name = user.getUsername();
     }
 }

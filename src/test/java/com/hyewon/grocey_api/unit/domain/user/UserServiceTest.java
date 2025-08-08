@@ -140,7 +140,7 @@ class UserServiceTest {
         userService.updateUser(1L, request);
 
         // then
-        assertThat(user.getUserName()).isEqualTo("newName");
+        assertThat(user.getUsername()).isEqualTo("newName");
         assertThat(user.getEmail()).isEqualTo("new@email.com");
     }
 
@@ -156,7 +156,7 @@ class UserServiceTest {
         userService.updateUser(1L, request);
 
         // then
-        assertThat(user.getUserName()).isEqualTo("tester"); // unchanged
+        assertThat(user.getUsername()).isEqualTo("tester"); // unchanged
         assertThat(user.getEmail()).isEqualTo("updated@email.com");
     }
 
@@ -281,7 +281,7 @@ class UserServiceTest {
         verify(userFoodPreferenceRepository).saveAll(any());
         verify(userPreferredIngredientRepository).saveAll(any());
         verify(userDislikedIngredientRepository).saveAll(any());
-        assertThat(user.getIsProfileCompleted()).isTrue();
+        assertThat(user.getProfileCompleted()).isTrue();
     }
 
     @Test
@@ -341,7 +341,7 @@ class UserServiceTest {
         userService.updateVeganStatus(1L, request);
 
         // then
-        assertThat(user.getIsVegan()).isTrue();
+        assertThat(user.getVegan()).isTrue();
     }
 
     @Test

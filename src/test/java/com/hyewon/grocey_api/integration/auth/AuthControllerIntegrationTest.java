@@ -32,7 +32,7 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(userOpt).isPresent();
 
         User user = userOpt.get();
-        assertThat(user.getUserName()).isEqualTo("Mary");
+        assertThat(user.getUsername()).isEqualTo("Mary");
         assertThat(passwordEncoder.matches("securepw", user.getPassword())).isTrue();
     }
 

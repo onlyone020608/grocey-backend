@@ -9,7 +9,7 @@ public class UserDetailResponse {
     private String email;
 
     public UserDetailResponse(User user) {
-        this.userName = user.getUserName();
+        this.userName = user.getUsername();
         this.email = user.getEmail();
     }
 }
