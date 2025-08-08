@@ -4,7 +4,6 @@ import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
-import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
@@ -13,14 +12,11 @@ import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeSnapshotCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
-import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
-import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
-import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.*;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
+import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,14 +36,7 @@ public class AuthService {
     private final IngredientQueryService ingredientQueryService;
     private final FridgeIngredientRepository fridgeIngredientRepository;
     private final FridgeSnapshotCommandService fridgeSnapshotCommandService;
-    private final UserAllergyRepository userAllergyRepository;
-    private final UserDislikedIngredientRepository userDislikedIngredientRepository;
-    private final UserPreferredIngredientRepository userPreferredIngredientRepository;
-    private final OrderRepository orderRepository;
-    private final CartRepository cartRepository;
-    private final UserFoodPreferenceRepository userFoodPreferenceRepository;
-    private final SavedRecipeRepository savedRecipeRepository;
-    private final RecipeRecommendationRepository recipeRecommendationRepository;
+    private final UserWithdrawalService userWithdrawalService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final Map<Long, String> refreshTokenStore = new HashMap<>();
@@ -162,20 +151,9 @@ public class AuthService {
     @Transactional
     public void withdraw(Long userId) {
         User user = userQueryService.getUserById(userId);
-
-        userAllergyRepository.deleteByUser(user);
-        userDislikedIngredientRepository.deleteByUser(user);
-        userFoodPreferenceRepository.deleteByUser(user);
-        userPreferredIngredientRepository.deleteByUser(user);
-
-        savedRecipeRepository.deleteByUser(user);
-        recipeRecommendationRepository.deleteByUser(user);
-
-        orderRepository.deleteByUser(user);
-        cartRepository.deleteByUser(user);
-
         refreshTokenStore.remove(userId);
-        userCommandService.deleteUser(user);
+        userWithdrawalService.withdraw(user);
+
     }
 
     @Transactional

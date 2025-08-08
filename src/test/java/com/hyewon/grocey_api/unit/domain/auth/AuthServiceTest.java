@@ -5,22 +5,17 @@ import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
-import com.hyewon.grocey_api.domain.cart.repository.CartRepository;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
-import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeSnapshotCommandService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
-import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
-import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
-import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
-import com.hyewon.grocey_api.domain.user.repository.*;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
+import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,16 +42,9 @@ class AuthServiceTest {
     @Mock private UserQueryService userQueryService;
     @Mock private UserCommandService userCommandService;
     @Mock private FridgeCommandService fridgeCommandService;
-    @Mock private UserAllergyRepository userAllergyRepository;
-    @Mock private UserDislikedIngredientRepository userDislikedIngredientRepository;
-    @Mock private UserFoodPreferenceRepository userFoodPreferenceRepository;
-    @Mock private UserPreferredIngredientRepository userPreferredIngredientRepository;
-    @Mock private SavedRecipeRepository savedRecipeRepository;
-    @Mock private RecipeRecommendationRepository recipeRecommendationRepository;
+    @Mock private UserWithdrawalService userWithdrawalService;
     @Mock private IngredientQueryService ingredientQueryService;
-    @Mock private OrderRepository orderRepository;
     @Mock private FridgeIngredientRepository fridgeIngredientRepository;
-    @Mock private CartRepository cartRepository;
     @Mock private FridgeSnapshotCommandService fridgeSnapshotCommandService;
 
     @Mock private JwtTokenProvider jwtTokenProvider;
@@ -247,16 +235,7 @@ class AuthServiceTest {
         authService.withdraw(userId);
 
         // then
-        verify(userAllergyRepository).deleteByUser(user);
-        verify(userDislikedIngredientRepository).deleteByUser(user);
-        verify(userFoodPreferenceRepository).deleteByUser(user);
-        verify(userPreferredIngredientRepository).deleteByUser(user);
-
-        verify(savedRecipeRepository).deleteByUser(user);
-        verify(recipeRecommendationRepository).deleteByUser(user);
-
-        verify(orderRepository).deleteByUser(user);
-        verify(cartRepository).deleteByUser(user);
+        verify(userWithdrawalService).withdraw(user);
 
         Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
         assertThat(store.containsKey(userId)).isFalse();
