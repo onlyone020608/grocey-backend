@@ -121,7 +121,7 @@ class AuthServiceTest {
     void login_shouldReturnTokens_whenCredentialsAreValid() {
         // given
         LoginRequest request = new LoginRequest("user@email.com", "password");
-        User user = new User("tester", "user@email.com", "encoded-password");
+        User user = User.of("tester", "user@email.com", "encoded-password");
         ReflectionTestUtils.setField(user, "id", 1L);
 
         given(userQueryService.getUserByEmail("user@email.com")).willReturn(user);
@@ -223,7 +223,7 @@ class AuthServiceTest {
     void withdraw_shouldDeleteUserAndAllRelations_whenUserExists() {
         // given
         Long userId = 1L;
-        User user = new User("tester", "tester@email.com", "encodedPass");
+        User user = User.of("tester", "tester@email.com", "encodedPass");
         ReflectionTestUtils.setField(user, "id", userId);
 
         given(userQueryService.getUserById(userId)).willReturn(user);

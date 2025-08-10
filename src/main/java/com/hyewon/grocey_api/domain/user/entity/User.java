@@ -53,19 +53,14 @@ public class User extends BaseTimeEntity {
         fridge.getUsers().add(this); // 양방향이라면 양쪽 연결
     }
 
-    public User(String username, String email, String password, AgeGroup ageGroup, Gender gender) {
+    private User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.ageGroup = ageGroup;
-        this.gender = gender;
     }
 
-    @Builder
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    public static User of(String username, String email, String password){
+        return new User(username, email, password);
     }
 
     public void updateName(String name) {
@@ -94,5 +89,4 @@ public class User extends BaseTimeEntity {
     public void completeProfile() {
         this.profileCompleted = true;
     }
-
 }

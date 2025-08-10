@@ -22,8 +22,12 @@ public class UserAllergy {
     @JoinColumn(name = "allergy_id")
     private Allergy allergy;
 
-    public UserAllergy(User user, Allergy allergy) {
+    private UserAllergy(User user, Allergy allergy) {
         this.user = user;
         this.allergy = allergy;
+    }
+
+    public static UserAllergy of(User user,  Allergy allergy) {
+        return new UserAllergy(user, allergy);
     }
 }

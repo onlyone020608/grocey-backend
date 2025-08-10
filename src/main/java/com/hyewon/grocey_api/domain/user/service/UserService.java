@@ -80,7 +80,7 @@ public class UserService {
         }
 
         List<UserAllergy> newUserAllergies = allergies.stream()
-                .map(allergy -> new UserAllergy(user, allergy))
+                .map(allergy -> UserAllergy.of(user, allergy))
                 .toList();
         userAllergyRepository.saveAll(newUserAllergies);
     }
@@ -102,7 +102,7 @@ public class UserService {
                 throw new InvalidRequestException("One or more food preference IDs are invalid.");
             }
             List<UserFoodPreference> userFoodPreferences = foods.stream()
-                    .map(food -> new UserFoodPreference(user, food))
+                    .map(food -> UserFoodPreference.of(user, food))
                     .toList();
             userFoodPreferenceRepository.saveAll(userFoodPreferences);
         }
@@ -115,7 +115,7 @@ public class UserService {
                 throw new InvalidRequestException("One or more preferred ingredient IDs are invalid.");
             }
             List<UserPreferredIngredient> preferredEntities = ingredients.stream()
-                    .map(ingredient -> new UserPreferredIngredient(user, ingredient))
+                    .map(ingredient -> UserPreferredIngredient.of(user, ingredient))
                     .toList();
             userPreferredIngredientRepository.saveAll(preferredEntities);
         }
@@ -127,7 +127,7 @@ public class UserService {
                 throw new InvalidRequestException("One or more disliked ingredient IDs are invalid.");
             }
             List<UserDislikedIngredient> dislikedEntities = dislikedIngredients.stream()
-                    .map(ingredient -> new UserDislikedIngredient(user, ingredient))
+                    .map(ingredient -> UserDislikedIngredient.of(user, ingredient))
                     .toList();
             userDislikedIngredientRepository.saveAll(dislikedEntities);
         }

@@ -18,7 +18,11 @@ public class FoodPreference {
 
     private String name;
 
-    public FoodPreference(String name) {
+    private FoodPreference(String name) {
         this.name = name;
+    }
+
+    public static FoodPreference of(String name) {
+        return new FoodPreference(name);
     }
 }

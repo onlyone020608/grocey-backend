@@ -135,7 +135,7 @@ public class DataInitializer implements CommandLineRunner {
 
                 if (allergyRepository.existsByAllergyName(name)) continue;
 
-                Allergy allergy = new Allergy(name);
+                Allergy allergy = Allergy.of(name);
                 allergyRepository.save(allergy);
             }
         }
@@ -154,7 +154,7 @@ public class DataInitializer implements CommandLineRunner {
                 String name = line.trim();
                 if (foodPreferenceRepository.existsByName(name)) continue;
 
-                FoodPreference foodPreference = new FoodPreference(name);
+                FoodPreference foodPreference = FoodPreference.of(name);
                 foodPreferenceRepository.save(foodPreference);
             }
         }
@@ -173,7 +173,7 @@ public class DataInitializer implements CommandLineRunner {
                 String name = line.trim();
                 if (preferenceIngredientRepository.existsByName(name)) continue;
 
-                PreferenceIngredient ingredient = new PreferenceIngredient(name);
+                PreferenceIngredient ingredient = PreferenceIngredient.of(name);
                 preferenceIngredientRepository.save(ingredient);
             }
         }

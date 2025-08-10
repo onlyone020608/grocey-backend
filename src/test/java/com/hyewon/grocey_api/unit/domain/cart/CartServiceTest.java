@@ -170,7 +170,7 @@ class CartServiceTest {
         User attacker = user;
         ReflectionTestUtils.setField(attacker, "id", attackerId);
 
-        User owner = new User("owner", "owner@email.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
+        User owner = User.of("owner", "owner@email.com", "pw");
         ReflectionTestUtils.setField(owner, "id", ownerId);
 
         Cart attackerCart = Cart.of(attacker, attacker.getFridge());

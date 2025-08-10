@@ -53,7 +53,7 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
-        User user = new User(request.getName(), request.getEmail(), encodedPassword);
+        User user = User.of(request.getName(), request.getEmail(), encodedPassword);
         user.assignFridge(fridge); // 연관관계 설정
 
 

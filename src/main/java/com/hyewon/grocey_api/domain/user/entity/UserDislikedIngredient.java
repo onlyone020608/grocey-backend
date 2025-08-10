@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserDislikedIngredient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,8 +20,12 @@ public class UserDislikedIngredient {
     @JoinColumn(name = "preference_ingredient_id")
     private PreferenceIngredient preferenceIngredient;
 
-    public UserDislikedIngredient(User user, PreferenceIngredient preferenceIngredient) {
+    private UserDislikedIngredient(User user, PreferenceIngredient preferenceIngredient) {
         this.user = user;
         this.preferenceIngredient = preferenceIngredient;
+    }
+
+    public static UserDislikedIngredient of(User user, PreferenceIngredient preferenceIngredient) {
+        return new UserDislikedIngredient(user, preferenceIngredient);
     }
 }

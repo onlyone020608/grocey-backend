@@ -18,7 +18,11 @@ public class Allergy {
     private Long id;
     private String name;
 
-    public Allergy(String name) {
+    private Allergy(String name) {
         this.name = name;
+    }
+
+    public static Allergy of (String name){
+        return new Allergy(name);
     }
 }
