@@ -17,6 +17,7 @@ public class Fridge {
     private Long id;
 
     @OneToMany(mappedBy = "fridge")
+    @Builder.Default
     private List<User> users = new ArrayList<>();
 
     private Double fridgeTemperature;

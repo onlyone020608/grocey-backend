@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +62,6 @@ class RecipeRecommendationServiceTest {
                 .id(2L)
                 .fridgeTemperature(4.0)
                 .freezerTemperature(-18.0)
-                .users(new ArrayList<>())
                 .build();
         user.assignFridge(fridge);
 
