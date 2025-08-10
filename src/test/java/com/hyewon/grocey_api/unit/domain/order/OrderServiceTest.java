@@ -26,7 +26,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +54,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+
         user = User.builder()
                 .id(1L)
                 .username("tester")
@@ -64,7 +64,6 @@ class OrderServiceTest {
         cart = Cart.builder()
                 .user(user)
                 .fridge(null)
-                .cartItems(new ArrayList<>())
                 .build();
 
         product = Product.builder()
@@ -86,10 +85,8 @@ class OrderServiceTest {
                 .id(101L)
                 .user(user)
                 .address("123 Seoul")
-                .orderItems(new ArrayList<>())
                 .paymentMethod(PaymentMethod.KAKAOPAY)
                 .build();
-
     }
 
     @Test
@@ -201,7 +198,6 @@ class OrderServiceTest {
         Cart anotherCart = Cart.builder()
                 .user(anotherUser)
                 .fridge(null)
-                .cartItems(new ArrayList<>())
                 .build();
 
         anotherCart.addCartItem(cartItem);
@@ -229,5 +225,4 @@ class OrderServiceTest {
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("Invalid payment method");
     }
-
 }

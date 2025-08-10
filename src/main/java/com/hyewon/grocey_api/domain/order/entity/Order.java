@@ -31,6 +31,7 @@ public class Order extends BaseTimeEntity {
     private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private Order(User user, String address, PaymentMethod paymentMethod) {
