@@ -55,7 +55,7 @@ class CartServiceTest {
 
     @BeforeEach
     void setUp() {
-        Fridge fridge = new Fridge(4.0, -18.0);
+        Fridge fridge = Fridge.of(4.0, -18.0);
 
         user = User.builder()
                 .id(1L)

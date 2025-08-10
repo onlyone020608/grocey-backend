@@ -105,7 +105,7 @@ public abstract class AbstractIntegrationTest {
 
     protected FridgeIngredient setupFridgeIngredient(User user, Ingredient ingredient, boolean isFreezer,  int quantity) {
         Fridge fridge = user.getFridge();
-        FridgeIngredient fi = new FridgeIngredient(fridge, ingredient, isFreezer,  quantity, LocalDate.now().plusDays(7));
+        FridgeIngredient fi = FridgeIngredient.of(fridge, ingredient, isFreezer,  quantity, LocalDate.now().plusDays(7));
         return fridgeIngredientRepository.save(fi);
     }
 

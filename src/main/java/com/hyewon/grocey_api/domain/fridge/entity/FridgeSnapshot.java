@@ -22,16 +22,14 @@ public class FridgeSnapshot extends BaseTimeEntity {
 
     private int quantity;
 
-    public FridgeSnapshot(Fridge fridge, Long ingredient_id, Boolean freezer, int quantity) {
+    private FridgeSnapshot(Fridge fridge, Long ingredient_id, Boolean freezer, int quantity) {
         this.fridge = fridge;
         this.ingredient_id = ingredient_id;
         this.freezer = freezer;
         this.quantity = quantity;
     }
 
-
-
-
-
-
+    public static FridgeSnapshot of (Fridge fridge, Long ingredient_id, Boolean freezer, int quantity){
+        return new FridgeSnapshot(fridge, ingredient_id, freezer, quantity);
+    }
 }

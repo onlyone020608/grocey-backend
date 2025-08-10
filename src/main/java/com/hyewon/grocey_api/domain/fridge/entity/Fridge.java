@@ -7,7 +7,6 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,5 +25,9 @@ public class Fridge {
     public Fridge(Double fridgeTemperature, Double freezerTemperature) {
         this.fridgeTemperature = fridgeTemperature;
         this.freezerTemperature = freezerTemperature;
+    }
+
+    public static Fridge of(Double fridgeTemperature, Double freezerTemperature) {
+        return new Fridge(fridgeTemperature, freezerTemperature);
     }
 }

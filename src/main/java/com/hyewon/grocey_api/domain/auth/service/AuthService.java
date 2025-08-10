@@ -48,7 +48,7 @@ public class AuthService {
             throw new IllegalArgumentException("Email already in use");
         }
 
-        Fridge fridge = new Fridge(3.0, -18.0);
+        Fridge fridge = Fridge.of(3.0, -18.0);
         fridgeCommandService.createFridge(fridge);
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -60,7 +60,7 @@ public class AuthService {
         for (long ingredientId : List.of(1L, 2L, 3L)) {
             Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);
 
-            FridgeIngredient fi = new FridgeIngredient(
+            FridgeIngredient fi = FridgeIngredient.of(
                     fridge,
                     ingredient,
                     false,
@@ -73,7 +73,7 @@ public class AuthService {
         for (long ingredientId : List.of(7L, 8L)) {
             Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);;
 
-            FridgeIngredient fi = new FridgeIngredient(
+            FridgeIngredient fi = FridgeIngredient.of(
                     fridge,
                     ingredient,
                     true,
@@ -86,7 +86,7 @@ public class AuthService {
         List<FridgeIngredient> fridgeIngredients = fridgeIngredientManager.getByFridgeId(fridge.getId());
 
         for (FridgeIngredient fi : fridgeIngredients) {
-            FridgeSnapshot snapshot = new FridgeSnapshot(
+            FridgeSnapshot snapshot = FridgeSnapshot.of(
                     fridge,
                     fi.getIngredient().getId(),
                     fi.getFreezer(),
