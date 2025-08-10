@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -202,7 +202,6 @@ class CartServiceTest {
                 .id(20L)
                 .user(user)
                 .fridge(user.getFridge())
-                .cartItems(new ArrayList<>())
                 .build();
 
         Cart cart2 = Cart.builder()
@@ -254,7 +253,6 @@ class CartServiceTest {
         Cart cart = Cart.builder()
                 .user(user)
                 .fridge(user.getFridge())
-                .cartItems(new ArrayList<>())
                 .build();
 
         cart.addCartItem(cartItem1);
@@ -268,8 +266,6 @@ class CartServiceTest {
         });
     }
 
-
-
     @Test
     @DisplayName("getCart - returns cart and its items for the user")
     void getCart_shouldReturnCartWithItems() {
@@ -279,7 +275,6 @@ class CartServiceTest {
                .id(10L)
                .user(user)
                .fridge(user.getFridge())
-                .cartItems(new ArrayList<>())
                 .build();
 
         cart.addCartItem(cartItem1);

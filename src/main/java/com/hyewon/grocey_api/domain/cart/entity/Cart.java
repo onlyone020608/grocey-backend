@@ -28,6 +28,7 @@ public class Cart extends BaseTimeEntity {
     private Fridge fridge;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<CartItem> cartItems = new ArrayList<>();
 
     private Cart(User user, Fridge fridge) {
