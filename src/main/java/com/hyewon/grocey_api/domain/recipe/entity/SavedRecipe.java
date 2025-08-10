@@ -24,8 +24,12 @@ public class SavedRecipe extends BaseTimeEntity {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    public SavedRecipe(User user, Recipe recipe) {
+    private SavedRecipe(User user, Recipe recipe) {
         this.user = user;
         this.recipe = recipe;
+    }
+
+    public static SavedRecipe of(User user, Recipe recipe) {
+        return new SavedRecipe(user, recipe);
     }
 }

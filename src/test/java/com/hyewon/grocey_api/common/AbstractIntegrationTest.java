@@ -130,7 +130,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected void setupSavedRecipe(User user, Recipe recipe) {
-        savedRecipeRepository.save(new SavedRecipe(user, recipe));
+        savedRecipeRepository.save(SavedRecipe.of(user, recipe));
     }
 
     protected CartItem addCartItemFor(User user, Product product, int quantity) {

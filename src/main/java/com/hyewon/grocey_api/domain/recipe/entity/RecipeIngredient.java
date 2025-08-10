@@ -28,11 +28,13 @@ public class RecipeIngredient {
 
     private String quantity; // 예: "2개", "1컵"
 
-    public RecipeIngredient(Recipe recipe, Ingredient ingredient, String quantity) {
+    private RecipeIngredient(Recipe recipe, Ingredient ingredient, String quantity) {
         this.recipe = recipe;
         this.ingredient = ingredient;
         this.quantity = quantity;
     }
 
-
+    public static RecipeIngredient of(Recipe recipe, Ingredient ingredient, String quantity) {
+        return new RecipeIngredient(recipe, ingredient, quantity);
+    }
 }

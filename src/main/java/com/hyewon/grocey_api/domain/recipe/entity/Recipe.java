@@ -19,29 +19,21 @@ public class Recipe {
     private Long id;
 
     private String name;
-
     private String description;
-
     private Integer cookingTimeInMinutes;
-
     private Integer servings;
-
     private String imageUrl;
-
     private LocalDateTime savedAt;
 
-    public Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings) {
-        this.name = name;
-        this.description = description;
-        this.cookingTimeInMinutes = cookingTimeInMinutes;
-        this.servings = servings;
-    }
-
-    public Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings, String imageUrl) {
+    private Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings, String imageUrl) {
         this.name = name;
         this.description = description;
         this.cookingTimeInMinutes = cookingTimeInMinutes;
         this.servings = servings;
         this.imageUrl = imageUrl;
+    }
+
+    public static Recipe of(String name,  String description, Integer cookingTimeInMinutes, Integer servings, String imageUrl) {
+        return new Recipe(name, description, cookingTimeInMinutes, servings, imageUrl);
     }
 }

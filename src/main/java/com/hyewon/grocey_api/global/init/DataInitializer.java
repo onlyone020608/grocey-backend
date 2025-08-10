@@ -198,7 +198,7 @@ public class DataInitializer implements CommandLineRunner {
                 String imageUrl = tokens[4].trim();
 
 
-                Recipe recipe = new Recipe(
+                Recipe recipe = Recipe.of(
                         recipeName,
                         description,
                         cookingTime,
@@ -235,7 +235,7 @@ public class DataInitializer implements CommandLineRunner {
                 Ingredient ingredient = ingredientRepository.findById(ingredientId)
                         .orElseThrow(() -> new RuntimeException("Ingredient not found: " + ingredientId));
 
-                RecipeIngredient recipeIngredient = new RecipeIngredient(recipe, ingredient, quantity);
+                RecipeIngredient recipeIngredient = RecipeIngredient.of(recipe, ingredient, quantity);
                 recipeIngredientRepository.save(recipeIngredient);
             }
         }

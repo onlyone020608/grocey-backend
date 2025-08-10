@@ -47,7 +47,7 @@ public class SavedRecipeService {
             throw new DuplicateSavedRecipeException(recipeId);
         }
 
-        SavedRecipe savedRecipe = new SavedRecipe(user, recipe);
+        SavedRecipe savedRecipe = SavedRecipe.of(user, recipe);
         savedRecipeRepository.save(savedRecipe);
     }
 
