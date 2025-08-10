@@ -33,15 +33,23 @@ public class RecipeRecommendation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RecommendationType type;
 
-    public RecipeRecommendation(User user, Recipe recipe, RecommendationType type) {
+    private RecipeRecommendation(User user, Recipe recipe, RecommendationType type) {
         this.recipe = recipe;
         this.user = user;
         this.type = type;
     }
 
-    public RecipeRecommendation(Fridge fridge, Recipe recipe, RecommendationType type) {
+    private RecipeRecommendation(Fridge fridge, Recipe recipe, RecommendationType type) {
         this.fridge = fridge;
         this.recipe = recipe;
         this.type = type;
+    }
+
+    public static RecipeRecommendation ofUser(User user, Recipe recipe, RecommendationType type) {
+        return  new RecipeRecommendation(user, recipe, type);
+    }
+
+    public static RecipeRecommendation ofFridge(Fridge fridge, Recipe recipe, RecommendationType type) {
+        return  new RecipeRecommendation(fridge, recipe, type);
     }
 }

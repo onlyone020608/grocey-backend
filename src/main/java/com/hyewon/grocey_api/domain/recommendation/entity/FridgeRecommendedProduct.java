@@ -23,8 +23,12 @@ public class FridgeRecommendedProduct extends BaseTimeEntity {
     @JoinColumn(name = "fridge_recommendation_id")
     private FridgeRecommendation fridgeRecommendation;
 
-    public FridgeRecommendedProduct(Product product, FridgeRecommendation fridgeRecommendation) {
+    private FridgeRecommendedProduct(Product product, FridgeRecommendation fridgeRecommendation) {
         this.product = product;
         this.fridgeRecommendation = fridgeRecommendation;
+    }
+
+    public static FridgeRecommendedProduct of(Product product, FridgeRecommendation fridgeRecommendation) {
+        return new FridgeRecommendedProduct(product, fridgeRecommendation);
     }
 }

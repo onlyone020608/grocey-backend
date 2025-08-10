@@ -50,9 +50,9 @@ public class FridgeRecommendationService {
         List<Product> products =  productQueryService.findRandomOnePerIngredient(ingredientIds);
 
 
-        FridgeRecommendation recommendation = fridgeRecommendationRepository.save(new FridgeRecommendation(fridge));
+        FridgeRecommendation recommendation = fridgeRecommendationRepository.save(FridgeRecommendation.of(fridge));
         List<FridgeRecommendedProduct> savedProducts = products.stream()
-                .map(product -> new FridgeRecommendedProduct(product, recommendation))
+                .map(product -> FridgeRecommendedProduct.of(product, recommendation))
                 .toList();
 
         fridgeRecommendedProductRepository.saveAll(savedProducts);

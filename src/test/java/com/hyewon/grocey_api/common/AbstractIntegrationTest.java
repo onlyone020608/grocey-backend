@@ -110,22 +110,22 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected FridgeRecommendation setupFridgeRecommendation(User user) {
-        FridgeRecommendation recommendation = new FridgeRecommendation(user.getFridge());
+        FridgeRecommendation recommendation = FridgeRecommendation.of(user.getFridge());
         return fridgeRecommendationRepository.save(recommendation);
     }
 
     protected FridgeRecommendedProduct setupRecommendedProduct(Product product, FridgeRecommendation recommendation) {
-        FridgeRecommendedProduct recProduct = new FridgeRecommendedProduct(product, recommendation);
+        FridgeRecommendedProduct recProduct = FridgeRecommendedProduct.of(product, recommendation);
         return fridgeRecommendedProductRepository.save(recProduct);
     }
 
     protected RecipeRecommendation setupRecipeRecommendationByUser(User user, Recipe recipe) {
-        RecipeRecommendation recommendation = new RecipeRecommendation(user, recipe, RecommendationType.PREFERENCE_BASED);
+        RecipeRecommendation recommendation = RecipeRecommendation.ofUser(user, recipe, RecommendationType.PREFERENCE_BASED);
         return recipeRecommendationRepository.save(recommendation);
     }
 
     protected RecipeRecommendation setupRecipeRecommendationByFridge(User user, Recipe recipe) {
-        RecipeRecommendation recommendation = new RecipeRecommendation(user.getFridge(), recipe, RecommendationType.PREFERENCE_BASED);
+        RecipeRecommendation recommendation = RecipeRecommendation.ofFridge(user.getFridge(), recipe, RecommendationType.PREFERENCE_BASED);
         return recipeRecommendationRepository.save(recommendation);
     }
 

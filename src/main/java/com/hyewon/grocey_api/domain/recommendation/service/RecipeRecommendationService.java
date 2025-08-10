@@ -43,7 +43,7 @@ public class RecipeRecommendationService {
         List<Recipe> recipes = recipeQueryService.getRecipes(recipeIds);
 
         List<RecipeRecommendation> saved = recipes.stream()
-                .map(recipe -> new RecipeRecommendation(user, recipe, RecommendationType.PREFERENCE_BASED))
+                .map(recipe -> RecipeRecommendation.ofUser(user, recipe, RecommendationType.PREFERENCE_BASED))
                 .toList();
         recipeRecommendationRepository.saveAll(saved);
 
@@ -70,7 +70,7 @@ public class RecipeRecommendationService {
         List<Recipe> recipes = recipeQueryService.getRecipes(recipeIds);
 
         List<RecipeRecommendation> saved = recipes.stream()
-                .map(recipe -> new RecipeRecommendation(fridge, recipe, RecommendationType.FRIDGE_BASED))
+                .map(recipe -> RecipeRecommendation.ofFridge(fridge, recipe, RecommendationType.FRIDGE_BASED))
                 .toList();
         recipeRecommendationRepository.saveAll(saved);
 
