@@ -24,11 +24,15 @@ public class Product extends BaseTimeEntity {
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    public Product(String name, String brand, double price, String imageUrl) {
+    private Product(String name, String brand, double price, String imageUrl) {
         this.imageUrl = imageUrl;
         this.price = price;
         this.name = name;
         this.brand = brand;
+    }
+
+    public static Product of(String name, String brand, double price, String imageUrl) {
+        return new Product(name, brand, price, imageUrl);
     }
 
     public void assignIngredient(Ingredient ingredient) {

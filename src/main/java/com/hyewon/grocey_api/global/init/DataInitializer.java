@@ -88,7 +88,7 @@ public class DataInitializer implements CommandLineRunner {
                 String imageUrl = tokens.length > 3 ? tokens[3].trim() : null;
                 Long ingredientId = tokens.length > 4 ? Long.parseLong(tokens[4].trim()) : null;
 
-                Product product = new Product(productName, brandName, price, imageUrl);
+                Product product = Product.of(productName, brandName, price, imageUrl);
                 if (ingredientId != null) {
                     Ingredient ingredient = ingredientRepository.findById(ingredientId)
                             .orElseThrow(() -> new RuntimeException("Ingredient not found with ID: " + ingredientId));
@@ -116,7 +116,7 @@ public class DataInitializer implements CommandLineRunner {
                 Product product = productRepository.findById(productId)
                         .orElseThrow(() -> new RuntimeException("Product not found: id=" + productId));
 
-                ProductTab productTab = new ProductTab(product, tabType);
+                ProductTab productTab = ProductTab.of(product, tabType);
                 productTabRepository.save(productTab);
             }
         }

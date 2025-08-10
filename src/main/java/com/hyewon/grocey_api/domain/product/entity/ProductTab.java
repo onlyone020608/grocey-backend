@@ -21,8 +21,12 @@ public class ProductTab {
     @Enumerated(EnumType.STRING)
     private TabType tabType;
 
-    public ProductTab(Product product, TabType tabType) {
+    private ProductTab(Product product, TabType tabType) {
         this.product = product;
         this.tabType = tabType;
+    }
+
+    public static ProductTab of(Product product, TabType tabType) {
+        return new ProductTab(product, tabType);
     }
 }
