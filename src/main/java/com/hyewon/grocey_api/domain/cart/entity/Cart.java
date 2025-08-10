@@ -30,9 +30,13 @@ public class Cart extends BaseTimeEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    public Cart(User user, Fridge fridge) {
+    private Cart(User user, Fridge fridge) {
         this.user = user;
         this.fridge = fridge;
+    }
+
+    public static Cart of(User user, Fridge fridge) {
+        return new Cart(user, fridge);
     }
 
     public void addCartItem(CartItem item) {

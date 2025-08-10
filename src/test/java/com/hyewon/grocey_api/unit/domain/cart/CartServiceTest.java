@@ -121,8 +121,8 @@ class CartServiceTest {
         AddCartItemRequest request = new AddCartItemRequest(1L, 2);
 
         // 기존 CartItem: 상품 동일, 수량 3
-        CartItem existingItem = new CartItem(product, 3);
-        Cart existingCart = new Cart(user, user.getFridge());
+        CartItem existingItem = CartItem.of(product, 3);
+        Cart existingCart = Cart.of(user, user.getFridge());
         existingCart.addCartItem(existingItem);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
@@ -142,7 +142,7 @@ class CartServiceTest {
     void deleteCartItems_shouldRemoveItemsIfUserOwnsThem() {
         // given
         Long userId = 1L;
-        Cart cart = new Cart(user, user.getFridge());
+        Cart cart = Cart.of(user, user.getFridge());
         ReflectionTestUtils.setField(cart, "id", 777L);
 
         cart.addCartItem(cartItem1);
@@ -173,12 +173,12 @@ class CartServiceTest {
         User owner = new User("owner", "owner@email.com", "pw", AgeGroup.TWENTIES, Gender.MALE);
         ReflectionTestUtils.setField(owner, "id", ownerId);
 
-        Cart attackerCart = new Cart(attacker, attacker.getFridge());
-        Cart ownerCart = new Cart(owner, owner.getFridge());
+        Cart attackerCart = Cart.of(attacker, attacker.getFridge());
+        Cart ownerCart = Cart.of(owner, owner.getFridge());
         ReflectionTestUtils.setField(attackerCart, "id", 888L);
         ReflectionTestUtils.setField(ownerCart, "id", 999L);
 
-        CartItem item = new CartItem(product, 1);
+        CartItem item = CartItem.of(product, 1);
         ReflectionTestUtils.setField(item, "id", 200L);
         ownerCart.addCartItem(item);
 
@@ -231,7 +231,7 @@ class CartServiceTest {
 
         UpdateCartItemRequest request = new UpdateCartItemRequest(10L, newQuantity);
 
-        Cart cart = new Cart(user, user.getFridge());
+        Cart cart = Cart.of(user, user.getFridge());
         cart.addCartItem(cartItem1);
 
         given(cartItemRepository.findById(10L)).willReturn(Optional.of(cartItem1));

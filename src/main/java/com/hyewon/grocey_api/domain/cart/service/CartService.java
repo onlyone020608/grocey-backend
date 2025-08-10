@@ -61,7 +61,7 @@ public class CartService {
         Product product = productQueryService.getProduct(request.getProductId());
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
-                    Cart newCart = new Cart(user, user.getFridge());
+                    Cart newCart = Cart.of(user, user.getFridge());
                     return cartRepository.save(newCart);
                 });
 
@@ -73,7 +73,7 @@ public class CartService {
             CartItem existingItem = existingItemOpt.get();
             existingItem.updateQuantity(existingItem.getQuantity() + request.getQuantity());
         } else {
-            CartItem cartItem = new CartItem(product, request.getQuantity());
+            CartItem cartItem = CartItem.of(product, request.getQuantity());
             cart.addCartItem(cartItem);
             cartItemRepository.save(cartItem);
         }
@@ -115,7 +115,7 @@ public class CartService {
         User user = userQueryService.getUserById(userId);
 
         Cart cart = cartRepository.findByUser(user)
-                .orElseGet(() -> cartRepository.save(new Cart(user, user.getFridge())));
+                .orElseGet(() -> cartRepository.save(Cart.of(user, user.getFridge())));
 
         List<CartItem> itemsToSave = new ArrayList<>();
 
@@ -129,7 +129,7 @@ public class CartService {
                 CartItem existingItem = existingItemOpt.get();
                 existingItem.updateQuantity(existingItem.getQuantity() + request.getQuantity());
             } else {
-                CartItem newItem = new CartItem(product, request.getQuantity());
+                CartItem newItem = CartItem.of(product, request.getQuantity());
                 cart.addCartItem(newItem);
                 itemsToSave.add(newItem);
             }

@@ -25,9 +25,13 @@ public class CartItem extends BaseTimeEntity {
 
     private int quantity;
 
-    public CartItem(Product product, int quantity) {
+    private CartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public static CartItem of(Product product, int quantity) {
+        return new CartItem(product, quantity);
     }
 
     public void assignCart(Cart cart) {
@@ -47,6 +51,5 @@ public class CartItem extends BaseTimeEntity {
             this.cart = null;
         }
     }
-
 
 }
