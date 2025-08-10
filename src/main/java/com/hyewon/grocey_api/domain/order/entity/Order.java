@@ -33,10 +33,14 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order(User user, String address, PaymentMethod paymentMethod) {
+    private Order(User user, String address, PaymentMethod paymentMethod) {
         this.user = user;
         this.orderStatus = OrderStatus.CONFIRMED;
         this.address = address;
         this.paymentMethod = paymentMethod;
+    }
+
+    public static Order of(User user, String address, PaymentMethod paymentMethod) {
+        return new Order(user, address, paymentMethod);
     }
 }

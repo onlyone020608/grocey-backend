@@ -73,10 +73,10 @@ public class OrderService {
             }
         }
 
-        Order order = new Order(user, request.getAddress(), request.toPaymentMethod());
+        Order order = Order.of(user, request.getAddress(), request.toPaymentMethod());
 
         for (CartItem item : selectedItems) {
-            OrderItem orderItem = new OrderItem(order, item.getProduct(), item.getQuantity(), item.getProduct().getPrice());
+            OrderItem orderItem = OrderItem.of(order, item.getProduct(), item.getQuantity(), item.getProduct().getPrice());
             order.getOrderItems().add(orderItem);
         }
 

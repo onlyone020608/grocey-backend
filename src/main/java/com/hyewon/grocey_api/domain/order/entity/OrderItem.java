@@ -25,14 +25,16 @@ public class OrderItem extends BaseTimeEntity {
 
     private int quantity;
 
-
-
     private double price;
 
-    public OrderItem(Order order, Product product, int quantity,  double price) {
+    private OrderItem(Order order, Product product, int quantity,  double price) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
+    }
+
+    public static OrderItem of(Order order, Product product, int quantity,  double price) {
+        return new OrderItem(order, product, quantity, price);
     }
 }
