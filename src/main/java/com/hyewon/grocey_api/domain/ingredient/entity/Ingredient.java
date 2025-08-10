@@ -20,8 +20,12 @@ public class Ingredient {
 
     private String imageUrl;
 
-    public Ingredient(String name, String imageUrl) {
+    private Ingredient(String name, String imageUrl) {
         this.name = name;
         this.imageUrl = imageUrl;
+    }
+
+    public static Ingredient of(String name, String imageUrl) {
+        return new Ingredient(name, imageUrl);
     }
 }
