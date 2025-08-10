@@ -29,6 +29,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public  List<OrderSummaryResponse> getRecentOrderSummaryByUserId(Long userId) {
+
         User user = userQueryService.getUserById(userId);
 
         List<Order> recentOrders = orderRepository.findTop5ByUserOrderByCreatedAtDesc(user);
@@ -36,10 +37,11 @@ public class OrderService {
         return recentOrders.stream()
                 .map(OrderSummaryResponse::new)
                 .toList();
-
     }
+
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(Long userId, Long orderId) {
+
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
@@ -48,11 +50,11 @@ public class OrderService {
         }
 
         return new OrderDetailResponse(order);
-
     }
 
     @Transactional(readOnly = true)
     public Page<OrderSummaryResponse> getAllOrders(Long userId, Pageable pageable) {
+
         User user = userQueryService.getUserById(userId);
 
         return orderRepository.findByUser(user, pageable)
@@ -63,9 +65,7 @@ public class OrderService {
     public Long placeOrder(Long userId, OrderRequest request) {
         User user = userQueryService.getUserById(userId);
 
-
         List<CartItem> selectedItems = cartItemService.getCartItems(request.getCartItemIds());
-
 
         for (CartItem item : selectedItems) {
             if (!item.getCart().getUser().getId().equals(userId)) {
@@ -77,19 +77,11 @@ public class OrderService {
 
         for (CartItem item : selectedItems) {
             OrderItem orderItem = OrderItem.of(order, item.getProduct(), item.getQuantity(), item.getProduct().getPrice());
-            order.getOrderItems().add(orderItem);
+            order.addItem(orderItem);
         }
 
         orderRepository.save(order);
         cartItemService.deleteCartItems(selectedItems);
         return order.getId();
     }
-
-
-
-
-
-
-
-
 }

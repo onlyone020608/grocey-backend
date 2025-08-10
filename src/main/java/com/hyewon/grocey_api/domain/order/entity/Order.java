@@ -44,4 +44,10 @@ public class Order extends BaseTimeEntity {
     public static Order of(User user, String address, PaymentMethod paymentMethod) {
         return new Order(user, address, paymentMethod);
     }
+
+    public void addItem(OrderItem item) {
+        if (orderItems == null) orderItems = new ArrayList<>();
+        orderItems.add(item);
+        item.assignOrder(this);
+    }
 }

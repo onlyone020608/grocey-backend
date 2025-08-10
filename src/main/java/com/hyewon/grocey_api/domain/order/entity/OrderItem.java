@@ -37,4 +37,8 @@ public class OrderItem extends BaseTimeEntity {
     public static OrderItem of(Order order, Product product, int quantity,  double price) {
         return new OrderItem(order, product, quantity, price);
     }
+
+    public void assignOrder(Order order) {
+        this.order = order;
+    }
 }
