@@ -23,7 +23,6 @@ public class Recipe {
     private Integer cookingTimeInMinutes;
     private Integer servings;
     private String imageUrl;
-    private LocalDateTime savedAt;
 
     private Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings, String imageUrl) {
         this.name = name;
