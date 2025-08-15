@@ -16,5 +16,4 @@ public class RecommendationNotFoundException extends RuntimeException {
     public static RecommendationNotFoundException forFridgeRecipe(Long fridgeId) {
         return new RecommendationNotFoundException("recipe", "fridge", fridgeId);
     }
-
 }

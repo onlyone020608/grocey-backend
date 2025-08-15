@@ -9,5 +9,4 @@ public class FridgeNotFoundException extends RuntimeException {
   public FridgeNotFoundException(Long fridgeId) {
     super("Fridge not found (id=" + fridgeId + ")");
   }
-
 }

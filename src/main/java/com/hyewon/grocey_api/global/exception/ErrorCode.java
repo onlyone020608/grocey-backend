@@ -21,9 +21,6 @@ public enum ErrorCode {
     SAVED_RECIPE_NOT_FOUND(HttpStatus.NOT_FOUND, "Saved recipe not found."),
     INGREDIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Ingredient not found.");
 
-
-
-
     private final HttpStatus status;
     private final String message;
 
@@ -31,5 +28,4 @@ public enum ErrorCode {
         this.status = status;
         this.message = message;
     }
-
 }

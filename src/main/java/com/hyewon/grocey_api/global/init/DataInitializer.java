@@ -37,6 +37,7 @@ public class DataInitializer implements CommandLineRunner {
     private final FoodPreferenceRepository foodPreferenceRepository;
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+
     @Override
     public void run(String... args) throws Exception {
         loadIngredients();
@@ -47,11 +48,9 @@ public class DataInitializer implements CommandLineRunner {
         loadPreferenceIngredients();
         loadRecipes();
         loadRecipeIngredients();
-
     }
 
-    private void loadIngredients() throws Exception{
-
+    private void loadIngredients() throws Exception {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 new ClassPathResource("data/ingredient.csv").getInputStream(), StandardCharsets.UTF_8))) {
 
@@ -197,7 +196,6 @@ public class DataInitializer implements CommandLineRunner {
                 int servings = Integer.parseInt(tokens[3].trim());
                 String imageUrl = tokens[4].trim();
 
-
                 Recipe recipe = Recipe.of(
                         recipeName,
                         description,
@@ -206,12 +204,9 @@ public class DataInitializer implements CommandLineRunner {
                         imageUrl
                 );
 
-
                 recipeRepository.save(recipe);
             }
         }
-
-
     }
 
     private void loadRecipeIngredients() throws Exception {
@@ -240,11 +235,4 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
     }
-
-
-
-
-
-
-
 }

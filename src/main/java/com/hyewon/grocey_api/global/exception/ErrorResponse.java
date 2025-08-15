@@ -17,6 +17,4 @@ public class ErrorResponse {
         this.message = code.getMessage();
         this.timestamp = LocalDateTime.now();
     }
-
-
 }

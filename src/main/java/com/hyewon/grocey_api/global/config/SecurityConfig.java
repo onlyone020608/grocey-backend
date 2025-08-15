@@ -21,7 +21,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
 

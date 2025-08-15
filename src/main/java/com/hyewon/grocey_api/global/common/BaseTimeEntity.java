@@ -13,11 +13,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
-
     @CreatedDate
     protected LocalDateTime createdAt;
 
     @LastModifiedDate
     protected LocalDateTime updatedAt;
-
 }

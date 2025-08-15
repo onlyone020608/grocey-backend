@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler({
             UserNotFoundException.class,
             ProductNotFoundException.class,
@@ -75,7 +74,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatus())
                 .body(new ErrorResponse(errorCode));
     }
-
-
-
 }
