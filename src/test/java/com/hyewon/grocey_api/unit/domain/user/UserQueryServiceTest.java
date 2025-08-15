@@ -20,11 +20,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class UserQueryServiceTest {
-    @InjectMocks
-    UserQueryService userQueryService;
-
-    @Mock
-    UserRepository userRepository;
+    @Mock UserRepository userRepository;
+    @InjectMocks UserQueryService userQueryService;
 
     private User user;
 
@@ -33,7 +30,6 @@ public class UserQueryServiceTest {
         user = User.builder()
                 .id(1L)
                 .build();
-
     }
 
     @Test
@@ -63,5 +59,4 @@ public class UserQueryServiceTest {
         assertThrows(UserNotFoundException.class,
                 () ->  userQueryService.getUserById(userId));
     }
-
 }

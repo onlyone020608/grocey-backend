@@ -26,7 +26,6 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
         Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();
         setupFridgeIngredient(user, ingredient, false, 2 );
 
-
         mockMvc.perform(get("/api/fridge/ingredients")
                         .header("Authorization", "Bearer " + token)
                         .param("isFreezer", "false"))
@@ -54,5 +53,4 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
                 .andExpect(jsonPath("$.isFreezer").value(false))
                 .andExpect(jsonPath("$.expirationDate").exists());
     }
-
 }

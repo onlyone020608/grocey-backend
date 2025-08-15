@@ -40,59 +40,28 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import java.time.LocalDate;
 import java.util.UUID;
 
-
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
-
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Autowired
-    protected ObjectMapper objectMapper;
-
-    @Autowired
-    protected JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    protected PasswordEncoder passwordEncoder;
-
-    @Autowired
-    protected UserRepository userRepository;
-
+    @Autowired protected MockMvc mockMvc;
+    @Autowired protected ObjectMapper objectMapper;
+    @Autowired protected JwtTokenProvider jwtTokenProvider;
+    @Autowired protected PasswordEncoder passwordEncoder;
+    @Autowired protected UserRepository userRepository;
     @Autowired protected UserAllergyRepository userAllergyRepository;
-
     @Autowired protected IngredientRepository ingredientRepository;
-
     @Autowired protected ProductRepository productRepository;
-
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private FridgeIngredientRepository fridgeIngredientRepository;
-
-    @Autowired
-    private FridgeRecommendationRepository fridgeRecommendationRepository;
-
-    @Autowired
-    private FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
-
+    @Autowired private AuthService authService;
+    @Autowired private FridgeIngredientRepository fridgeIngredientRepository;
+    @Autowired private FridgeRecommendationRepository fridgeRecommendationRepository;
+    @Autowired private FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     @Autowired protected RecipeRepository recipeRepository;
     @Autowired protected RecipeRecommendationRepository recipeRecommendationRepository;
-
-    @Autowired
-    private SavedRecipeRepository savedRecipeRepository;
-
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private CartItemRepository cartItemRepository;
-
-
+    @Autowired private SavedRecipeRepository savedRecipeRepository;
+    @Autowired private CartService cartService;
+    @Autowired private CartItemRepository cartItemRepository;
 
     protected User createTestUser(String name, String emailPrefix, String rawPassword) {
         String email = emailPrefix + "_" + UUID.randomUUID() + "@example.com";
@@ -141,5 +110,4 @@ public abstract class AbstractIntegrationTest {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("CartItem not found"));
     }
-
 }

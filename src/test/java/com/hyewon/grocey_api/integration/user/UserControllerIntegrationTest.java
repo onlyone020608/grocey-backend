@@ -197,7 +197,6 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);
 
-
         User initial = userRepository.findById(user.getId()).orElseThrow();
         assertThat(initial.getProfileCompleted()).isFalse();
 
@@ -210,11 +209,4 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.profileCompleted").value(false));
     }
-
-
-
-
-
-
-
 }

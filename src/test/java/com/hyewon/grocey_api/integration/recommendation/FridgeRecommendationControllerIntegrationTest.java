@@ -40,5 +40,4 @@ public class FridgeRecommendationControllerIntegrationTest extends AbstractInteg
                 .andExpect(jsonPath("$.products[0].price").value(product.getPrice()))
                 .andExpect(jsonPath("$.products[0].imageUrl").value(product.getImageUrl()));
     }
-
 }

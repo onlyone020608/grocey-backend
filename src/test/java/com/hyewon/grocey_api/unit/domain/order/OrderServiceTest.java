@@ -38,13 +38,10 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    @Mock
-    private OrderRepository orderRepository;
+    @Mock private OrderRepository orderRepository;
     @Mock private UserQueryService userQueryService;
     @Mock private CartItemService cartItemService;
-
-    @InjectMocks
-    private OrderService orderService;
+    @InjectMocks private OrderService orderService;
 
     private User user;
     private Cart cart;
@@ -54,33 +51,27 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-
         user = User.builder()
                 .id(1L)
                 .username("tester")
                 .email("test@email.com")
                 .build();
-
         cart = Cart.builder()
                 .user(user)
                 .fridge(null)
                 .build();
-
         product = Product.builder()
                 .name("Milk")
                 .name("SoulDairy")
                 .price(2000)
                 .imageUrl("milk.png")
                 .build();
-
         cartItem = CartItem.builder()
                 .id(10L)
                 .product(product)
                 .quantity(2)
                 .build();
-
         cart.addCartItem(cartItem);
-
         order = Order.builder()
                 .id(101L)
                 .user(user)
@@ -132,7 +123,6 @@ class OrderServiceTest {
                 .email("bad@evil.com")
                 .password("pw")
                 .build();
-
         order = Order.builder()
                 .id(222L)
                 .user(anotherUser)

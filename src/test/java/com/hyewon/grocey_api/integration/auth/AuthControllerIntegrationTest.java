@@ -41,7 +41,6 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     void login_shouldReturnTokens() throws Exception {
         User user = createTestUser("Mary", "mary", "test1234!");
 
-
         LoginRequest request = new LoginRequest(user.getEmail(), "test1234!");
 
         mockMvc.perform(post("/api/auth/login")
@@ -57,7 +56,6 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     void refresh_shouldReturnNewTokens() throws Exception {
         User user = createTestUser("Mary", "mary", "test1234!");
 
-
         LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
 
         String loginResponse = mockMvc.perform(post("/api/auth/login")
@@ -67,7 +65,6 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
 
         TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
-
 
         TokenRefreshRequest refreshRequest = TokenRefreshRequest.builder()
                 .refreshToken(tokens.getRefreshToken())
@@ -99,7 +96,6 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/api/auth/logout")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
-
     }
 
     @Test
@@ -186,9 +182,4 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                     """))
                 .andExpect(status().isBadRequest());
     }
-
-
-
-
-
 }

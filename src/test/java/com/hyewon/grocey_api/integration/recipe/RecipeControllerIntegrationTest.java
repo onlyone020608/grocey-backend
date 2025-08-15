@@ -22,7 +22,6 @@ public class RecipeControllerIntegrationTest extends AbstractIntegrationTest {
         String token = generateTokenFor(user);
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
 
-
         // when & then
         mockMvc.perform(get("/api/recipes/" + recipe.getId())
                 .header("Authorization", "Bearer " + token))

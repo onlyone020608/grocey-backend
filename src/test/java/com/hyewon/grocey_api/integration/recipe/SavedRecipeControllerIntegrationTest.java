@@ -67,5 +67,4 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
     }
-
 }

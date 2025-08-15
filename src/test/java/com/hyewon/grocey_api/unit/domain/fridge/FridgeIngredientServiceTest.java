@@ -28,15 +28,12 @@ import static org.mockito.BDDMockito.given;
 class FridgeIngredientServiceTest {
     @Mock private FridgeIngredientRepository fridgeIngredientRepository;
     @Mock private FridgeRepository fridgeRepository;
-
-    @InjectMocks
-    private FridgeIngredientService fridgeIngredientService;
+    @InjectMocks private FridgeIngredientService fridgeIngredientService;
 
     private Fridge fridge;
     private Ingredient ingredient;
     private FridgeIngredient fridgeIngredient1;
     private FridgeIngredient fridgeIngredient2;
-
 
     @BeforeEach
     void setUp() {
@@ -45,26 +42,22 @@ class FridgeIngredientServiceTest {
                 .fridgeTemperature(4.0)
                 .freezerTemperature(-18.0)
                 .build();
-
         ingredient = Ingredient.builder()
                 .name("Chicken")
                 .imageUrl("url.com/chicken")
                 .build();
-
         fridgeIngredient1 = FridgeIngredient.builder()
                 .fridge(fridge)
                 .ingredient(ingredient)
                 .freezer(true)
                 .quantity(2)
                 .build();
-
         fridgeIngredient2 = FridgeIngredient.builder()
                 .fridge(fridge)
                 .ingredient(ingredient)
                 .freezer(false)
                 .quantity(1)
                 .build();
-
     }
 
     @Test
@@ -131,6 +124,4 @@ class FridgeIngredientServiceTest {
         assertThatThrownBy(() -> fridgeIngredientService.getIngredientDetail(id))
                 .isInstanceOf(FridgeIngredientNotFoundException.class);
     }
-
-
 }

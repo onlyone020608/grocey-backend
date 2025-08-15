@@ -26,14 +26,10 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeServiceTest {
-    @Mock
-    private RecipeRepository recipeRepository;
-    @Mock
-    private RecipeIngredientRepository recipeIngredientRepository;
-    @Mock
-    private SavedRecipeRepository savedRecipeRepository;
-    @InjectMocks
-    private RecipeService recipeService;
+    @Mock private RecipeRepository recipeRepository;
+    @Mock private RecipeIngredientRepository recipeIngredientRepository;
+    @Mock private SavedRecipeRepository savedRecipeRepository;
+    @InjectMocks private RecipeService recipeService;
 
     private Recipe recipe;
     private Ingredient ingredient;
@@ -48,12 +44,10 @@ class RecipeServiceTest {
                 .servings(2)
                 .description("1. Put oil\n2. Add kimchi\n3. Stir-fry with rice")
                 .build();
-
         ingredient = Ingredient.builder()
                 .name("Kimchi")
                 .imageUrl("url.com/kimchi")
                 .build();
-
         recipeIngredient = RecipeIngredient.builder()
                 .recipe(recipe)
                 .ingredient(ingredient)
@@ -98,5 +92,4 @@ class RecipeServiceTest {
         assertThatThrownBy(() -> recipeService.getRecipeDetail(999L, userId))
                 .isInstanceOf(RecipeNotFoundException.class);
     }
-
 }

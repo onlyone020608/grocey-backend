@@ -36,9 +36,7 @@ class UserServiceTest {
     @Mock private UserPreferredIngredientRepository userPreferredIngredientRepository;
     @Mock private FoodPreferenceRepository foodPreferenceRepository;
     @Mock private PreferenceIngredientRepository preferenceIngredientRepository;
-
-    @InjectMocks
-    private UserService userService;
+    @InjectMocks private UserService userService;
 
     private User user;
     private FoodPreference foodPreference;
@@ -230,9 +228,8 @@ class UserServiceTest {
     void updateUserAllergies_shouldUpdateCorrectly() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
-
-        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(10L, 20L));
         given(allergyRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(allergy1, allergy2));
+        UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(10L, 20L));
 
         // when
         userService.updateUserAllergies(1L, request);
@@ -243,7 +240,6 @@ class UserServiceTest {
                 StreamSupport.stream(allergies.spliterator(), false)
                         .count() == 2
         ));
-
     }
 
     @Test
@@ -393,24 +389,4 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.checkProfileCompletion(1L))
                 .isInstanceOf(UserNotFoundException.class);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

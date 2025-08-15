@@ -22,11 +22,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class FridgeQueryServiceTest {
-    @Mock
-    private FridgeRepository fridgeRepository;
-
-    @InjectMocks
-    private FridgeQueryService fridgeQueryService;
+    @Mock private FridgeRepository fridgeRepository;
+    @InjectMocks private FridgeQueryService fridgeQueryService;
 
     private Fridge fridge;
 
@@ -35,7 +32,6 @@ public class FridgeQueryServiceTest {
        fridge = Fridge.builder()
                .id(1L)
                .build();
-
     }
 
     @Test

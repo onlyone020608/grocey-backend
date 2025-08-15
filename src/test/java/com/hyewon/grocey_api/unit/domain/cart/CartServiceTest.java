@@ -44,9 +44,7 @@ class CartServiceTest {
     @Mock private UserQueryService userQueryService;
     @Mock private CartItemRepository cartItemRepository;
     @Mock private ProductQueryService productQueryService;
-
-    @InjectMocks
-    private CartService cartService;
+    @InjectMocks private CartService cartService;
 
     private User user;
     private Product product;
@@ -56,7 +54,6 @@ class CartServiceTest {
     @BeforeEach
     void setUp() {
         Fridge fridge = Fridge.of(4.0, -18.0);
-
         user = User.builder()
                 .id(1L)
                 .username("tester")
@@ -66,7 +63,6 @@ class CartServiceTest {
                 .gender(Gender.FEMALE)
                 .build();
         user.assignFridge(fridge);
-
         product = Product.builder()
                 .id(1L)
                 .name("Milk")
@@ -74,13 +70,11 @@ class CartServiceTest {
                 .price(2000)
                 .imageUrl("image-url")
                 .build();
-
         cartItem1 = CartItem.builder()
                 .id(10L)
                 .product(product)
                 .quantity(1)
                 .build();
-
         cartItem2 = CartItem.builder()
                 .id(20L)
                 .product(product)
@@ -93,13 +87,11 @@ class CartServiceTest {
     void addCartItem_shouldCreateNewCartAndAddItem() {
         // given
         AddCartItemRequest request = new AddCartItemRequest(1L, 3);
-
+        ArgumentCaptor<CartItem> cartItemCaptor = ArgumentCaptor.forClass(CartItem.class);
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(productQueryService.getProduct(1L)).willReturn(product);
         given(cartRepository.findByUser(user)).willReturn(Optional.empty());
         given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
-
-        ArgumentCaptor<CartItem> cartItemCaptor = ArgumentCaptor.forClass(CartItem.class);
 
         // when
         cartService.addCartItem(1L, request);
@@ -209,7 +201,6 @@ class CartServiceTest {
                 .build();
 
         cartItem1.assignCart(cart2);
-
 
         given(userQueryService.getUserById(userId)).willReturn(user);
         given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));

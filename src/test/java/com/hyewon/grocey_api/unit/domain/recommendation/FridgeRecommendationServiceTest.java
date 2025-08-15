@@ -24,11 +24,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class FridgeRecommendationServiceTest {
-
-    @Mock
-    private FridgeRecommendationRepository fridgeRecommendationRepository;
-    @InjectMocks
-    private FridgeRecommendationService fridgeRecommendationService;
+    @Mock private FridgeRecommendationRepository fridgeRecommendationRepository;
+    @InjectMocks private FridgeRecommendationService fridgeRecommendationService;
 
     private Fridge fridge;
     private Product product;
@@ -41,7 +38,6 @@ class FridgeRecommendationServiceTest {
                 .fridgeTemperature(4.0)
                 .freezerTemperature(-18.0)
                 .build();
-
         product = Product.builder()
                 .id(10L)
                 .name("Milk")
@@ -49,12 +45,10 @@ class FridgeRecommendationServiceTest {
                 .price(2000)
                 .imageUrl("milk.png")
                 .build();
-
         fridgeRecommendation = FridgeRecommendation.builder()
                 .id(100L)
                 .fridge(fridge)
                 .build();
-
         FridgeRecommendedProduct recommendedProduct = FridgeRecommendedProduct.builder()
                 .product(product)
                 .fridgeRecommendation(fridgeRecommendation)
@@ -90,5 +84,4 @@ class FridgeRecommendationServiceTest {
         assertThatThrownBy(() -> fridgeRecommendationService.getLatestRecommendation(1L))
                 .isInstanceOf(RecommendationNotFoundException.class);
     }
-
 }

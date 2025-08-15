@@ -25,5 +25,4 @@ public class FridgeControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.fridgeTemperature").exists())
                 .andExpect(jsonPath("$.freezerTemperature").exists());
     }
-
 }

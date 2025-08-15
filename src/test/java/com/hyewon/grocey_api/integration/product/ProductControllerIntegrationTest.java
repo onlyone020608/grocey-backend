@@ -77,5 +77,4 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.price").value(product.getPrice()))
                 .andExpect(jsonPath("$.imageUrl").value(product.getImageUrl()));
     }
-
 }

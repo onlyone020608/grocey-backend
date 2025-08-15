@@ -22,12 +22,8 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class CartItemServiceTest {
-    @Mock
-    private CartItemRepository cartItemRepository;
-
-    @InjectMocks
-    private CartItemService cartItemService;
-
+    @Mock private CartItemRepository cartItemRepository;
+    @InjectMocks private CartItemService cartItemService;
 
     private CartItem cartItem1;
     private CartItem cartItem2;
@@ -36,7 +32,6 @@ public class CartItemServiceTest {
     void setUp() {
         cartItem1 = CartItem.builder().build();
         cartItem2 = CartItem.builder().build();
-
     }
 
     @Test

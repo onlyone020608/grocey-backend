@@ -38,7 +38,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-
     @Mock private UserQueryService userQueryService;
     @Mock private UserCommandService userCommandService;
     @Mock private FridgeCommandService fridgeCommandService;
@@ -46,14 +45,9 @@ class AuthServiceTest {
     @Mock private IngredientQueryService ingredientQueryService;
     @Mock private FridgeIngredientManager fridgeIngredientManager;
     @Mock private FridgeSnapshotCommandService fridgeSnapshotCommandService;
-
     @Mock private JwtTokenProvider jwtTokenProvider;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
-    @InjectMocks
-    private AuthService authService;
+    @Mock private PasswordEncoder passwordEncoder;
+    @InjectMocks private AuthService authService;
 
     private SignupRequest signupRequest;
     private Ingredient ingredient1;

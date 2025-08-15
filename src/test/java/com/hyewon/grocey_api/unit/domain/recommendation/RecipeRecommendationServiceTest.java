@@ -32,19 +32,12 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class RecipeRecommendationServiceTest {
-
-    @Mock
-    private RecipeRecommendationRepository recipeRecommendationRepository;
-    @Mock
-    private UserQueryService userQueryService;
-    @Mock
-    private RestTemplate restTemplate;
-    @Mock
-    private FridgeQueryService fridgeQueryService;
-    @Mock
-    private RecipeQueryService recipeQueryService;
-    @InjectMocks
-    private RecipeRecommendationService recipeRecommendationService;
+    @Mock private RecipeRecommendationRepository recipeRecommendationRepository;
+    @Mock private UserQueryService userQueryService;
+    @Mock private RestTemplate restTemplate;
+    @Mock private FridgeQueryService fridgeQueryService;
+    @Mock private RecipeQueryService recipeQueryService;
+    @InjectMocks private RecipeRecommendationService recipeRecommendationService;
 
     private User user;
     private Fridge fridge;
@@ -126,11 +119,8 @@ class RecipeRecommendationServiceTest {
         given(restTemplate.getForEntity(url, List.class))
                 .willReturn(new ResponseEntity<>(List.of(101L), HttpStatus.OK));
 
-        // recipe mock
         ReflectionTestUtils.setField(recipe, "id", 101L);
         given(recipeQueryService.getRecipes(List.of(101L))).willReturn(List.of(recipe));
-
-        // saveAll mock
         given(recipeRecommendationRepository.saveAll(anyList()))
                 .willAnswer(invocation -> invocation.getArgument(0));
 

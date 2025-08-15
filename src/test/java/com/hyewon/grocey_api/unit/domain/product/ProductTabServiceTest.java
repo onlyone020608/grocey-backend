@@ -21,10 +21,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ProductTabServiceTest {
-    @Mock
-    private ProductTabRepository productTabRepository;
-    @InjectMocks
-    private ProductTabService productTabService;
+    @Mock private ProductTabRepository productTabRepository;
+    @InjectMocks private ProductTabService productTabService;
 
     private Product product;
 

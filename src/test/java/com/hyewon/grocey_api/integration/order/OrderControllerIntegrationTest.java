@@ -86,7 +86,6 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
         Product product = productRepository.findById(1L).orElseThrow();
         CartItem item = addCartItemFor(user, product, 2);
 
-
         OrderRequest request = new OrderRequest(
                 List.of(item.getId()),
                 "Gangnam-gu, Seoul",
@@ -145,12 +144,4 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.content[0].orderStatus").value("CONFIRMED"))
                 .andExpect(jsonPath("$.content[0].items[0].productName").value(product.getName()));
     }
-
-
-
-
-
-
-
-
 }

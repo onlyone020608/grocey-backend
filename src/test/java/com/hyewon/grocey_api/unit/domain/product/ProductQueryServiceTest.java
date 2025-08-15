@@ -21,11 +21,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductQueryServiceTest {
-    @Mock
-    ProductRepository productRepository;
-
-    @InjectMocks
-    ProductQueryService productQueryService;
+    @Mock ProductRepository productRepository;
+    @InjectMocks ProductQueryService productQueryService;
 
     private Product product;
 
@@ -34,7 +31,6 @@ public class ProductQueryServiceTest {
         product = Product.builder()
                 .id(1L)
                 .build();
-
     }
 
     @Test

@@ -24,14 +24,9 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class FridgeServiceTest {
-    @Mock
-    private FridgeRepository fridgeRepository;
-
-    @Mock
-    private UserQueryService userQueryService;
-
-    @InjectMocks
-    private FridgeService fridgeService;
+    @Mock private FridgeRepository fridgeRepository;
+    @Mock private UserQueryService userQueryService;
+    @InjectMocks private FridgeService fridgeService;
 
     private Fridge fridge;
     private User user;
@@ -42,12 +37,10 @@ class FridgeServiceTest {
                 .fridgeTemperature(4.0)
                 .freezerTemperature(-18.0)
                 .build();
-
         user = User.builder()
                 .id(1L)
                 .fridge(fridge)
                 .build();
-
     }
 
     @Test
@@ -64,6 +57,4 @@ class FridgeServiceTest {
         assertThat(response.getFridgeTemperature()).isEqualTo(4.0);
         assertThat(response.getFreezerTemperature()).isEqualTo(-18.0);
     }
-
-
 }

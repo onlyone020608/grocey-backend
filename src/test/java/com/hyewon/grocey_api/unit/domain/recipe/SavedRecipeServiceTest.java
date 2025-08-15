@@ -29,12 +29,10 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class SavedRecipeServiceTest {
-    @Mock
-    private SavedRecipeRepository savedRecipeRepository;
+    @Mock private SavedRecipeRepository savedRecipeRepository;
     @Mock private UserQueryService userQueryService;
     @Mock private RecipeRepository recipeRepository;
-    @InjectMocks
-    private SavedRecipeService savedRecipeService;
+    @InjectMocks private SavedRecipeService savedRecipeService;
 
     private User user;
     private Recipe recipe;
@@ -48,7 +46,6 @@ class SavedRecipeServiceTest {
                 .email("test@email.com")
                 .password("pw")
                 .build();
-
         recipe = Recipe.builder()
                 .id(10L)
                 .name("Kimchi Fried Rice")
@@ -57,7 +54,6 @@ class SavedRecipeServiceTest {
                 .servings(2)
                 .imageUrl("img.jpg")
                 .build();
-
         savedRecipe = SavedRecipe.builder()
                 .user(user)
                 .recipe(recipe)
@@ -139,7 +135,4 @@ class SavedRecipeServiceTest {
                 .isInstanceOf(SavedRecipeNotFoundException.class)
                 .hasMessageContaining("Saved recipe not found");
     }
-
-
-
 }

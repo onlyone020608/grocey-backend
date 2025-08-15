@@ -20,11 +20,8 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class FridgeIngredientManagerTest {
-    @Mock
-    private FridgeIngredientRepository fridgeIngredientRepository;
-
-    @InjectMocks
-    private FridgeIngredientManager fridgeIngredientManager;
+    @Mock private FridgeIngredientRepository fridgeIngredientRepository;
+    @InjectMocks private FridgeIngredientManager fridgeIngredientManager;
 
     private FridgeIngredient fridgeIngredient;
 
@@ -33,7 +30,6 @@ public class FridgeIngredientManagerTest {
         fridgeIngredient = FridgeIngredient.builder()
                 .id(1L)
                 .build();
-
     }
     @Test
     @DisplayName("getByFridgeId - should return fridge ingredients")

@@ -166,7 +166,4 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].productId").value(product1.getId()))
                 .andExpect(jsonPath("$.items[1].productId").value(product2.getId()));
     }
-
-
-
 }

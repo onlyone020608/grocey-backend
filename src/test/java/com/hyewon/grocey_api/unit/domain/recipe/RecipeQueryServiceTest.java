@@ -18,11 +18,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class RecipeQueryServiceTest {
-
-    @Mock
-    RecipeRepository recipeRepository;
-    @InjectMocks
-    RecipeQueryService recipeQueryService;
+    @Mock RecipeRepository recipeRepository;
+    @InjectMocks RecipeQueryService recipeQueryService;
 
     private Recipe recipe;
 
@@ -31,7 +28,6 @@ public class RecipeQueryServiceTest {
         recipe = Recipe.builder()
                 .id(1L)
                 .build();
-
     }
 
     @Test

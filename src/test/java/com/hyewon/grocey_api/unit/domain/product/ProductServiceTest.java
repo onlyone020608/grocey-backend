@@ -21,11 +21,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-    @Mock
-    private ProductRepository productRepository;
-    @InjectMocks
-    private ProductService productService;
-    private Product product;
+    @Mock private ProductRepository productRepository;
+    @InjectMocks private ProductService productService;private Product product;
 
     @BeforeEach
     void setUp() {
