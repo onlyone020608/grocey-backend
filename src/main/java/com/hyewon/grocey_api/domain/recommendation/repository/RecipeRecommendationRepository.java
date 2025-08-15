@@ -11,6 +11,4 @@ public interface RecipeRecommendationRepository extends JpaRepository<RecipeReco
     List<RecipeRecommendation> findByUser(User user);
     List<RecipeRecommendation> findByFridge(Fridge fridge);
     void deleteByUser(User user);
-
-
 }

@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class RecipeRecommendationController {
-
     private final RecipeRecommendationService recommendationService;
 
     @GetMapping("/personal")
@@ -27,7 +26,4 @@ public class RecipeRecommendationController {
     public List<RecipeRecommendationResponse> recommendByFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return recommendationService.getRecommendationsByFridge(userDetails.getUser().getFridge().getId());
     }
-
-
-
 }

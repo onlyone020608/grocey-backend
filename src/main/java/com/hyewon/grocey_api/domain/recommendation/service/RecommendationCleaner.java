@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RecommendationCleaner {
     private final RecipeRecommendationRepository recipeRecommendationRepository;
 
-    public void clean(User user){
+    public void clean(User user) {
         recipeRecommendationRepository.deleteByUser(user);
     }
 }

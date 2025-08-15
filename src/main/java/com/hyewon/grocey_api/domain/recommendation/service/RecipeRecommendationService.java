@@ -23,13 +23,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RecipeRecommendationService {
-
     private final RecipeRecommendationRepository recipeRecommendationRepository;
     private final UserQueryService userQueryService;
     private final RestTemplate restTemplate;
     private final FridgeQueryService fridgeQueryService;
     private final RecipeQueryService recipeQueryService;
-
 
     @Transactional
     public List<RecipeRecommendationResponse> getRecommendationsByUser(Long userId) {
@@ -50,7 +48,6 @@ public class RecipeRecommendationService {
         return saved.stream()
                 .map(RecipeRecommendationResponse::new)
                 .toList();
-
     }
 
     @Transactional
@@ -63,6 +60,7 @@ public class RecipeRecommendationService {
                 .getId();
 
         List<Long> recipeIds = fetchFridgeBasedRecipeIds(userId);
+
         if (recipeIds.isEmpty()) {
             throw RecommendationNotFoundException.forFridgeRecipe(fridgeId);
         }
@@ -90,6 +88,4 @@ public class RecipeRecommendationService {
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody();
     }
-
-
 }

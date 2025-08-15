@@ -14,6 +14,4 @@ public class RecipeRecommendationResponse {
         this.recipeName = recommendation.getRecipe().getName();
         this.recipeImageUrl = recommendation.getRecipe().getImageUrl();
     }
-
-
 }

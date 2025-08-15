@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/recommendations/fridge")
 @RequiredArgsConstructor
 public class FridgeRecommendationController {
-
     private final FridgeRecommendationService fridgeRecommendationService;
 
     @GetMapping

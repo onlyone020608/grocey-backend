@@ -31,7 +31,6 @@ public class FridgeRecommendationService {
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final FridgeIngredientManager fridgeIngredientManager;
 
-
     @Transactional
     public FridgeRecommendationResponse getLatestRecommendation(Long fridgeId) {
         Fridge fridge = fridgeQueryService.getFridge(fridgeId);
@@ -46,9 +45,7 @@ public class FridgeRecommendationService {
             throw RecommendationNotFoundException.forFridgeProduct(fridgeId);
         }
 
-
         List<Product> products =  productQueryService.findRandomOnePerIngredient(ingredientIds);
-
 
         FridgeRecommendation recommendation = fridgeRecommendationRepository.save(FridgeRecommendation.of(fridge));
         List<FridgeRecommendedProduct> savedProducts = products.stream()
@@ -57,7 +54,6 @@ public class FridgeRecommendationService {
 
         fridgeRecommendedProductRepository.saveAll(savedProducts);
         recommendation.getRecommendedProducts().addAll(savedProducts);
-
 
         return new FridgeRecommendationResponse(recommendation);
     }
@@ -77,6 +73,5 @@ public class FridgeRecommendationService {
         Collections.shuffle(ingredients);
         List<FridgeIngredient> toRemove = ingredients.subList(0, 2);
         fridgeIngredientManager.deleteAll(toRemove);
-
     }
 }
