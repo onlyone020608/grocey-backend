@@ -132,7 +132,7 @@ public class DataInitializer implements CommandLineRunner {
             while ((line = br.readLine()) != null) {
                 String name = line.trim();
 
-                if (allergyRepository.existsByAllergyName(name)) continue;
+                if (allergyRepository.existsByName(name)) continue;
 
                 Allergy allergy = Allergy.of(name);
                 allergyRepository.save(allergy);
