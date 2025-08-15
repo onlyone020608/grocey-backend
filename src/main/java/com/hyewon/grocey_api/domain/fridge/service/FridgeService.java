@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 public class FridgeService {
@@ -26,6 +25,4 @@ public class FridgeService {
 
         return new FridgeResponse(fridge.getFridgeTemperature(), fridge.getFreezerTemperature());
     }
-
-
 }

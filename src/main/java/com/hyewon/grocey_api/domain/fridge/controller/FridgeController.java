@@ -19,6 +19,5 @@ public class FridgeController {
     @GetMapping
     public ResponseEntity<FridgeResponse> getFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(fridgeService.getFridgeInfo(userDetails.getId()));
-
     }
 }

@@ -1,6 +1,5 @@
 package com.hyewon.grocey_api.domain.fridge.service;
 
-
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;

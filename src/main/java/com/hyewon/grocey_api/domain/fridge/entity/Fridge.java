@@ -21,6 +21,7 @@ public class Fridge {
     private List<User> users = new ArrayList<>();
 
     private Double fridgeTemperature;
+
     private Double freezerTemperature;
 
     public Fridge(Double fridgeTemperature, Double freezerTemperature) {

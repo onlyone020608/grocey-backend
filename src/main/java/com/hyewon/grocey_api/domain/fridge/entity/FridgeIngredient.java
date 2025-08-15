@@ -26,7 +26,9 @@ public class FridgeIngredient extends BaseTimeEntity {
     private Ingredient ingredient;
 
     private Boolean freezer;
+
     private int quantity;
+
     private LocalDate expirationDate;
 
     private FridgeIngredient(Fridge fridge, Ingredient ingredient, Boolean freezer, int quantity, LocalDate expirationDate) {

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FridgeIngredientService {
-
     private final FridgeIngredientRepository fridgeIngredientRepository;
     private final FridgeRepository fridgeRepository;
 
@@ -26,6 +25,7 @@ public class FridgeIngredientService {
         if (!fridgeRepository.existsById(fridgeId)) {
             throw new FridgeNotFoundException(fridgeId);
         }
+
         List<FridgeIngredient> ingredients;
 
         if (isFreezer == null) {

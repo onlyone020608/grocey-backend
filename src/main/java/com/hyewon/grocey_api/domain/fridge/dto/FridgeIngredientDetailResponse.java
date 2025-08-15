@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import lombok.Getter;
 
 import java.time.LocalDate;
+
 @Getter
 public class FridgeIngredientDetailResponse {
         private String ingredientName;
@@ -19,5 +20,4 @@ public class FridgeIngredientDetailResponse {
             this.isFreezer = fi.getFreezer();
             this.expirationDate = fi.getExpirationDate();
         }
-
 }
