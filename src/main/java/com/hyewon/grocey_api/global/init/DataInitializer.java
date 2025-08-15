@@ -61,7 +61,7 @@ public class DataInitializer implements CommandLineRunner {
                 String[] tokens = line.split(",");
                 String name = tokens[0].trim();
                 String imageUrl = tokens.length > 1 ? tokens[1].trim() : null;
-                if (ingredientRepository.existsByIngredientName(name)) continue;
+                if (ingredientRepository.existsByName(name)) continue;
 
                 Ingredient ingredient = Ingredient.of(name, imageUrl);
                 ingredientRepository.save(ingredient);
