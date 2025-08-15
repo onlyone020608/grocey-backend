@@ -55,7 +55,7 @@ public class CartService {
     }
 
     @Transactional
-    public void addCartItem(Long userId, AddCartItemRequest request){
+    public void addCartItem(Long userId, AddCartItemRequest request) {
         User user = userQueryService.getUserById(userId);
 
         Product product = productQueryService.getProduct(request.getProductId());
@@ -137,6 +137,4 @@ public class CartService {
 
         cartItemRepository.saveAll(itemsToSave);
     }
-
-
 }

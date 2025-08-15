@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/cart")
 public class CartController {
-
     private final CartService cartService;
 
     @GetMapping
@@ -35,7 +34,8 @@ public class CartController {
     }
 
     @PatchMapping("/items")
-    public ResponseEntity<Void> updateCartItemQuantity(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody UpdateCartItemRequest request) {
+    public ResponseEntity<Void> updateCartItemQuantity(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                       @RequestBody UpdateCartItemRequest request) {
         cartService.updateCartItemQuantity(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
@@ -56,8 +56,4 @@ public class CartController {
         cartService.addCartItemsInBatch(userDetails.getId(), requests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-
-
-
 }

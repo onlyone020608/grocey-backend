@@ -51,5 +51,4 @@ public class CartItem extends BaseTimeEntity {
             this.cart = null;
         }
     }
-
 }
