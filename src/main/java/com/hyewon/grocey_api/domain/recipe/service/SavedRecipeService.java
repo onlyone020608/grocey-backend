@@ -32,7 +32,6 @@ public class SavedRecipeService {
         return savedRecipes.stream()
                 .map(SavedRecipeResponse::new)
                 .toList();
-
     }
 
     @Transactional

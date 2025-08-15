@@ -11,5 +11,4 @@ public class RecipeIngredientResponse {
         this.name = name;
         this.quantity = quantity;
     }
-
 }

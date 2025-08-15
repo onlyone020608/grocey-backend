@@ -14,5 +14,4 @@ public interface SavedRecipeRepository extends JpaRepository<SavedRecipe, Long> 
     Optional<SavedRecipe> findByUserAndRecipe(User user, Recipe recipe);
     boolean existsByUserIdAndRecipeId(Long userId, Long recipeId);
     void deleteByUser(User user);
-
 }

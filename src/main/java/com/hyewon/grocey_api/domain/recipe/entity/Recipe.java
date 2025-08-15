@@ -19,9 +19,13 @@ public class Recipe {
     private Long id;
 
     private String name;
+
     private String description;
+
     private Integer cookingTimeInMinutes;
+
     private Integer servings;
+
     private String imageUrl;
 
     private Recipe(String name, String description, Integer cookingTimeInMinutes, Integer servings, String imageUrl) {

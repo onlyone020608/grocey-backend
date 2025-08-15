@@ -7,7 +7,6 @@ import java.util.List;
 
 @Getter
 public class RecipeDetailResponse {
-
     private String recipeName;
     private List<String> descriptionSteps;
     private Integer cookingTime;

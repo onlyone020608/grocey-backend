@@ -11,7 +11,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class SavedRecipe extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;

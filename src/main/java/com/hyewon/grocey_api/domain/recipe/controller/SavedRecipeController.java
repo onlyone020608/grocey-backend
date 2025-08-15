@@ -1,6 +1,5 @@
 package com.hyewon.grocey_api.domain.recipe.controller;
 
-
 import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.recipe.service.SavedRecipeService;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 public class SavedRecipeController {
-
     private final SavedRecipeService savedRecipeService;
 
     @GetMapping("/me/recipes")
@@ -25,19 +23,16 @@ public class SavedRecipeController {
     }
 
     @PostMapping("/me/recipes/{recipeId}")
-    public ResponseEntity<Void> saveRecipe(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long recipeId) {
+    public ResponseEntity<Void> saveRecipe(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                           @PathVariable Long recipeId) {
         savedRecipeService.saveRecipe(userDetails.getId(), recipeId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/me/recipes/{recipeId}")
-    public ResponseEntity<Void> deleteSavedRecipe(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long recipeId) {
+    public ResponseEntity<Void> deleteSavedRecipe(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                  @PathVariable Long recipeId) {
         savedRecipeService.deleteRecipe(userDetails.getId(), recipeId);
         return ResponseEntity.noContent().build();
     }
-
 }

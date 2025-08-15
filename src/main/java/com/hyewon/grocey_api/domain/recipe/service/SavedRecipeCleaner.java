@@ -15,5 +15,4 @@ public class SavedRecipeCleaner {
     public void clean(User user){
         savedRecipeRepository.deleteByUser(user);
     }
-
 }

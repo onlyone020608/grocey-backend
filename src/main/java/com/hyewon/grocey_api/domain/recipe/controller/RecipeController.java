@@ -1,6 +1,5 @@
 package com.hyewon.grocey_api.domain.recipe.controller;
 
-
 import com.hyewon.grocey_api.domain.recipe.service.RecipeService;
 import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
@@ -18,8 +17,7 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping("/{recipeId}")
-    public RecipeDetailResponse getRecipeDetail(@PathVariable Long recipeId, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public RecipeDetailResponse getRecipeDetail(@PathVariable Long recipeId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         return recipeService.getRecipeDetail(recipeId, userDetails.getId());
     }
-
 }
