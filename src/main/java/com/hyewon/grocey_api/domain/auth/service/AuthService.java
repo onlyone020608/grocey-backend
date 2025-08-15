@@ -7,7 +7,6 @@ import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientManager;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeSnapshotCommandService;
@@ -70,7 +69,7 @@ public class AuthService {
         }
 
         for (long ingredientId : List.of(7L, 8L)) {
-            Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);;
+            Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);
 
             FridgeIngredient fi = FridgeIngredient.of(
                     fridge,

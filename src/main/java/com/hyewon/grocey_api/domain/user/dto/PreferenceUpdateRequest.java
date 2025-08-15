@@ -2,7 +2,6 @@ package com.hyewon.grocey_api.domain.user.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
