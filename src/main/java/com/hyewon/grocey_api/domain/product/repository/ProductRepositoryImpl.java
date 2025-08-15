@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.product.repository;
 
+import com.hyewon.grocey_api.domain.ingredient.entity.QIngredient;
 import com.hyewon.grocey_api.domain.product.entity.QProduct;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,12 +16,14 @@ import java.util.stream.Collectors;
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final QProduct product = QProduct.product;
+    private final QIngredient ingredient = QIngredient.ingredient;
 
     @Override
     public List<Product> findRandomOneEachByIngredient(List<Long> ingredientIds) {
         List<Product> all = queryFactory
                 .selectFrom(product)
-                .where(product.ingredient.id.in(ingredientIds))
+                .join(product.ingredient, ingredient).fetchJoin()
+                .where(ingredient.id.in(ingredientIds))
                 .fetch();
 
         Map<Long, List<Product>> grouped = all.stream()
