@@ -24,7 +24,7 @@ public class Fridge {
 
     private Double freezerTemperature;
 
-    public Fridge(Double fridgeTemperature, Double freezerTemperature) {
+    private Fridge(Double fridgeTemperature, Double freezerTemperature) {
         this.fridgeTemperature = fridgeTemperature;
         this.freezerTemperature = freezerTemperature;
     }
