@@ -18,12 +18,10 @@ public class ProductQueryService {
     public Product getProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
-
     }
 
     @Transactional(readOnly = true)
-    public List<Product> findRandomOnePerIngredient(List<Long> ingredientIds){
+    public List<Product> findRandomOnePerIngredient(List<Long> ingredientIds) {
         return productRepository.findRandomOneEachByIngredient(ingredientIds);
     }
-
 }

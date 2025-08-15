@@ -23,5 +23,4 @@ public class ProductTabService {
                 .map(pt -> new ProductResponse(pt.getProduct()))
                 .toList();
     }
-
 }

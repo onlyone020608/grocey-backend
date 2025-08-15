@@ -18,6 +18,4 @@ public class ProductResponse {
         this.price = product.getPrice();
         this.imageUrl = product.getImageUrl();
     }
-
-
 }

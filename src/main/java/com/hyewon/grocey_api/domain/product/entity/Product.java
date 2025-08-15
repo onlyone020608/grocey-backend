@@ -16,8 +16,11 @@ public class Product extends BaseTimeEntity {
     private Long id;
 
     private String name;
+
     private String brand;
+
     private double price;
+
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -9,7 +9,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class ProductTab {
-
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;

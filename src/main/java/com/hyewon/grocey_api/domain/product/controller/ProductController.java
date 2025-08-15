@@ -1,6 +1,5 @@
 package com.hyewon.grocey_api.domain.product.controller;
 
-
 import com.hyewon.grocey_api.domain.product.service.ProductService;
 import com.hyewon.grocey_api.domain.product.service.ProductTabService;
 import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
@@ -14,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
 public class ProductController {
-
     private final ProductTabService productTabService;
     private final ProductService productService;
 

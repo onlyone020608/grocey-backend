@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     private final QProduct product = QProduct.product;
+
     @Override
     public List<Product> findRandomOneEachByIngredient(List<Long> ingredientIds) {
         List<Product> all = queryFactory
