@@ -29,7 +29,6 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public  List<OrderSummaryResponse> getRecentOrderSummaryByUserId(Long userId) {
-
         User user = userQueryService.getUserById(userId);
 
         List<Order> recentOrders = orderRepository.findTop5ByUserOrderByCreatedAtDesc(user);
@@ -41,7 +40,6 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(Long userId, Long orderId) {
-
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
@@ -54,7 +52,6 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Page<OrderSummaryResponse> getAllOrders(Long userId, Pageable pageable) {
-
         User user = userQueryService.getUserById(userId);
 
         return orderRepository.findByUser(user, pageable)

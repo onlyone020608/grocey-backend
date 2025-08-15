@@ -46,7 +46,9 @@ public class Order extends BaseTimeEntity {
     }
 
     public void addItem(OrderItem item) {
-        if (orderItems == null) orderItems = new ArrayList<>();
+        if (orderItems == null) {
+            orderItems = new ArrayList<>();
+        }
         orderItems.add(item);
         item.assignOrder(this);
     }

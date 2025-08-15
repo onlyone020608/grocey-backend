@@ -22,7 +22,4 @@ public class OrderSummaryResponse {
                 .map(OrderItemResponse::new)
                 .toList();
     }
-
-
-
 }

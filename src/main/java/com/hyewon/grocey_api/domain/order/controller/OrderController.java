@@ -22,17 +22,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/orders")
 public class OrderController {
-
     private final OrderService orderService;
 
     @GetMapping("summary")
-    public List<OrderSummaryResponse> getSummary(@AuthenticationPrincipal CustomUserDetails userDetails){
+    public List<OrderSummaryResponse> getSummary(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return orderService.getRecentOrderSummaryByUserId(userDetails.getId());
     }
 
-
     @GetMapping("{orderId}")
-    public OrderDetailResponse getOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long orderId){
+    public OrderDetailResponse getOrderDetail(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long orderId) {
         return orderService.getOrderDetail(userDetails.getId(), orderId);
     }
 
@@ -43,7 +41,6 @@ public class OrderController {
         return orderService.getAllOrders(userDetails.getId(), pageable);
     }
 
-
     @PostMapping
     public ResponseEntity<Map<String, Long>> placeOrder(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -51,6 +48,4 @@ public class OrderController {
         Long orderId = orderService.placeOrder(userDetails.getId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("orderId", orderId));
     }
-
-
 }
