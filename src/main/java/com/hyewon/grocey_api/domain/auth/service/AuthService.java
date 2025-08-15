@@ -56,7 +56,6 @@ public class AuthService {
         User user = User.of(request.getName(), request.getEmail(), encodedPassword);
         user.assignFridge(fridge); // 연관관계 설정
 
-
         for (long ingredientId : List.of(1L, 2L, 3L)) {
             Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);
 
@@ -154,7 +153,6 @@ public class AuthService {
         User user = userQueryService.getUserById(userId);
         refreshTokenStore.remove(userId);
         userWithdrawalService.withdraw(user);
-
     }
 
     @Transactional
@@ -168,6 +166,4 @@ public class AuthService {
         String encodedNewPassword = passwordEncoder.encode(newPassword);
         user.updatePassword(encodedNewPassword);
     }
-
-
 }

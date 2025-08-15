@@ -18,5 +18,4 @@ public class SignupRequest {
         this.password = password;
         this.name = name;
     }
-
 }

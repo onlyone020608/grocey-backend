@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -56,5 +55,4 @@ public class AuthController {
         authService.changePassword(userDetails.getId(), request.getCurrentPassword(), request.getNewPassword());
         return ResponseEntity.ok().build();
     }
-
 }
