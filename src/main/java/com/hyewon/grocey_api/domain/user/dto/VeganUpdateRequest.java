@@ -13,6 +13,4 @@ public class VeganUpdateRequest {
     public VeganUpdateRequest(boolean isVegan) {
         this.isVegan = isVegan;
     }
-
-
 }

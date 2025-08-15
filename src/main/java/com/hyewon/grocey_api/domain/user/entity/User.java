@@ -17,7 +17,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class User extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -78,6 +77,7 @@ public class User extends BaseTimeEntity {
     public void updateAgeGroup(AgeGroup ageGroup) {
         this.ageGroup = ageGroup;
     }
+
     public void updateVeganStatus(boolean isVegan) {
         this.vegan = isVegan;
     }

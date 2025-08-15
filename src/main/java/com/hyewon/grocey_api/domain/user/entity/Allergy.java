@@ -12,7 +12,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class Allergy {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +21,7 @@ public class Allergy {
         this.name = name;
     }
 
-    public static Allergy of (String name){
+    public static Allergy of (String name) {
         return new Allergy(name);
     }
 }

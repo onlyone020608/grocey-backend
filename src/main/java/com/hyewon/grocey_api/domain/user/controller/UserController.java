@@ -25,42 +25,43 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<Void> updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<Void> updateUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                               @RequestBody UserUpdateRequest request) {
         userService.updateUser(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
-
     @PatchMapping("/me/gender")
-    public ResponseEntity<Void> updateGender(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody GenderUpdateRequest request) {
+    public ResponseEntity<Void> updateGender(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                             @RequestBody GenderUpdateRequest request) {
         userService.updateGender(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/me/age-group")
-    public ResponseEntity<Void> updateAgeGroup(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody AgeGroupUpdateRequest request) {
+    public ResponseEntity<Void> updateAgeGroup(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                               @RequestBody AgeGroupUpdateRequest request) {
         userService.updateAgeGroup(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/me/allergies")
-    public ResponseEntity<Void> updateUserAllergies(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody UserAllergyUpdateRequest request) {
+    public ResponseEntity<Void> updateUserAllergies(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                    @RequestBody UserAllergyUpdateRequest request) {
         userService.updateUserAllergies(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/me/preferences")
-    public ResponseEntity<Void> updatePreferences(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody PreferenceUpdateRequest request) {
+    public ResponseEntity<Void> updatePreferences(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                  @RequestBody PreferenceUpdateRequest request) {
         userService.updateUserPreferences(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/me/vegan")
-    public ResponseEntity<Void> updateVegan(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody VeganUpdateRequest request) {
+    public ResponseEntity<Void> updateVegan(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestBody VeganUpdateRequest request) {
         userService.updateVeganStatus(userDetails.getId(), request);
         return ResponseEntity.ok().build();
     }
@@ -71,11 +72,4 @@ public class UserController {
         boolean isCompleted = userService.checkProfileCompletion(userDetails.getId());
         return ResponseEntity.ok(new UserStatusResponse(isCompleted));
     }
-
-
-
-
-
-
-
 }

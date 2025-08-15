@@ -19,7 +19,6 @@ public class UserWithdrawalService {
     private final UserDislikedIngredientRepository userDislikedIngredientRepository;
     private final UserFoodPreferenceRepository userFoodPreferenceRepository;
     private final UserPreferredIngredientRepository userPreferredIngredientRepository;
-
     private final SavedRecipeCleaner savedRecipeCleaner;
     private final RecommendationCleaner recipeRecommendationCleaner;
     private final OrderCleaner orderCleaner;
@@ -38,9 +37,5 @@ public class UserWithdrawalService {
         cartCleaner.clean(user);
 
         userRepository.delete(user);
-
-
-
     }
-
 }

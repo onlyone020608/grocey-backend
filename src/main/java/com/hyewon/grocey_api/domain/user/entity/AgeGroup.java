@@ -13,16 +13,11 @@ public enum AgeGroup {
     OVER_SIXTIES(70, "60대 이상");
 
     private final int value;
+
     private final String label;
 
     AgeGroup(int value, String label) {
         this.value = value;
         this.label = label;
     }
-
-
-
-
-
-
 }

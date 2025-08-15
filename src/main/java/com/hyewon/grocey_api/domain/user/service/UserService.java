@@ -50,7 +50,6 @@ public class UserService {
         if (request.getEmail() != null) {
             user.updateEmail(request.getEmail());
         }
-
     }
     @Transactional
     public void updateGender(Long userId, GenderUpdateRequest request) {
@@ -58,6 +57,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(userId));
         user.updateGender(request.toEnum());
     }
+
     @Transactional
     public void updateAgeGroup(Long userId, AgeGroupUpdateRequest request) {
         User user = userRepository.findById(userId)
@@ -70,11 +70,11 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-
         userAllergyRepository.deleteByUser(user);
 
         List<Long> allergyIds = request.getAllergyIds();
         List<Allergy> allergies = allergyRepository.findAllById(allergyIds);
+
         if (allergies.size() != allergyIds.size()) {
             throw new InvalidRequestException("One or more allergy IDs are invalid.");
         }
@@ -90,30 +90,30 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-
         userFoodPreferenceRepository.deleteByUser(user);
         userPreferredIngredientRepository.deleteByUser(user);
         userDislikedIngredientRepository.deleteByUser(user);
-
 
         if (request.getFoodPreferenceIds() != null) {
             List<FoodPreference> foods = foodPreferenceRepository.findAllById(request.getFoodPreferenceIds());
             if (foods.size() != request.getFoodPreferenceIds().size()) {
                 throw new InvalidRequestException("One or more food preference IDs are invalid.");
             }
+
             List<UserFoodPreference> userFoodPreferences = foods.stream()
                     .map(food -> UserFoodPreference.of(user, food))
                     .toList();
             userFoodPreferenceRepository.saveAll(userFoodPreferences);
         }
 
-
         if (request.getPreferredIngredientIds() != null) {
             List<Long> preferredIds = request.getPreferredIngredientIds();
             List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(preferredIds);
+
             if (ingredients.size() != preferredIds.size()) {
                 throw new InvalidRequestException("One or more preferred ingredient IDs are invalid.");
             }
+
             List<UserPreferredIngredient> preferredEntities = ingredients.stream()
                     .map(ingredient -> UserPreferredIngredient.of(user, ingredient))
                     .toList();
@@ -123,9 +123,11 @@ public class UserService {
         if (request.getDislikedIngredientIds() != null) {
             List<Long> dislikedIds = request.getDislikedIngredientIds();
             List<PreferenceIngredient> dislikedIngredients = preferenceIngredientRepository.findAllById(dislikedIds);
+
             if (dislikedIngredients.size() != dislikedIds.size()) {
                 throw new InvalidRequestException("One or more disliked ingredient IDs are invalid.");
             }
+
             List<UserDislikedIngredient> dislikedEntities = dislikedIngredients.stream()
                     .map(ingredient -> UserDislikedIngredient.of(user, ingredient))
                     .toList();
@@ -134,6 +136,7 @@ public class UserService {
 
         user.completeProfile();
     }
+
     @Transactional
     public void updateVeganStatus(Long userId, VeganUpdateRequest request) {
         User user = userRepository.findById(userId)
@@ -148,6 +151,4 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(userId));
         return Boolean.TRUE.equals(user.getProfileCompleted());
     }
-
-
 }

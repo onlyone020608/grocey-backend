@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class UserFoodPreference {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
