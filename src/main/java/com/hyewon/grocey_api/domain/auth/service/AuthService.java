@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +37,7 @@ public class AuthService {
     private final UserWithdrawalService userWithdrawalService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final Map<Long, String> refreshTokenStore = new HashMap<>();
+    private final TokenService tokenService;
 
     @Transactional
     public User signup(SignupRequest request) {
@@ -103,7 +101,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
-        refreshTokenStore.put(user.getId(), refreshToken);
+        tokenService.storeRefreshToken(user.getId(), refreshToken, 7 * 24 * 60 * 60);
         return new TokenResponse(accessToken, refreshToken);
     }
 
@@ -118,8 +116,7 @@ public class AuthService {
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
-        refreshTokenStore.put(user.getId(), refreshToken);
-
+        tokenService.storeRefreshToken(user.getId(), refreshToken, 7 * 24 * 60 * 60);
         return new TokenResponse(accessToken, refreshToken);
     }
 
@@ -132,9 +129,9 @@ public class AuthService {
         }
 
         Long userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
-        String saved = refreshTokenStore.get(userId);
 
-        if (!refreshToken.equals(saved)) {
+        boolean valid = tokenService.validateRefreshToken(userId, refreshToken);
+        if (!valid) {
             throw new IllegalArgumentException("Refresh token mismatch");
         }
 
@@ -144,13 +141,13 @@ public class AuthService {
 
     @Transactional
     public void logout(Long userId) {
-        refreshTokenStore.remove(userId);
+        tokenService.deleteRefreshToken(userId);
     }
 
     @Transactional
     public void withdraw(Long userId) {
         User user = userQueryService.getUserById(userId);
-        refreshTokenStore.remove(userId);
+        tokenService.deleteRefreshToken(userId);
         userWithdrawalService.withdraw(user);
     }
 

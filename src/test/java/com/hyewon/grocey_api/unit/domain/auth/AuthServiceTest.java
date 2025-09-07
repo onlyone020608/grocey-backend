@@ -1,10 +1,12 @@
 package com.hyewon.grocey_api.unit.domain.auth;
 
-import com.hyewon.grocey_api.domain.auth.service.AuthService;
 import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
+import com.hyewon.grocey_api.domain.auth.service.AuthService;
+import com.hyewon.grocey_api.domain.auth.service.TokenService;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeCommandService;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientManager;
@@ -14,7 +16,6 @@ import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +48,7 @@ class AuthServiceTest {
     @Mock private FridgeSnapshotCommandService fridgeSnapshotCommandService;
     @Mock private JwtTokenProvider jwtTokenProvider;
     @Mock private PasswordEncoder passwordEncoder;
+    @Mock private TokenService tokenService;
     @InjectMocks private AuthService authService;
 
     private SignupRequest signupRequest;
