@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserCommandService {
     private final UserRepository userRepository;
 
+    @Transactional
     public void createUser(User user){
         userRepository.save(user);
     }

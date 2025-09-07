@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FridgeCommandService {
     private final FridgeRepository fridgeRepository;
 
+    @Transactional
     public void createFridge(Fridge fridge){
         fridgeRepository.save(fridge);
     }

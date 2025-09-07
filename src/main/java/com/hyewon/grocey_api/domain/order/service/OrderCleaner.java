@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderCleaner {
     private final OrderRepository orderRepository;
 
+    @Transactional
     public void clean(User user){
         orderRepository.deleteByUser(user);
     }

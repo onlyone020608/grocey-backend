@@ -123,6 +123,7 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
+    @Transactional
     public TokenResponse refresh(TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
@@ -141,7 +142,7 @@ public class AuthService {
         return new TokenResponse(newAccessToken, refreshToken);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void logout(Long userId) {
         refreshTokenStore.remove(userId);
     }

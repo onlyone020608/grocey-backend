@@ -33,7 +33,7 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductQueryService productQueryService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public CartResponse getCart(Long userId) {
         User user = userQueryService.getUserById(userId);
 

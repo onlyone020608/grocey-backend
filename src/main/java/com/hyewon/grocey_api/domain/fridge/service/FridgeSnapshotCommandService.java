@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FridgeSnapshotCommandService {
     private final FridgeSnapshotRepository fridgeSnapshotRepository;
 
+    @Transactional
     public void createFridgeSnapshot(FridgeSnapshot snapshot) {
         fridgeSnapshotRepository.save(snapshot);
     }

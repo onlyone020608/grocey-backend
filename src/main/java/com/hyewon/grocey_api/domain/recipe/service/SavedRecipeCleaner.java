@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SavedRecipeCleaner {
     private final SavedRecipeRepository savedRecipeRepository;
 
+    @Transactional
     public void clean(User user){
         savedRecipeRepository.deleteByUser(user);
     }
