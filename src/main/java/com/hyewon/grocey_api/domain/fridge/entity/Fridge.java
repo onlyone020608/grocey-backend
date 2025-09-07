@@ -30,6 +30,8 @@ public class Fridge {
     }
 
     public static Fridge of(Double fridgeTemperature, Double freezerTemperature) {
-        return new Fridge(fridgeTemperature, freezerTemperature);
+        Fridge fridge = new Fridge(fridgeTemperature, freezerTemperature);
+        fridge.users = new ArrayList<>();
+        return fridge;
     }
 }
