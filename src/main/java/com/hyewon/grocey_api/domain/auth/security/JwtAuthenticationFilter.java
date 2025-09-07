@@ -24,11 +24,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
 
-        if (token != null && tokenProvider.validateToken(token)) {
-            Long userId = tokenProvider.getUserIdFromToken(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString());
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        try {
+            if (token != null && tokenProvider.validateToken(token)) {
+                Long userId = tokenProvider.getUserIdFromToken(token);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString());
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            request.setAttribute("exception", "expired");
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            request.setAttribute("exception", "invalid");
         }
 
         filterChain.doFilter(request, response);

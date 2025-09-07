@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.global.config;
 
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetailsService;
+import com.hyewon.grocey_api.domain.auth.security.JwtAuthenticationEntryPoint;
 import com.hyewon.grocey_api.domain.auth.security.JwtAuthenticationFilter;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +24,12 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtTokenProvider tokenProvider, CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(JwtTokenProvider tokenProvider, CustomUserDetailsService userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.tokenProvider = tokenProvider;
         this.userDetailsService = userDetailsService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -40,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class);
 
