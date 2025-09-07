@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface FridgeIngredientRepository extends JpaRepository<FridgeIngredient, Long> {
-    List<FridgeIngredient> findByFridgeIdAndIsFreezer(Long fridgeId, Boolean isFreezer);
+    List<FridgeIngredient> findByFridgeIdAndFreezer(Long fridgeId, Boolean isFreezer);
     List<FridgeIngredient> findByFridgeId(Long fridgeId);
 }

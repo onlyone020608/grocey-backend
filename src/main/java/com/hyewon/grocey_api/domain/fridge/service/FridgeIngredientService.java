@@ -1,10 +1,10 @@
 package com.hyewon.grocey_api.domain.fridge.service;
 
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponse;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
+import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
+import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class FridgeIngredientService {
         if (isFreezer == null) {
             ingredients = fridgeIngredientRepository.findByFridgeId(fridgeId);
         } else {
-            ingredients = fridgeIngredientRepository.findByFridgeIdAndIsFreezer(fridgeId, isFreezer);
+            ingredients = fridgeIngredientRepository.findByFridgeIdAndFreezer(fridgeId, isFreezer);
         }
 
         return ingredients.stream()
