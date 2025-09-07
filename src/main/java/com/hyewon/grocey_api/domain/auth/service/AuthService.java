@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeSnapshot;
@@ -15,7 +16,6 @@ import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -123,7 +123,6 @@ public class AuthService {
         return new TokenResponse(accessToken, refreshToken);
     }
 
-    @Transactional(readOnly = true)
     public TokenResponse refresh(TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
 
