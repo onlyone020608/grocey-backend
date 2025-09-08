@@ -19,8 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class FridgeRecommendationControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/recommendations/fridge - should return fridge recommendation result")
-    void getFridgeRecommendation_shouldReturnRecommendation() throws Exception {
+    @DisplayName("GET /api/recommendations/fridge - returns fridge recommendations when user has data")
+    void getFridgeRecommendation_withUserData_returnsRecommendation() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);

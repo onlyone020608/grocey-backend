@@ -1,10 +1,10 @@
 package com.hyewon.grocey_api.integration.auth;
 
+import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
-import com.hyewon.grocey_api.common.AbstractIntegrationTest;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,13 +14,15 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("AuthController Integration Test")
 public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
+
     @Test
-    @DisplayName("POST /api/auth/signup - should register new user")
-    void signup_shouldSucceed() throws Exception {
+    @DisplayName("POST /api/auth/signup - registers a new user when request is valid")
+    void signUp_withValidRequest_registersNewUser() throws Exception {
         SignupRequest request = new SignupRequest("mary@example.com", "securepw", "Mary");
 
         mockMvc.perform(post("/api/auth/signup")
@@ -37,8 +39,8 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/login - should return tokens for valid credentials")
-    void login_shouldReturnTokens() throws Exception {
+    @DisplayName("POST /api/auth/login - returns tokens when credentials are valid")
+    void login_withValidCredentials_returnsTokens() throws Exception {
         User user = createTestUser("Mary", "mary", "test1234!");
 
         LoginRequest request = new LoginRequest(user.getEmail(), "test1234!");
@@ -52,8 +54,8 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/refresh - should return new tokens")
-    void refresh_shouldReturnNewTokens() throws Exception {
+    @DisplayName("POST /api/auth/refresh - returns new tokens when refresh token is valid")
+    void refresh_withValidRefreshToken_returnsNewTokens() throws Exception {
         User user = createTestUser("Mary", "mary", "test1234!");
 
         LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
@@ -79,8 +81,8 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("POST /api/auth/logout - should succeed with valid token and invalidate refresh token")
-    void logout_shouldInvalidateRefreshToken() throws Exception {
+    @DisplayName("POST /api/auth/logout - invalidates refresh token when request is valid")
+    void logout_withValidToken_invalidatesRefreshToken() throws Exception {
         User user = createTestUser("Mary", "mary", "test1234!");
 
         LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
@@ -99,8 +101,8 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("DELETE /api/auth/withdraw - should delete user and invalidate refresh token")
-    void withdraw_shouldDeleteUserAndInvalidateToken() throws Exception {
+    @DisplayName("DELETE /api/auth/withdraw - deletes user and invalidates refresh token when request is valid")
+    void withdraw_withValidToken_deletesUserAndInvalidatesToken() throws Exception {
         User user = createTestUser("Mary", "mary", "test1234!");
 
         LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
@@ -119,8 +121,8 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/auth/password - should change password when current password is correct")
-    void changePassword_shouldSucceed_whenCurrentPasswordMatches() throws Exception {
+    @DisplayName("PATCH /api/auth/password - changes password when current password is correct")
+    void changePassword_withValidCurrentPassword_updatesPassword() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "oldPassword123");
 
@@ -155,8 +157,8 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/auth/password - should fail when current password is incorrect")
-    void changePassword_shouldFail_whenCurrentPasswordIncorrect() throws Exception {
+    @DisplayName("PATCH /api/auth/password - fails when current password is incorrect")
+    void changePassword_withInvalidCurrentPassword_returnsBadRequest() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "correctPassword");
 

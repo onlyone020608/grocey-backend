@@ -15,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(scripts = "/sql/recipe-data.sql")
 public class RecipeControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/recipes/{recipeId} - should return recipe detail")
-    void getRecipeDetail_shouldReturnRecipeDetail() throws Exception {
+    @DisplayName("GET /api/recipes/{recipeId} - returns recipe detail when id is valid")
+    void getRecipeDetail_withValidId_returnsRecipeDetail() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);

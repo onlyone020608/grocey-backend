@@ -15,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(scripts = "/sql/recipe-data.sql")
 public class RecipeRecommendationControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/recipes/recommendations/personal - should return personal recipe recommendations")
-    void getPersonalRecommendations_shouldReturnRecipes() throws Exception {
+    @DisplayName("GET /api/recipes/recommendations/personal - returns personal recipe recommendations when user has preferences")
+    void getPersonalRecommendations_withUserPreferences_returnsRecipes() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -34,8 +34,8 @@ public class RecipeRecommendationControllerIntegrationTest extends AbstractInteg
     }
 
     @Test
-    @DisplayName("GET /api/recipes/recommendations/fridge - should return fridge-based recipe recommendations")
-    void getFridgeRecommendations_shouldReturnRecipes() throws Exception {
+    @DisplayName("GET /api/recipes/recommendations/fridge - returns fridge-based recipe recommendations when user has ingredients")
+    void getFridgeRecommendations_withFridgeIngredients_returnsRecipes() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);

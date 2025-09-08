@@ -19,8 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/products?tab=NEW - should return products in NEW tab")
-    void getProductsByTab_shouldReturnNewTabProducts() throws Exception {
+    @DisplayName("GET /api/products?tab=NEW - returns products when tab is NEW")
+    void getProductsByTab_withNewTab_returnsNewProducts() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -39,8 +39,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/products?tab=BEST - should return products in BEST tab")
-    void getProductsByTab_shouldReturnBestTabProducts() throws Exception {
+    @DisplayName("GET /api/products?tab=BEST - returns products when tab is BEST")
+    void getProductsByTab_withBestTab_returnsBestProducts() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -59,8 +59,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/products/{productId} - should return product details by ID")
-    void getProductById_shouldReturnProductDetail() throws Exception {
+    @DisplayName("GET /api/products/{productId} - returns product detail when id is valid")
+    void getProductById_withValidId_returnsProductDetail() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);

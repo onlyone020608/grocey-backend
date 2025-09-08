@@ -14,10 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
        })
 public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("POST /api/cart/items - should add cart item")
-    void addCartItem_shouldSucceed() throws Exception {
+    @DisplayName("POST /api/cart/items - adds cart item when request is valid")
+    void addCartItem_withValidRequest_addsItem() throws Exception {
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
@@ -44,8 +41,8 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/cart - should return cart with items")
-    void getCart_shouldReturnCartInfo() throws Exception {
+    @DisplayName("GET /api/cart - returns cart with items when items exist")
+    void getCart_withItems_returnsCartInfo() throws Exception {
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
@@ -65,8 +62,8 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/cart/items - should update quantity")
-    void updateCartItem_shouldSucceed() throws Exception {
+    @DisplayName("PATCH /api/cart/items - updates quantity when cart item exists")
+    void updateCartItem_withValidId_updatesQuantity() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -98,8 +95,8 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("DELETE /api/cart/items - should delete multiple selected items")
-    void deleteSelectedCartItems_shouldSucceed() throws Exception {
+    @DisplayName("DELETE /api/cart/items - deletes selected items when multiple IDs are provided")
+    void deleteCartItems_withMultipleIds_deletesSelectedItems() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -142,8 +139,8 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("POST /api/cart/items/batch - should add multiple items to cart")
-    void addCartItemsInBatch_shouldSucceed() throws Exception {
+    @DisplayName("POST /api/cart/items/batch - adds multiple items when request is valid")
+    void addCartItemsInBatch_withValidRequest_addsMultipleItems() throws Exception {
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
         Product product1 = productRepository.findById(1L).orElseThrow();

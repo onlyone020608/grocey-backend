@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("POST /api/orders - should create order")
-    void placeOrder_shouldSucceed() throws Exception {
+    @DisplayName("POST /api/orders - creates order when request is valid")
+    void placeOrder_withValidRequest_createsOrder() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -48,8 +48,8 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/orders/summary - should return recent order summary")
-    void getOrderSummary_shouldReturnSummary() throws Exception {
+    @DisplayName("GET /api/orders/summary - returns recent order summary when orders exist")
+    void getOrderSummary_withExistingOrders_returnsSummary() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -78,8 +78,8 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/orders/{orderId} - should return order detail")
-    void getOrderDetail_shouldReturnDetail() throws Exception {
+    @DisplayName("GET /api/orders/{orderId} - returns order detail when id is valid")
+    void getOrderDetail_withValidId_returnsOrderDetail() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
@@ -115,8 +115,8 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].productName").value(product.getName()));
     }
     @Test
-    @DisplayName("GET /api/orders - should return paged order list")
-    void getAllOrders_shouldReturnPagedOrders() throws Exception {
+    @DisplayName("GET /api/orders - returns paged order list when orders exist")
+    void getAllOrders_withExistingOrders_returnsPagedList() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);

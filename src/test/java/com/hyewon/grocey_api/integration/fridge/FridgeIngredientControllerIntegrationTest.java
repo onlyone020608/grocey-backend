@@ -18,8 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/fridge/ingredients - should return fridge ingredient list")
-    void getFridgeIngredients_shouldReturnList() throws Exception {
+    @DisplayName("GET /api/fridge/ingredients - returns ingredient list when user has items")
+    void getFridgeIngredients_withItems_returnsIngredientList() throws Exception {
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
 
@@ -35,8 +35,8 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
     }
 
     @Test
-    @DisplayName("GET /api/fridge/ingredients/{ingredientId} - should return detail info")
-    void getFridgeIngredientDetail_shouldReturnDetail() throws Exception {
+    @DisplayName("GET /api/fridge/ingredients/{ingredientId} - returns ingredient detail when id is valid")
+    void getFridgeIngredientDetail_withValidId_returnsDetailInfo() throws Exception {
         User user = createTestUser("Mary", "mary", "securepw");
         String token = generateTokenFor(user);
 

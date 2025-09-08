@@ -6,16 +6,17 @@ import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.entity.UserAllergy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.http.MediaType;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("UserController Integration Test")
 @Sql(scripts = {
@@ -25,8 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/users/me/summary - Should return user summary")
-    void getUserSummary_shouldReturnUserSummary() throws Exception {
+    @DisplayName("GET /api/users/me/summary - returns user summary when authenticated")
+    void getUserSummary_withAuthenticatedUser_returnsSummary() throws Exception {
         // given
         var user = createTestUser("Mary Kim", "mary", "password123");
         String token = generateTokenFor(user);
@@ -42,8 +43,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/users/me - should return user detail")
-    void getUserDetail_shouldReturnUserDetail() throws Exception {
+    @DisplayName("GET /api/users/me - returns user detail when authenticated")
+    void getUserDetail_withAuthenticatedUser_returnsDetail() throws Exception {
         // given
         User user = createTestUser("Mary Kim", "mary", "password123");
         String token = generateTokenFor(user);
@@ -57,8 +58,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/users/me - should update user info")
-    void updateUserInfo_shouldUpdateUserNameAndEmail() throws Exception {
+    @DisplayName("PATCH /api/users/me - updates user info when request is valid")
+    void updateUserInfo_withValidRequest_updatesUserInfo() throws Exception {
         // given
         User user = createTestUser("Old Name", "old", "password123");
         String token = generateTokenFor(user);
@@ -81,8 +82,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/users/me/gender - should update user gender")
-    void updateGender_shouldUpdateUserGender() throws Exception {
+    @DisplayName("PATCH /api/users/me/gender - updates user gender when request is valid")
+    void updateGender_withValidRequest_updatesUserGender() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "pass123");
         String token = generateTokenFor(user);
@@ -103,8 +104,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/users/me/age-group - should update user age group")
-    void updateAgeGroup_shouldUpdateUserAgeGroup() throws Exception {
+    @DisplayName("PATCH /api/users/me/age-group - updates user age group when request is valid")
+    void updateAgeGroup_withValidRequest_updatesUserAgeGroup() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);
@@ -125,13 +126,11 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/users/me/allergies - should update user allergies")
-    void updateUserAllergies_shouldUpdateAllergyList() throws Exception {
+    @DisplayName("PATCH /api/users/me/allergies - updates user allergies when request is valid")
+    void updateUserAllergies_withValidRequest_updatesAllergies() throws Exception {
         // given
         User user = createTestUser("AllergyUser", "allergy", "password123");
         String token = generateTokenFor(user);
-
-        // assuming allergy-data.sql includes ID 1 and 2
         UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(1L, 2L));
 
         // when & then
@@ -148,8 +147,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/users/me/preferences - should update user preferences")
-    void updatePreferences_shouldUpdateUserPreferences() throws Exception {
+    @DisplayName("PATCH /api/users/me/preferences - updates user preferences when request is valid")
+    void updatePreferences_withValidRequest_updatesUserPreferences() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);
@@ -171,8 +170,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("PATCH /api/users/me/vegan - should update isVegan status")
-    void updateVegan_shouldUpdateUserIsVeganStatus() throws Exception {
+    @DisplayName("PATCH /api/users/me/vegan - updates vegan status when request is valid")
+    void updateVegan_withValidRequest_updatesVeganStatus() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);
@@ -191,8 +190,8 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET /api/users/me/status - should return profile completion status")
-    void getUserStatus_shouldReturnProfileCompletionStatus() throws Exception {
+    @DisplayName("GET /api/users/me/status - returns profile completion status when authenticated")
+    void getUserStatus_withAuthenticatedUser_returnsProfileCompletionStatus() throws Exception {
         // given
         User user = createTestUser("Mary", "mary", "password123");
         String token = generateTokenFor(user);

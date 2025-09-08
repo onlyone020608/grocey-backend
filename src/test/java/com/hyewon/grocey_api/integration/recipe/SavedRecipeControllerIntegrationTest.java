@@ -15,8 +15,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(scripts = "/sql/recipe-data.sql")
 public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
-    @DisplayName("GET /api/users/me/recipes - should return saved recipes of user")
-    void getSavedRecipes_shouldReturnRecipes() throws Exception {
+    @DisplayName("GET /api/users/me/recipes - returns saved recipes when user has saved recipes")
+    void getSavedRecipes_withSavedRecipes_returnsRecipes() throws Exception {
         // given
         User user = createTestUser("Mary", "mary@", "securepw");
         String token = generateTokenFor(user);
@@ -34,8 +34,8 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
     }
 
     @Test
-    @DisplayName("POST /api/users/me/recipes - should save recipe successfully")
-    void saveRecipe_shouldSucceed() throws Exception {
+    @DisplayName("POST /api/users/me/recipes/{recipeId} - saves recipe when request is valid")
+    void saveRecipe_withValidId_savesRecipe() throws Exception {
         // given
         User user = createTestUser("Mary", "mary@", "securepw");
         String token = generateTokenFor(user);
@@ -48,8 +48,8 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
                 .andExpect(status().isCreated());
     }
     @Test
-    @DisplayName("DELETE /api/users/me/recipes/{recipeId} - should delete saved recipe")
-    void deleteSavedRecipe_shouldSucceed() throws Exception {
+    @DisplayName("DELETE /api/users/me/recipes/{recipeId} - deletes saved recipe when id is valid")
+    void deleteSavedRecipe_withValidId_deletesRecipe() throws Exception {
         // given
         User user = createTestUser("Mary", "mary@", "securepw");
         String token = generateTokenFor(user);
