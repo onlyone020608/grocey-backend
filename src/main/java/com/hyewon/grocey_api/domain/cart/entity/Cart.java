@@ -37,7 +37,9 @@ public class Cart extends BaseTimeEntity {
     }
 
     public static Cart of(User user, Fridge fridge) {
-        return new Cart(user, fridge);
+        Cart cart = new Cart(user, fridge);
+        cart.cartItems = new ArrayList<>();
+        return cart;
     }
 
     public void addCartItem(CartItem item) {
