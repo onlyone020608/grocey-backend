@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.unit.domain.fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
+import com.hyewon.grocey_api.fixture.FridgeFixture;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +28,7 @@ public class FridgeQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-       fridge = Fridge.builder()
-               .id(1L)
-               .build();
+       fridge = FridgeFixture.aFridge();
     }
 
     @Test

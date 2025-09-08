@@ -8,6 +8,7 @@ import com.hyewon.grocey_api.domain.recipe.repository.RecipeIngredientRepository
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.service.RecipeService;
+import com.hyewon.grocey_api.fixture.RecipeFixture;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,13 +38,7 @@ class RecipeServiceTest {
 
     @BeforeEach
     void setUp() {
-        recipe = Recipe.builder()
-                .id(1L)
-                .name("Kimchi Fried Rice")
-                .cookingTimeInMinutes(15)
-                .servings(2)
-                .description("1. Put oil\n2. Add kimchi\n3. Stir-fry with rice")
-                .build();
+        recipe = RecipeFixture.aRecipe();
         ingredient = Ingredient.builder()
                 .name("Kimchi")
                 .imageUrl("url.com/kimchi")
@@ -71,9 +66,7 @@ class RecipeServiceTest {
         assertThat(result.getCookingTime()).isEqualTo(15);
         assertThat(result.getServings()).isEqualTo(2);
         assertThat(result.getDescriptionSteps()).containsExactly(
-                "1. Put oil",
-                "2. Add kimchi",
-                "3. Stir-fry with rice"
+                "step1", "step2"
         );
         assertThat(result.getIngredients()).hasSize(1);
         assertThat(result.getIngredients().get(0).getName()).isEqualTo("Kimchi");

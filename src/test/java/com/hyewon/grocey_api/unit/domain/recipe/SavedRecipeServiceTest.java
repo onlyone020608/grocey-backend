@@ -8,6 +8,8 @@ import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.service.SavedRecipeService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
+import com.hyewon.grocey_api.fixture.RecipeFixture;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,20 +42,8 @@ class SavedRecipeServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .id(1L)
-                .username("tester")
-                .email("test@email.com")
-                .password("pw")
-                .build();
-        recipe = Recipe.builder()
-                .id(10L)
-                .name("Kimchi Fried Rice")
-                .description("step1\nstep2")
-                .cookingTimeInMinutes(15)
-                .servings(2)
-                .imageUrl("img.jpg")
-                .build();
+        user = UserFixture.aDefaultUser();
+        recipe = RecipeFixture.aRecipe();
         savedRecipe = SavedRecipe.builder()
                 .user(user)
                 .recipe(recipe)

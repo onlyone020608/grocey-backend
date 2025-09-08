@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.unit.domain.user;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +28,7 @@ public class UserQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .id(1L)
-                .build();
+        user = UserFixture.aDefaultUser();
     }
 
     @Test

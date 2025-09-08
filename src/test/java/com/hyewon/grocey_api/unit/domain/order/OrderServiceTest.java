@@ -13,6 +13,8 @@ import com.hyewon.grocey_api.domain.order.service.OrderService;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
+import com.hyewon.grocey_api.fixture.ProductFixture;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,21 +53,12 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .id(1L)
-                .username("tester")
-                .email("test@email.com")
-                .build();
+        user = UserFixture.aDefaultUser();
         cart = Cart.builder()
                 .user(user)
                 .fridge(null)
                 .build();
-        product = Product.builder()
-                .name("Milk")
-                .name("SoulDairy")
-                .price(2000)
-                .imageUrl("milk.png")
-                .build();
+        product = ProductFixture.aProduct();
         cartItem = CartItem.builder()
                 .id(10L)
                 .product(product)

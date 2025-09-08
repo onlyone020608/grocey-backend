@@ -9,6 +9,9 @@ import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendati
 import com.hyewon.grocey_api.domain.recommendation.service.RecipeRecommendationService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
+import com.hyewon.grocey_api.fixture.FridgeFixture;
+import com.hyewon.grocey_api.fixture.RecipeFixture;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,26 +48,10 @@ class RecipeRecommendationServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .id(1L)
-                .username("tester")
-                .email("test@email.com")
-                .password("pw")
-                .build();
-        fridge = Fridge.builder()
-                .id(2L)
-                .fridgeTemperature(4.0)
-                .freezerTemperature(-18.0)
-                .build();
+        user = UserFixture.aDefaultUser();
+        fridge = FridgeFixture.aFridge();
         user.assignFridge(fridge);
-
-        recipe = Recipe.builder()
-                .name("Bibimbap")
-                .description("step1\nstep2")
-                .cookingTimeInMinutes(20)
-                .servings(2)
-                .imageUrl("bibimbap.jpg")
-                .build();
+        recipe =  RecipeFixture.aRecipe();
     }
 
     @Test
@@ -114,7 +101,6 @@ class RecipeRecommendationServiceTest {
         Long userId = 1L;
         given(fridgeQueryService.getFridge(fridgeId)).willReturn(fridge);
 
-        // AI 응답 mock
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + userId;
         given(restTemplate.getForEntity(url, List.class))
                 .willReturn(new ResponseEntity<>(List.of(101L), HttpStatus.OK));
@@ -129,7 +115,7 @@ class RecipeRecommendationServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getRecipeName()).isEqualTo("Bibimbap");
+        assertThat(result.get(0).getRecipeName()).isEqualTo("Kimchi Fried Rice");
     }
 
     @Test

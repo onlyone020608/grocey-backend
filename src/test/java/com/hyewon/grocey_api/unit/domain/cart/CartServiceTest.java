@@ -11,10 +11,11 @@ import com.hyewon.grocey_api.domain.cart.service.CartService;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
-import com.hyewon.grocey_api.domain.user.entity.AgeGroup;
-import com.hyewon.grocey_api.domain.user.entity.Gender;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
+import com.hyewon.grocey_api.fixture.FridgeFixture;
+import com.hyewon.grocey_api.fixture.ProductFixture;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.CartNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -53,23 +54,10 @@ class CartServiceTest {
 
     @BeforeEach
     void setUp() {
-        Fridge fridge = Fridge.of(4.0, -18.0);
-        user = User.builder()
-                .id(1L)
-                .username("tester")
-                .email("test@email.com")
-                .password("password")
-                .ageGroup(AgeGroup.TWENTIES)
-                .gender(Gender.FEMALE)
-                .build();
+        Fridge fridge = FridgeFixture.aFridge();
+        user = UserFixture.aDefaultUser();
         user.assignFridge(fridge);
-        product = Product.builder()
-                .id(1L)
-                .name("Milk")
-                .brand("Seoul Daily")
-                .price(2000)
-                .imageUrl("image-url")
-                .build();
+        product = ProductFixture.aProduct();
         cartItem1 = CartItem.builder()
                 .id(10L)
                 .product(product)

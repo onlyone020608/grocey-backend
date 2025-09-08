@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.user.entity.*;
 import com.hyewon.grocey_api.domain.user.repository.*;
 import com.hyewon.grocey_api.domain.user.service.UserService;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,32 +48,20 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .id(1L)
-                .username("tester")
-                .email("tester@email.com")
-                .password("pw")
-                .gender(Gender.FEMALE)
-                .ageGroup(AgeGroup.TWENTIES)
-                .build();
+        user = UserFixture.aDefaultUser();
         foodPreference = FoodPreference.builder()
-                .id(10L)
                 .name("Meat")
                 .build();
         allergy1 = Allergy.builder()
-                .id(10L)
                 .name("Egg")
                 .build();
         allergy2 = Allergy.builder()
-                .id(20L)
                 .name("Milk")
                 .build();
         preferenceIngredient1 = PreferenceIngredient.builder()
-                .id(20L)
                 .name("Garlic")
                 .build();
         preferenceIngredient2 = PreferenceIngredient.builder()
-                .id(30L)
                 .name("Cucumber")
                 .build();
     }

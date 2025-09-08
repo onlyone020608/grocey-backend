@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.unit.domain.product;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
+import com.hyewon.grocey_api.fixture.ProductFixture;
 import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +29,7 @@ public class ProductQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.builder()
-                .id(1L)
-                .build();
+        product = ProductFixture.aProduct();
     }
 
     @Test

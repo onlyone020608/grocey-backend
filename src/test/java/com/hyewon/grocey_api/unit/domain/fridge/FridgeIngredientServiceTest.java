@@ -8,6 +8,7 @@ import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
+import com.hyewon.grocey_api.fixture.FridgeFixture;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +38,7 @@ class FridgeIngredientServiceTest {
 
     @BeforeEach
     void setUp() {
-        fridge = Fridge.builder()
-                .id(1L)
-                .fridgeTemperature(4.0)
-                .freezerTemperature(-18.0)
-                .build();
+        fridge = FridgeFixture.aFridge();
         ingredient = Ingredient.builder()
                 .name("Chicken")
                 .imageUrl("url.com/chicken")

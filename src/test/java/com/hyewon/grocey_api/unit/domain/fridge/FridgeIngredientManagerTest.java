@@ -31,6 +31,7 @@ public class FridgeIngredientManagerTest {
                 .id(1L)
                 .build();
     }
+
     @Test
     @DisplayName("getByFridgeId - should return fridge ingredients")
     void getByFridgeId_shouldSucceed() {

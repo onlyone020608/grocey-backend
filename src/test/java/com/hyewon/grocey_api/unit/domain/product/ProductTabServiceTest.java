@@ -6,6 +6,7 @@ import com.hyewon.grocey_api.domain.product.entity.ProductTab;
 import com.hyewon.grocey_api.domain.product.entity.TabType;
 import com.hyewon.grocey_api.domain.product.repository.ProductTabRepository;
 import com.hyewon.grocey_api.domain.product.service.ProductTabService;
+import com.hyewon.grocey_api.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,13 +29,7 @@ class ProductTabServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.builder()
-                .id(1L)
-                .name("Milk")
-                .name("SeoulDairy")
-                .price(2000)
-                .imageUrl("milk.png")
-                .build();
+        product = ProductFixture.aProduct();
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.unit.domain.recipe;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.service.RecipeQueryService;
+import com.hyewon.grocey_api.fixture.RecipeFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,9 +26,7 @@ public class RecipeQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        recipe = Recipe.builder()
-                .id(1L)
-                .build();
+        recipe =  RecipeFixture.aRecipe();
     }
 
     @Test

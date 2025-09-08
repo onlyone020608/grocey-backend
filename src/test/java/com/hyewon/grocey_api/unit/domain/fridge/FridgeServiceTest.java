@@ -6,6 +6,8 @@ import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
+import com.hyewon.grocey_api.fixture.FridgeFixture;
+import com.hyewon.grocey_api.fixture.UserFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,14 +30,9 @@ class FridgeServiceTest {
 
     @BeforeEach
     void setUp() {
-        fridge = Fridge.builder()
-                .fridgeTemperature(4.0)
-                .freezerTemperature(-18.0)
-                .build();
-        user = User.builder()
-                .id(1L)
-                .fridge(fridge)
-                .build();
+        fridge = FridgeFixture.aFridge();
+        user = UserFixture.aDefaultUser();
+        user.assignFridge(fridge);
     }
 
     @Test
