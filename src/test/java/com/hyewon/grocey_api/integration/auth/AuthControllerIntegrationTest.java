@@ -5,14 +5,20 @@ import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.domain.auth.repository.RefreshTokenRepository;
+import com.hyewon.grocey_api.domain.auth.service.TokenService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,6 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("AuthController Integration Test")
 public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private TokenService tokenService;
+
+    @MockitoBean
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Test
     @DisplayName("POST /api/auth/signup - registers a new user when request is valid")
@@ -68,6 +81,9 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
 
         TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+
+        given(refreshTokenRepository.findByUserId(user.getId()))
+                .willReturn(tokens.getRefreshToken());
 
         TokenRefreshRequest refreshRequest = TokenRefreshRequest.builder()
                 .refreshToken(tokens.getRefreshToken())
