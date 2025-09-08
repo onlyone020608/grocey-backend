@@ -22,6 +22,7 @@ public class FridgeRecommendation extends BaseTimeEntity {
     @JoinColumn(name = "fridge_id")
     private Fridge fridge;
 
+    @Builder.Default
     @OneToMany(mappedBy = "fridgeRecommendation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FridgeRecommendedProduct> recommendedProducts = new ArrayList<>();
 
@@ -30,7 +31,9 @@ public class FridgeRecommendation extends BaseTimeEntity {
     }
 
     public static FridgeRecommendation of(Fridge fridge) {
-        return new FridgeRecommendation(fridge);
+        FridgeRecommendation fridgeRecommendation = new FridgeRecommendation(fridge);
+        fridgeRecommendation.recommendedProducts = new ArrayList<>();
+        return fridgeRecommendation;
     }
 
     public void addRecommendationProduct(FridgeRecommendedProduct product) {
