@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.domain.user.controller;
 
-import com.hyewon.grocey_api.domain.user.service.UserService;
-import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
+import com.hyewon.grocey_api.domain.user.dto.*;
+import com.hyewon.grocey_api.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -71,5 +71,11 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         boolean isCompleted = userService.checkProfileCompletion(userDetails.getId());
         return ResponseEntity.ok(new UserStatusResponse(isCompleted));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        userService.deleteUser(userDetails.getId());
+        return ResponseEntity.noContent().build();
     }
 }

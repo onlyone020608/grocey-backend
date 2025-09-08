@@ -1,20 +1,25 @@
 package com.hyewon.grocey_api.integration.user;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
+import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
+import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.domain.auth.repository.RefreshTokenRepository;
 import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.entity.UserAllergy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,6 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "/sql/preference-ingredient-data.sql"
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UserControllerIntegrationTest extends AbstractIntegrationTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private RefreshTokenRepository refreshTokenRepository;
+
     @Test
     @DisplayName("GET /api/users/me/summary - returns user summary when authenticated")
     void getUserSummary_withAuthenticatedUser_returnsSummary() throws Exception {
@@ -207,5 +218,25 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         // then
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.profileCompleted").value(false));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/users/me - deletes user and invalidates refresh token when request is valid")
+    void withdraw_withValidToken_deletesUserAndInvalidatesToken() throws Exception {
+        User user = createTestUser("Mary", "mary", "test1234!");
+
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
+        String accessToken = tokens.getAccessToken();
+
+        mockMvc.perform(delete("/api/users/me")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isNoContent());
     }
 }

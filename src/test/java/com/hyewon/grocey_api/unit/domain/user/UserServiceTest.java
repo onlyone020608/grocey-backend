@@ -1,9 +1,11 @@
 package com.hyewon.grocey_api.unit.domain.user;
 
+import com.hyewon.grocey_api.domain.auth.service.TokenService;
 import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.user.entity.*;
 import com.hyewon.grocey_api.domain.user.repository.*;
 import com.hyewon.grocey_api.domain.user.service.UserService;
+import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
@@ -37,6 +39,8 @@ class UserServiceTest {
     @Mock private UserPreferredIngredientRepository userPreferredIngredientRepository;
     @Mock private FoodPreferenceRepository foodPreferenceRepository;
     @Mock private PreferenceIngredientRepository preferenceIngredientRepository;
+    @Mock private UserWithdrawalService userWithdrawalService;
+    @Mock private TokenService tokenService;
     @InjectMocks private UserService userService;
 
     private User user;
@@ -377,5 +381,19 @@ class UserServiceTest {
         // when & then
         assertThatThrownBy(() -> userService.checkProfileCompletion(1L))
                 .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("deletes user and all related entities when user withdraws")
+    void shouldDeleteUserAndAllRelations_whenUserWithdraws() {
+        // given
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+
+        // when
+        userService.deleteUser(userId);
+
+        // then
+        verify(userWithdrawalService).withdraw(user);
     }
 }

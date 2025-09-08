@@ -13,7 +13,8 @@ import org.springframework.http.MediaType;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -98,26 +99,6 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/api/auth/logout")
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("DELETE /api/auth/withdraw - deletes user and invalidates refresh token when request is valid")
-    void withdraw_withValidToken_deletesUserAndInvalidatesToken() throws Exception {
-        User user = createTestUser("Mary", "mary", "test1234!");
-
-        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
-        String loginResponse = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
-        String accessToken = tokens.getAccessToken();
-
-        mockMvc.perform(delete("/api/auth/withdraw")
-                        .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isNoContent());
     }
 
     @Test

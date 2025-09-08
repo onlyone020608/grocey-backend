@@ -16,7 +16,6 @@ import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ public class AuthService {
     private final IngredientQueryService ingredientQueryService;
     private final FridgeIngredientManager fridgeIngredientManager;
     private final FridgeSnapshotCommandService fridgeSnapshotCommandService;
-    private final UserWithdrawalService userWithdrawalService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
@@ -60,7 +58,7 @@ public class AuthService {
                     fridge,
                     ingredient,
                     false,
-                    2, // 수량
+                    2,
                     LocalDate.now().plusDays(7)
             );
             fridgeIngredientManager.createFridgeIngredient(fi);
@@ -142,13 +140,6 @@ public class AuthService {
     @Transactional
     public void logout(Long userId) {
         tokenService.deleteRefreshToken(userId);
-    }
-
-    @Transactional
-    public void withdraw(Long userId) {
-        User user = userQueryService.getUserById(userId);
-        tokenService.deleteRefreshToken(userId);
-        userWithdrawalService.withdraw(user);
     }
 
     @Transactional

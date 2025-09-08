@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.user.service;
 
+import com.hyewon.grocey_api.domain.auth.service.TokenService;
 import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.user.entity.*;
 import com.hyewon.grocey_api.domain.user.repository.*;
@@ -23,6 +24,9 @@ public class UserService {
     private final UserPreferredIngredientRepository userPreferredIngredientRepository;
     private final FoodPreferenceRepository foodPreferenceRepository;
     private final PreferenceIngredientRepository preferenceIngredientRepository;
+    private final UserWithdrawalService userWithdrawalService;
+    private final TokenService tokenService;
+
 
     @Transactional(readOnly = true)
     public UserSummaryResponse getUserSummary(Long userId) {
@@ -150,5 +154,13 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         return Boolean.TRUE.equals(user.getProfileCompleted());
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        tokenService.deleteRefreshToken(userId);
+        userWithdrawalService.withdraw(user);
     }
 }

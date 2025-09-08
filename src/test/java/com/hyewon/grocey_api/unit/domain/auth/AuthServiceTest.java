@@ -16,7 +16,6 @@ import com.hyewon.grocey_api.domain.ingredient.service.IngredientQueryService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
-import com.hyewon.grocey_api.domain.user.service.UserWithdrawalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,6 @@ class AuthServiceTest {
     @Mock private UserQueryService userQueryService;
     @Mock private UserCommandService userCommandService;
     @Mock private FridgeCommandService fridgeCommandService;
-    @Mock private UserWithdrawalService userWithdrawalService;
     @Mock private IngredientQueryService ingredientQueryService;
     @Mock private FridgeIngredientManager fridgeIngredientManager;
     @Mock private FridgeSnapshotCommandService fridgeSnapshotCommandService;
@@ -210,29 +208,6 @@ class AuthServiceTest {
         authService.logout(userId);
 
         // then
-        Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
-        assertThat(store.containsKey(userId)).isFalse();
-    }
-
-    @Test
-    @DisplayName("deletes user and all related entities when user withdraws")
-    void shouldDeleteUserAndAllRelations_whenUserWithdraws() {
-        // given
-        Long userId = 1L;
-        User user = User.of("tester", "tester@email.com", "encodedPass");
-        ReflectionTestUtils.setField(user, "id", userId);
-
-        given(userQueryService.getUserById(userId)).willReturn(user);
-
-        Map<Long, String> mockStore = new HashMap<>(Map.of(userId, "token"));
-        ReflectionTestUtils.setField(authService, "refreshTokenStore", mockStore);
-
-        // when
-        authService.withdraw(userId);
-
-        // then
-        verify(userWithdrawalService).withdraw(user);
-
         Map<Long, String> store = (Map<Long, String>) ReflectionTestUtils.getField(authService, "refreshTokenStore");
         assertThat(store.containsKey(userId)).isFalse();
     }

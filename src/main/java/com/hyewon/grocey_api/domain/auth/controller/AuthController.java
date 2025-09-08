@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.domain.auth.controller;
 
-import com.hyewon.grocey_api.domain.auth.service.AuthService;
 import com.hyewon.grocey_api.domain.auth.dto.*;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
+import com.hyewon.grocey_api.domain.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,12 +39,6 @@ public class AuthController {
     public ResponseEntity<Void> logout(@AuthenticationPrincipal CustomUserDetails userDetails) {
         authService.logout(userDetails.getId());
         return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/withdraw")
-    public ResponseEntity<Void> withdraw(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        authService.withdraw(userDetails.getId());
-        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/password")
