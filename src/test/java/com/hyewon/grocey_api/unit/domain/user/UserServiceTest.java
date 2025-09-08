@@ -67,8 +67,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("getUserSummary - returns summary info for existing user")
-    void getUserSummary_shouldReturnSummary() {
+    @DisplayName("returns summary info when user exists")
+    void shouldReturnUserSummary_whenUserExists() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
@@ -80,8 +80,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("getUserSummary - throws exception if user not found")
-    void getUserSummary_shouldThrowIfUserNotFound() {
+    @DisplayName("throws UserNotFoundException when user does not exist in summary lookup")
+    void shouldThrowException_whenUserNotFoundInSummary() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 
@@ -91,8 +91,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("getUserDetail - returns detailed info for existing user")
-    void getUserDetail_shouldReturnDetail() {
+    @DisplayName("returns detailed info when user exists")
+    void shouldReturnUserDetail_whenUserExists() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
@@ -105,8 +105,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("getUserDetail - throws exception if user not found")
-    void getUserDetail_shouldThrowIfUserNotFound() {
+    @DisplayName("throws UserNotFoundException when user does not exist in detail lookup")
+    void shouldThrowException_whenUserNotFoundInDetail() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 
@@ -116,8 +116,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUser - updates name and email when both are provided")
-    void updateUser_shouldUpdateNameAndEmail() {
+    @DisplayName("updates name and email when both provided")
+    void shouldUpdateUserNameAndEmail_whenBothProvided() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
@@ -132,8 +132,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUser - updates only email when name is null")
-    void updateUser_shouldUpdateEmailOnly() {
+    @DisplayName("updates only email when name is null")
+    void shouldUpdateEmailOnly_whenNameIsNull() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
@@ -148,8 +148,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUser - throws exception when user not found")
-    void updateUser_shouldThrowIfUserNotFound() {
+    @DisplayName("throws UserNotFoundException when updating user that does not exist")
+    void shouldThrowException_whenUserNotFoundOnUpdate() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 
@@ -160,8 +160,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateGender - updates gender when valid value is provided")
-    void updateGender_shouldUpdateGender() {
+    @DisplayName("updates gender when valid value is provided")
+    void shouldUpdateGender_whenValidValueProvided() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         GenderUpdateRequest request = new GenderUpdateRequest("male");
@@ -174,8 +174,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateGender - throws exception for invalid gender value")
-    void updateGender_shouldThrowForInvalidGender() {
+    @DisplayName("throws InvalidRequestException when gender value is invalid")
+    void shouldThrowException_whenGenderValueInvalid() {
         // given
         GenderUpdateRequest request = new GenderUpdateRequest("invalid");
 
@@ -186,8 +186,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateAgeGroup - updates age group when valid value is provided")
-    void updateAgeGroup_shouldUpdateAgeGroup() {
+    @DisplayName("updates age group when valid value is provided")
+    void shouldUpdateAgeGroup_whenValidValueProvided() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
@@ -201,8 +201,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateAgeGroup - throws exception for invalid age group value")
-    void updateAgeGroup_shouldThrowForInvalidAge() {
+    @DisplayName("throws InvalidRequestException when age group value is invalid")
+    void shouldThrowException_whenAgeGroupValueInvalid() {
         // given
         AgeGroupUpdateRequest request = new AgeGroupUpdateRequest(999);
 
@@ -213,8 +213,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUserAllergies - updates user allergies successfully")
-    void updateUserAllergies_shouldUpdateCorrectly() {
+    @DisplayName("updates user allergies when valid IDs provided")
+    void shouldUpdateUserAllergies_whenValidIdsProvided() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(allergyRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(allergy1, allergy2));
@@ -232,8 +232,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUserAllergies - throws when allergy ID is invalid")
-    void updateUserAllergies_shouldThrowIfAllergyIdInvalid() {
+    @DisplayName("throws InvalidRequestException when allergy IDs are invalid")
+    void shouldThrowException_whenAllergyIdsInvalid() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(allergyRepository.findAllById(List.of(10L, 999L))).willReturn(List.of(allergy1));
@@ -246,8 +246,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUserPreferences - updates preferences when all IDs are valid")
-    void updateUserPreferences_shouldUpdateAll() {
+    @DisplayName("updates user preferences when all IDs are valid")
+    void shouldUpdateUserPreferences_whenAllIdsValid() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         PreferenceUpdateRequest request = new PreferenceUpdateRequest(
@@ -270,8 +270,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUserPreferences - throws if foodPreferenceIds are invalid")
-    void updateUserPreferences_shouldThrowForInvalidFoodPreference() {
+    @DisplayName("throws InvalidRequestException when foodPreferenceIds are invalid")
+    void shouldThrowException_whenFoodPreferenceIdsInvalid() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(foodPreferenceRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(foodPreference));
@@ -284,8 +284,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUserPreferences - throws if preferredIngredientIds are invalid")
-    void updateUserPreferences_shouldThrowForInvalidPreferredIngredient() {
+    @DisplayName("throws InvalidRequestException when preferredIngredientIds are invalid")
+    void shouldThrowException_whenPreferredIngredientIdsInvalid() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(preferenceIngredientRepository.findAllById(List.of(20L, 99L))).willReturn(List.of(preferenceIngredient1));
@@ -300,8 +300,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateUserPreferences - throws if dislikedIngredientIds are invalid")
-    void updateUserPreferences_shouldThrowForInvalidDislikedIngredient() {
+    @DisplayName("throws InvalidRequestException when dislikedIngredientIds are invalid")
+    void shouldThrowException_whenDislikedIngredientIdsInvalid() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         given(preferenceIngredientRepository.findAllById(List.of(20L, 999L))).willReturn(List.of(preferenceIngredient1));
@@ -316,8 +316,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateVeganStatus - updates isVegan flag correctly")
-    void updateVeganStatus_shouldUpdateIsVegan() {
+    @DisplayName("updates vegan status when valid request is provided")
+    void shouldUpdateVeganStatus_whenValidRequestProvided() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
         VeganUpdateRequest request = new VeganUpdateRequest(true);
@@ -330,8 +330,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("updateVeganStatus - throws exception if user not found")
-    void updateVeganStatus_shouldThrowIfUserNotFound() {
+    @DisplayName("throws UserNotFoundException when updating vegan status of non-existing user")
+    void shouldThrowException_whenUserNotFoundOnUpdateVeganStatus() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
         VeganUpdateRequest request = new VeganUpdateRequest(true);
@@ -342,8 +342,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("checkProfileCompletion - returns true if profile is completed")
-    void checkProfileCompletion_shouldReturnTrueIfCompleted() {
+    @DisplayName("returns true when profile is completed")
+    void shouldReturnTrue_whenProfileCompleted() {
         // given
         user.completeProfile();
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
@@ -356,8 +356,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("checkProfileCompletion - returns false if profile is not completed")
-    void checkProfileCompletion_shouldReturnFalseIfNotCompleted() {
+    @DisplayName("returns false when profile is not completed")
+    void shouldReturnFalse_whenProfileNotCompleted() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.of(user));
 
@@ -369,8 +369,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("checkProfileCompletion - throws exception if user not found")
-    void checkProfileCompletion_shouldThrowIfUserNotFound() {
+    @DisplayName("throws UserNotFoundException when checking profile completion of non-existing user")
+    void shouldThrowException_whenUserNotFoundOnCheckProfileCompletion() {
         // given
         given(userRepository.findById(1L)).willReturn(Optional.empty());
 

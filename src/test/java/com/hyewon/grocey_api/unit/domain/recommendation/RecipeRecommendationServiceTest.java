@@ -55,8 +55,8 @@ class RecipeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getRecommendationsByUser - returns recipe recommendations")
-    void getRecommendationsByUser_returnsRecommendations_whenAiReturnsRecipeIds() {
+    @DisplayName("returns recipe recommendations when AI returns recipe IDs for user")
+    void shouldReturnRecommendations_whenAiReturnsRecipeIdsForUser() {
         // given
         Long userId = 1L;
         List<Long> aiReturnedIds = List.of(101L, 102L);
@@ -79,8 +79,8 @@ class RecipeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getRecommendationsByUser - throws when no recommendations")
-    void getRecommendationsByUser_shouldThrowIfEmpty() {
+    @DisplayName("throws RecommendationNotFoundException when no user-based recommendations are found")
+    void shouldThrowException_whenUserRecommendationsNotFound() {
         // given
         Long userId = 1L;
         given(userQueryService.getUserById(userId)).willReturn(user);
@@ -94,8 +94,8 @@ class RecipeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getRecommendationsByFridge - returns recipe recommendations")
-    void getRecommendationsByFridge_shouldReturnList() {
+    @DisplayName("returns recipe recommendations when fridge contains ingredients")
+    void shouldReturnRecommendations_whenFridgeContainsIngredients() {
         // given
         Long fridgeId = 2L;
         Long userId = 1L;
@@ -119,8 +119,8 @@ class RecipeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getRecommendationsByFridge - throws when no recommendations")
-    void getRecommendationsByFridge_shouldThrowIfEmpty() {
+    @DisplayName("throws RecommendationNotFoundException when no fridge-based recommendations are found")
+    void shouldThrowException_whenFridgeRecommendationsNotFound() {
         given(fridgeQueryService.getFridge(2L)).willReturn(fridge);
 
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + user.getId();

@@ -51,8 +51,8 @@ class SavedRecipeServiceTest {
     }
 
     @Test
-    @DisplayName("getSavedRecipes - returns saved recipe list for user")
-    void getSavedRecipes_shouldReturnList() {
+    @DisplayName("returns saved recipe list when user exists")
+    void shouldReturnSavedRecipes_whenUserExists() {
         // given
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(savedRecipeRepository.findByUser(user)).willReturn(List.of(savedRecipe));
@@ -69,8 +69,8 @@ class SavedRecipeServiceTest {
 
 
     @Test
-    @DisplayName("saveRecipe - saves new recipe when not already saved")
-    void saveRecipe_shouldSaveRecipeIfNotExists() {
+    @DisplayName("saves new recipe when not already saved")
+    void shouldSaveRecipe_whenNotAlreadySaved() {
         // given
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
@@ -84,8 +84,8 @@ class SavedRecipeServiceTest {
     }
 
     @Test
-    @DisplayName("saveRecipe - throws DuplicateSavedRecipeException when recipe already saved")
-    void saveRecipe_shouldThrowIfRecipeAlreadySaved() {
+    @DisplayName("throws DuplicateSavedRecipeException when recipe is already saved")
+    void shouldThrowException_whenRecipeAlreadySaved() {
         // given
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
@@ -98,8 +98,8 @@ class SavedRecipeServiceTest {
     }
 
     @Test
-    @DisplayName("deleteRecipe - deletes saved recipe if exists")
-    void deleteRecipe_shouldDeleteIfExists() {
+    @DisplayName("deletes saved recipe when it exists")
+    void shouldDeleteSavedRecipe_whenItExists() {
         // given
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
@@ -113,8 +113,8 @@ class SavedRecipeServiceTest {
     }
 
     @Test
-    @DisplayName("deleteRecipe - throws SavedRecipeNotFoundException if recipe not saved")
-    void deleteRecipe_shouldThrowIfNotSaved() {
+    @DisplayName("throws SavedRecipeNotFoundException when recipe is not saved")
+    void shouldThrowException_whenSavedRecipeNotFound() {
         // given
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));

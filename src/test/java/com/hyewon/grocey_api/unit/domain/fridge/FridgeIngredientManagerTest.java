@@ -33,8 +33,8 @@ public class FridgeIngredientManagerTest {
     }
 
     @Test
-    @DisplayName("getByFridgeId - should return fridge ingredients")
-    void getByFridgeId_shouldSucceed() {
+    @DisplayName("returns fridge ingredients when fridge exists")
+    void shouldReturnFridgeIngredients_whenFridgeExists() {
         // given
         Long fridgeId = 1L;
         given(fridgeIngredientRepository.findByFridgeId(fridgeId)).willReturn(List.of(fridgeIngredient));
@@ -47,8 +47,8 @@ public class FridgeIngredientManagerTest {
     }
 
     @Test
-    @DisplayName("deleteAll - should delete fridge ingredients")
-    void deleteAll_shouldSucceed() {
+    @DisplayName("deletes fridge ingredients successfully")
+    void shouldDeleteFridgeIngredients_whenCalled() {
         // given
         List<FridgeIngredient> fridgeIngredients = List.of(fridgeIngredient);
 

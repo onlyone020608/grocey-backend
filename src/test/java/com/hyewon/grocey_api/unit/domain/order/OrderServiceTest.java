@@ -74,8 +74,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("getRecentOrderSummaryByUserId - returns list of recent orders")
-    void getRecentOrderSummaryByUserId_shouldReturnSummaries() {
+    @DisplayName("returns list of recent orders when user exists")
+    void shouldReturnRecentOrders_whenUserExists() {
         // given
         Long userId = 1L;
 
@@ -91,8 +91,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("getOrderDetail - returns order detail when user owns the order")
-    void getOrderDetail_shouldReturnDetailIfUserOwnsOrder() {
+    @DisplayName("returns order detail when user owns the order")
+    void shouldReturnOrderDetail_whenUserOwnsOrder() {
         // given
         Long userId = 1L;
         given(orderRepository.findById(101L)).willReturn(Optional.of(order));
@@ -107,8 +107,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("getOrderDetail - throws AccessDeniedException when user does not own the order")
-    void getOrderDetail_shouldThrowIfUserDoesNotOwnOrder() {
+    @DisplayName("throws AccessDeniedException when user does not own the order")
+    void shouldThrowException_whenUserDoesNotOwnOrder() {
         // given
         User anotherUser = User.builder()
                 .id(999L)
@@ -132,8 +132,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("getAllOrders - returns paginated list of order summaries")
-    void getAllOrders_shouldReturnPagedSummaries() {
+    @DisplayName("returns paginated list of order summaries when user exists")
+    void shouldReturnPagedOrderSummaries_whenUserExists() {
         // given
         Pageable pageable = Pageable.ofSize(10);
         Page<Order> mockPage = new PageImpl<>(List.of(order), pageable, 1);
@@ -150,8 +150,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("placeOrder - successfully places order with valid cart items")
-    void placeOrder_shouldSucceedWithValidItems() {
+    @DisplayName("places order successfully when cart items are valid")
+    void shouldPlaceOrder_whenCartItemsValid() {
         // given
         OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
 
@@ -165,8 +165,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("placeOrder - throws AccessDeniedException when cart item does not belong to user")
-    void placeOrder_shouldThrowIfCartItemNotOwnedByUser() {
+    @DisplayName("throws AccessDeniedException when cart item does not belong to user")
+    void shouldThrowException_whenCartItemNotOwnedByUser() {
         // given
         OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
 
@@ -195,8 +195,8 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("placeOrder - throws InvalidRequestException for invalid payment method")
-    void placeOrder_shouldThrowForInvalidPaymentMethod() {
+    @DisplayName("throws InvalidRequestException when payment method is invalid")
+    void shouldThrowException_whenPaymentMethodInvalid() {
         // given
         OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "bitcoin");
 

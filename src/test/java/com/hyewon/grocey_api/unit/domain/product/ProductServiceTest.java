@@ -31,8 +31,8 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("getProductDetail - returns product DTO by ID")
-    void getProductDetail_shouldReturnProductDto() {
+    @DisplayName("returns product detail DTO when product exists")
+    void shouldReturnProductDetailDto_whenProductExists() {
         // given
         given(productRepository.findById(1L)).willReturn(Optional.of(product));
 
@@ -48,8 +48,8 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("getProductDetail - throws when product not found")
-    void getProductDetail_shouldThrow_whenProductNotFound() {
+    @DisplayName("throws ProductNotFoundException when product does not exist")
+    void shouldThrowException_whenProductNotFound() {
         // given
         given(productRepository.findById(999L)).willReturn(Optional.empty());
 

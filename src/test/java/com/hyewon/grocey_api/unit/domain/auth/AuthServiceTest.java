@@ -79,8 +79,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("signup - signup - successful registration")
-    void signup_shouldSucceed() {
+    @DisplayName("signs up user when request is valid")
+    void shouldSignUpUser_whenRequestValid() {
         // given
         given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(false);
         given(ingredientQueryService.getIngredientById(1L)).willReturn(ingredient1);
@@ -98,8 +98,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("signup - throws exception when email is already in use")
-    void signup_shouldThrowWhenEmailAlreadyExists() {
+    @DisplayName("throws exception when email is already in use during signup")
+    void shouldThrowException_whenEmailAlreadyInUse() {
         // given
         given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(true);
 
@@ -113,8 +113,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("login - returns access and refresh token when credentials are valid")
-    void login_shouldReturnTokens_whenCredentialsAreValid() {
+    @DisplayName("returns access and refresh tokens when login credentials are valid")
+    void shouldReturnAccessAndRefreshTokens_whenCredentialsValid() {
         // given
         LoginRequest request = new LoginRequest("user@email.com", "password");
         User user = User.of("tester", "user@email.com", "encoded-password");
@@ -134,8 +134,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("refresh - returns new access token when refresh token is valid")
-    void refresh_shouldReturnNewAccessToken_whenValid() {
+    @DisplayName("returns new access token when refresh token is valid")
+    void shouldReturnNewAccessToken_whenRefreshTokenValid() {
         // given
         Long userId = 1L;
         String oldRefreshToken = "valid-refresh-token";
@@ -159,8 +159,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("refresh - throws exception when token is invalid")
-    void refresh_shouldThrowException_whenTokenIsInvalid() {
+    @DisplayName("throws exception when refresh token is invalid")
+    void shouldThrowException_whenRefreshTokenInvalid() {
         // given
         String invalidToken = "invalid-refresh-token";
         TokenRefreshRequest request = TokenRefreshRequest.builder()
@@ -176,8 +176,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("refresh - throws exception when token does not match stored token")
-    void refresh_shouldThrowException_whenTokenMismatch() {
+    @DisplayName("throws exception when refresh token does not match stored token")
+    void shouldThrowException_whenRefreshTokenMismatch() {
         // given
         Long userId = 1L;
         String oldToken = "valid-refresh-token";
@@ -199,8 +199,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("logout - removes refresh token from store")
-    void logout_shouldRemoveRefreshToken() {
+    @DisplayName("removes refresh token from store on logout")
+    void shouldRemoveRefreshToken_whenLogoutCalled() {
         // given
         Long userId = 1L;
         String refreshToken = "refresh-token";
@@ -215,8 +215,8 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("withdraw - deletes user and all related entities when user exists")
-    void withdraw_shouldDeleteUserAndAllRelations_whenUserExists() {
+    @DisplayName("deletes user and all related entities when user withdraws")
+    void shouldDeleteUserAndAllRelations_whenUserWithdraws() {
         // given
         Long userId = 1L;
         User user = User.of("tester", "tester@email.com", "encodedPass");

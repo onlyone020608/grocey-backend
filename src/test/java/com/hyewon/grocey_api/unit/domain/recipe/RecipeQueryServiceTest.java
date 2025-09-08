@@ -30,8 +30,8 @@ public class RecipeQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getRecipes - should return recipes")
-    void getRecipes_shouldSucceed() {
+    @DisplayName("returns recipes when they exist")
+    void shouldReturnRecipes_whenTheyExist() {
         // given
         Long recipeId = 1L;
         given(recipeRepository.findAllById(List.of(recipeId))).willReturn(

@@ -32,8 +32,8 @@ public class UserQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getUserById - should return user")
-    void getUserById_shouldSucceed() {
+    @DisplayName("returns user when user exists")
+    void shouldReturnUser_whenUserExists() {
         // given
         Long userId = 1L;
         given(userRepository.findById(userId)).willReturn(
@@ -47,8 +47,8 @@ public class UserQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getUserById - should throw UserNotFoundException when user does not exist")
-    void getUserById_shouldThrowException_whenUserNotFound() {
+    @DisplayName("throws UserNotFoundException when user does not exist")
+    void shouldThrowException_whenUserNotFound() {
         // given
         Long userId = 999L;
         given(userRepository.findById(userId)).willReturn(

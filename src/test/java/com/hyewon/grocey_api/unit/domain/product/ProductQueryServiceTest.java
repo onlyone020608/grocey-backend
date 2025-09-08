@@ -33,8 +33,8 @@ public class ProductQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getProduct - should return product")
-    void getProduct_shouldSucceed() {
+    @DisplayName("returns product when it exists")
+    void shouldReturnProduct_whenItExists() {
         // given
         Long productId = 1L;
         given(productRepository.findById(productId)).willReturn(
@@ -48,8 +48,8 @@ public class ProductQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getProduct - should throw ProductNotFoundException when product does not exist")
-    void getProduct_shouldThrowException_whenProductNotFound() {
+    @DisplayName("throws ProductNotFoundException when product does not exist")
+    void shouldThrowException_whenProductNotFound() {
         // given
         Long productId = 999L;
         given(productRepository.findById(productId)).willReturn(
@@ -61,8 +61,8 @@ public class ProductQueryServiceTest {
     }
 
     @Test
-    @DisplayName("findRandomOnePerIngredient - should return random product per ingredient")
-    void findRandomOnePerIngredient_shouldSucceed() {
+    @DisplayName("returns random product per ingredient when ingredients exist")
+    void shouldReturnRandomProductPerIngredient_whenIngredientsExist() {
         // given
         List<Long> ingredientIds = List.of(1L, 2L);
         given(productRepository.findRandomOneEachByIngredient(ingredientIds)).willReturn(

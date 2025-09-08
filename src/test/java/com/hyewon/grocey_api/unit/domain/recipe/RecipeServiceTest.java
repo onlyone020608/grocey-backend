@@ -51,8 +51,8 @@ class RecipeServiceTest {
     }
 
     @Test
-    @DisplayName("getRecipeDetail - returns detailed recipe with ingredients")
-    void getRecipeDetail_shouldReturnDetail() {
+    @DisplayName("returns detailed recipe with ingredients when recipe exists")
+    void shouldReturnDetailedRecipeWithIngredients_whenRecipeExists() {
         // given
         given(recipeRepository.findById(1L)).willReturn(Optional.of(recipe));
         given(recipeIngredientRepository.findByRecipeId(1L)).willReturn(List.of(recipeIngredient));
@@ -75,8 +75,8 @@ class RecipeServiceTest {
     }
 
     @Test
-    @DisplayName("getRecipeDetail - throws RecipeNotFoundException when recipe not found")
-    void getRecipeDetail_shouldThrowIfRecipeNotFound() {
+    @DisplayName("throws RecipeNotFoundException when recipe does not exist")
+    void shouldThrowException_whenRecipeNotFound() {
         // given
         Long userId = 1L;
         given(recipeRepository.findById(999L)).willReturn(Optional.empty());

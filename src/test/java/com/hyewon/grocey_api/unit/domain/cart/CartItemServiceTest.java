@@ -35,8 +35,8 @@ public class CartItemServiceTest {
     }
 
     @Test
-    @DisplayName("getCartItems - should return cart items")
-    void getCartItems_shouldSucceed() {
+    @DisplayName("returns cart items when they exist")
+    void shouldReturnCartItems_whenTheyExist() {
         // given
         given(cartItemRepository.findAllById(List.of(1L,2L))).willReturn(
                 List.of(cartItem1,cartItem2));
@@ -49,8 +49,8 @@ public class CartItemServiceTest {
     }
 
     @Test
-    @DisplayName("getCartItems - should throw InvalidRequestException when cart item does not exist")
-    void getCartItems_shouldThrowException_whenCartItemNotFound() {
+    @DisplayName("throws InvalidRequestException when cart items do not exist")
+    void shouldThrowException_whenCartItemsNotFound() {
         // given
         given(cartItemRepository.findAllById(List.of(999L,888L))).willReturn(
                 List.of());
@@ -61,8 +61,8 @@ public class CartItemServiceTest {
     }
 
     @Test
-    @DisplayName("deleteCartItems - should delete cart items")
-    void deleteCartItems_shouldSucceed() {
+    @DisplayName("deletes cart items successfully")
+    void shouldDeleteCartItems_whenCalled() {
         // given
         List<CartItem> cartItems = List.of(
                 cartItem1,

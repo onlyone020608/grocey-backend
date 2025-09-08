@@ -65,8 +65,8 @@ class FridgeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getLatestRecommendation - returns latest recommendation for fridge")
-    void getLatestRecommendation_shouldReturnDto() {
+    @DisplayName("returns latest recommendation for fridge when available")
+    void shouldReturnLatestRecommendation_whenAvailable() {
         // given
         given(fridgeQueryService.getFridge(1L)).willReturn(fridge);
 
@@ -89,8 +89,8 @@ class FridgeRecommendationServiceTest {
     }
 
     @Test
-    @DisplayName("getLatestRecommendation - throws exception when recommendation not found")
-    void getLatestRecommendation_shouldThrowIfNotFound() {
+    @DisplayName("throws RecommendationNotFoundException when no recommendation is available")
+    void shouldThrowException_whenRecommendationNotFound() {
         // given
         given(fridgeQueryService.getFridge(1L)).willReturn(fridge);
 

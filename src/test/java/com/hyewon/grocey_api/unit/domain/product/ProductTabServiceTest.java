@@ -33,8 +33,8 @@ class ProductTabServiceTest {
     }
 
     @Test
-    @DisplayName("getProductsByTab - returns product list for given tab")
-    void getProductsByTab_shouldReturnList() {
+    @DisplayName("returns product list when tab exists")
+    void shouldReturnProductList_whenTabExists() {
         // given
         ProductTab productTab = ProductTab.builder()
                 .product(product)

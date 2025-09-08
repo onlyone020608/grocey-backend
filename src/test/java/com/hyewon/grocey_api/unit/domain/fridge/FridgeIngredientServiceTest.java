@@ -58,8 +58,8 @@ class FridgeIngredientServiceTest {
     }
 
     @Test
-    @DisplayName("getIngredientsByFridge - returns list of ingredients when fridge exists")
-    void getIngredientsByFridge_shouldReturnList() {
+    @DisplayName("returns list of ingredients when fridge exists")
+    void shouldReturnIngredients_whenFridgeExists() {
         // given
         Long fridgeId = 1L;
         Boolean isFreezer = true;
@@ -79,8 +79,8 @@ class FridgeIngredientServiceTest {
     }
 
     @Test
-    @DisplayName("getIngredientDetail - returns detailed info of a fridge ingredient")
-    void getIngredientDetail_shouldReturnDetailedDto() {
+    @DisplayName("returns detailed fridge ingredient info when ingredient exists")
+    void shouldReturnIngredientDetail_whenIngredientExists() {
         // given
         Long id = 10L;
 
@@ -97,8 +97,8 @@ class FridgeIngredientServiceTest {
     }
 
     @Test
-    @DisplayName("getIngredientsByFridge - throws FridgeNotFoundException when fridge does not exist")
-    void getIngredientsByFridge_shouldThrowWhenFridgeDoesNotExist() {
+    @DisplayName("throws FridgeNotFoundException when fridge does not exist")
+    void shouldThrowException_whenFridgeNotFound() {
         // given
         Long fridgeId = 999L;
         Boolean isFreezer = true;
@@ -111,8 +111,8 @@ class FridgeIngredientServiceTest {
     }
 
     @Test
-    @DisplayName("getIngredientDetail - throws FridgeIngredientNotFoundException when ingredient not found")
-    void getIngredientDetail_shouldThrowWhenIngredientNotFound() {
+    @DisplayName("throws FridgeIngredientNotFoundException when ingredient does not exist")
+    void shouldThrowException_whenIngredientNotFound() {
         // given
         Long id = 123L;
         given(fridgeIngredientRepository.findById(id)).willReturn(java.util.Optional.empty());

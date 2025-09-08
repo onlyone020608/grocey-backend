@@ -71,8 +71,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("addCartItem - creates new cart if none exists and adds item successfully")
-    void addCartItem_shouldCreateNewCartAndAddItem() {
+    @DisplayName("creates new cart if none exists and adds item successfully")
+    void shouldCreateNewCartAndAddItem_whenCartNotExists() {
         // given
         AddCartItemRequest request = new AddCartItemRequest(1L, 3);
         ArgumentCaptor<CartItem> cartItemCaptor = ArgumentCaptor.forClass(CartItem.class);
@@ -95,12 +95,10 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("addCartItem - increases quantity if product already exists in cart")
-    void addCartItem_shouldIncreaseQuantityIfProductExists() {
+    @DisplayName("increases quantity if product already exists in cart")
+    void shouldIncreaseQuantity_whenProductAlreadyExistsInCart() {
         // given
         AddCartItemRequest request = new AddCartItemRequest(1L, 2);
-
-        // 기존 CartItem: 상품 동일, 수량 3
         CartItem existingItem = CartItem.of(product, 3);
         Cart existingCart = Cart.of(user, user.getFridge());
         existingCart.addCartItem(existingItem);
@@ -113,13 +111,13 @@ class CartServiceTest {
         cartService.addCartItem(1L, request);
 
         // then
-        assertThat(existingItem.getQuantity()).isEqualTo(5); // 3 + 2
+        assertThat(existingItem.getQuantity()).isEqualTo(5);
         verify(cartItemRepository, never()).save(any(CartItem.class));
     }
 
     @Test
-    @DisplayName("deleteCartItems - removes multiple items when user owns them")
-    void deleteCartItems_shouldRemoveItemsIfUserOwnsThem() {
+    @DisplayName("removes multiple cart items when user owns them")
+    void shouldRemoveCartItems_whenUserOwnsThem() {
         // given
         Long userId = 1L;
         Cart cart = Cart.of(user, user.getFridge());
@@ -141,8 +139,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("deleteCartItems - throws AccessDeniedException when user does not own one of the items")
-    void deleteCartItems_shouldThrowIfItemNotBelongsToUserCart() {
+    @DisplayName("throws AccessDeniedException when user tries to delete item not in their cart")
+    void shouldThrowException_whenDeletingItemNotInUserCart() {
         // given
         Long attackerId = 999L;
         Long ownerId = 1L;
@@ -173,8 +171,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("deleteCartItems - throws AccessDeniedException when user does not own one of the items")
-    void deleteCartItems_shouldThrowIfItemNotBelongsToUserCart2() {
+    @DisplayName("throws AccessDeniedException when cart item belongs to another cart")
+    void shouldThrowException_whenDeletingItemBelongsToDifferentCart() {
         // given
         Long userId = 1L;
 
@@ -201,8 +199,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("updateCartItemQuantity - updates quantity successfully when cart item belongs to user")
-    void updateCartItemQuantity_shouldUpdateQuantityIfUserOwnsItem() {
+    @DisplayName("updates cart item quantity successfully when user owns the item")
+    void shouldUpdateCartItemQuantity_whenUserOwnsItem() {
         // given
         Long userId = 1L;
         int newQuantity = 5;
@@ -223,10 +221,10 @@ class CartServiceTest {
 
 
     @Test
-    @DisplayName("updateCartItemQuantity - throws AccessDeniedException if user does not own the cart item")
-    void updateCartItemQuantity_shouldThrowIfUserDoesNotOwnItem() {
+    @DisplayName("throws AccessDeniedException when user tries to update item not in their cart")
+    void shouldThrowException_whenUpdatingItemNotInUserCart() {
         // given
-        Long attackerId = 999L; // 다른 사용자
+        Long attackerId = 999L;
         Long cartItemId = 10L;
 
         Cart cart = Cart.builder()
@@ -246,8 +244,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("getCart - returns cart and its items for the user")
-    void getCart_shouldReturnCartWithItems() {
+    @DisplayName("returns cart with its items when cart exists for user")
+    void shouldReturnCartWithItems_whenCartExistsForUser() {
         // given
         Long userId = 1L;
         Cart cart = Cart.builder()
@@ -272,8 +270,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("getCart - throws CartNotFoundException when cart does not exist for user")
-    void getCart_shouldThrowWhenCartDoesNotExist() {
+    @DisplayName("throws CartNotFoundException when user has no cart")
+    void shouldThrowException_whenCartNotFoundForUser() {
         // given
         Long userId = 1L;
 
@@ -287,8 +285,8 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("addCartItemsInBatch - adds multiple items, creating cart if needed")
-    void addCartItemsInBatch_shouldAddAllItemsCorrectly() {
+    @DisplayName("adds multiple items in batch, creating cart if needed")
+    void shouldAddMultipleItemsInBatch_whenCartNotExists() {
         // given
         AddCartItemRequest request1 = new AddCartItemRequest(1L, 2);
         AddCartItemRequest request2 = new AddCartItemRequest(2L, 1);

@@ -32,8 +32,8 @@ public class FridgeQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getFridge - should return fridge")
-    void getFridge_shouldSucceed() {
+    @DisplayName("returns fridge when it exists")
+    void shouldReturnFridge_whenItExists() {
         // given
         Long fridgeId = 1L;
         given(fridgeRepository.findById(fridgeId)).willReturn(
@@ -47,8 +47,8 @@ public class FridgeQueryServiceTest {
     }
 
     @Test
-    @DisplayName("getFridge - should throw FridgeNotFoundException when fridge does not exist")
-    void getFridge_shouldThrowException_whenFridgeNotFound() {
+    @DisplayName("throws FridgeNotFoundException when fridge does not exist")
+    void shouldThrowException_whenFridgeNotFound() {
         // given
         Long fridgeId = 999L;
         given(fridgeRepository.findById(fridgeId)).willReturn(
