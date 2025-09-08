@@ -6,11 +6,11 @@ import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientManager;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
-import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
-import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
+import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
+import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ public class FridgeRecommendationService {
     private final FridgeRecommendationRepository fridgeRecommendationRepository;
     private final FridgeQueryService fridgeQueryService;
     private final ProductQueryService productQueryService;
+    private final RestTemplate restTemplate;
     private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final FridgeIngredientManager fridgeIngredientManager;
 
@@ -59,7 +60,6 @@ public class FridgeRecommendationService {
     }
 
     public List<Long> fetchRecommendedIngredientIds(Long userId) {
-        RestTemplate restTemplate = new RestTemplate();
         String url = "http://grocey-ai:5001/api/recommend/" + userId;
         ResponseEntity<List> response = restTemplate.getForEntity(url, List.class);
         return response.getBody(); // [1, 2, 3]
