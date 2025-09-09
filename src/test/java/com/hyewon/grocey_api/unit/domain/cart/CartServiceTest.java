@@ -16,6 +16,7 @@ import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.fixture.FridgeFixture;
 import com.hyewon.grocey_api.fixture.ProductFixture;
 import com.hyewon.grocey_api.fixture.UserFixture;
+import com.hyewon.grocey_api.global.exception.CartItemNotFoundException;
 import com.hyewon.grocey_api.global.exception.CartNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -215,7 +216,7 @@ class CartServiceTest {
         Cart cart = Cart.of(user, user.getFridge());
         cart.addCartItem(cartItem1);
 
-        given(cartItemRepository.findById(10L)).willReturn(Optional.of(cartItem1));
+        given(cartItemRepository.findByIdAndUserId(10L, userId)).willReturn(Optional.of(cartItem1));
 
         // when
         cartService.updateCartItemQuantity(userId, request);
@@ -224,28 +225,21 @@ class CartServiceTest {
         assertThat(cartItem1.getQuantity()).isEqualTo(newQuantity);
     }
 
-
     @Test
-    @DisplayName("throws AccessDeniedException when user tries to update item not in their cart")
-    void shouldThrowException_whenUpdatingItemNotInUserCart() {
+    @DisplayName("throws CartItemNotFoundException when cart item is not found")
+    void shouldThrowException_whenCartItemNotFound() {
         // given
-        Long attackerId = 999L;
+        Long userId = 1L;
         Long cartItemId = 10L;
-
-        Cart cart = Cart.builder()
-                .user(user)
-                .fridge(user.getFridge())
-                .build();
-
-        cart.addCartItem(cartItem1);
-        given(cartItemRepository.findById(cartItemId)).willReturn(Optional.of(cartItem1));
 
         UpdateCartItemRequest request = new UpdateCartItemRequest(cartItemId, 5);
 
+        given(cartItemRepository.findByIdAndUserId(cartItemId, userId))
+                .willReturn(Optional.empty());
+
         // when & then
-        assertThrows(AccessDeniedException.class, () -> {
-            cartService.updateCartItemQuantity(attackerId, request);
-        });
+        assertThrows(CartItemNotFoundException.class,
+                () -> cartService.updateCartItemQuantity(userId, request));
     }
 
     @Test

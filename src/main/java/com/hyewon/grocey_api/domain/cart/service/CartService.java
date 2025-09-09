@@ -70,12 +70,8 @@ public class CartService {
 
     @Transactional
     public void updateCartItemQuantity(Long userId, UpdateCartItemRequest request) {
-        CartItem cartItem = cartItemRepository.findById(request.getCartItemId())
+        CartItem cartItem = cartItemRepository.findByIdAndUserId(request.getCartItemId(), userId)
                 .orElseThrow(() -> new CartItemNotFoundException(request.getCartItemId()));
-
-        if (!cartItem.getCart().getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("You can only modify your own cart.");
-        }
 
         cartItem.updateQuantity(request.getQuantity());
     }
