@@ -1,5 +1,7 @@
 package com.hyewon.grocey_api.domain.recipe.dto;
 
+import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
+import com.hyewon.grocey_api.domain.recipe.entity.RecipeIngredient;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -31,5 +33,19 @@ public class RecipeDetailResponse {
         return Arrays.stream(raw.split("\\n"))
                 .map(String::trim)
                 .toList();
+    }
+
+    public static RecipeDetailResponse from (Recipe recipe, List<RecipeIngredient> recipeIngredients, boolean saved) {
+        return new RecipeDetailResponse(
+                recipe.getName(),
+                recipe.getDescription(),
+                recipe.getCookingTimeInMinutes(),
+                recipe.getServings(),
+                recipe.getImageUrl(),
+                recipeIngredients.stream()
+                        .map(RecipeIngredientResponse::from)
+                        .toList(),
+                saved
+        );
     }
 }

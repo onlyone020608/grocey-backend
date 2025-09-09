@@ -1,18 +1,17 @@
 package com.hyewon.grocey_api.domain.recipe.service;
 
+import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponse;
+import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
+import com.hyewon.grocey_api.domain.recipe.entity.RecipeIngredient;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeIngredientRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
-import com.hyewon.grocey_api.domain.recipe.dto.RecipeDetailResponse;
-import com.hyewon.grocey_api.domain.recipe.dto.RecipeIngredientResponse;
-import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,24 +25,10 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
 
-        List<RecipeIngredientResponse> ingredients = recipeIngredientRepository.findByRecipeId(recipeId).stream()
-                .map(ri -> new RecipeIngredientResponse(
-                        ri.getIngredient().getName(),
-                        ri.getQuantity()
-                ))
-                .collect(Collectors.toList());
+        List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findAllByIdWithIngredient(recipeId);
 
         boolean isSaved = savedRecipeRepository.existsByUserIdAndRecipeId(userId, recipeId);
 
-        return new RecipeDetailResponse(
-                recipe.getName(),
-                recipe.getDescription(),
-                recipe.getCookingTimeInMinutes(),
-                recipe.getServings(),
-                recipe.getImageUrl(),
-                ingredients,
-                isSaved
-        );
+        return RecipeDetailResponse.from(recipe, recipeIngredients, isSaved);
     }
-
 }

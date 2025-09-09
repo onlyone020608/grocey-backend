@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,13 +33,12 @@ class RecipeServiceTest {
     @InjectMocks private RecipeService recipeService;
 
     private Recipe recipe;
-    private Ingredient ingredient;
     private RecipeIngredient recipeIngredient;
 
     @BeforeEach
     void setUp() {
         recipe = RecipeFixture.aRecipe();
-        ingredient = Ingredient.builder()
+        Ingredient ingredient = Ingredient.builder()
                 .name("Kimchi")
                 .imageUrl("url.com/kimchi")
                 .build();
@@ -54,12 +53,13 @@ class RecipeServiceTest {
     @DisplayName("returns detailed recipe with ingredients when recipe exists")
     void shouldReturnDetailedRecipeWithIngredients_whenRecipeExists() {
         // given
+        Long userId = 1L;
         given(recipeRepository.findById(1L)).willReturn(Optional.of(recipe));
-        given(recipeIngredientRepository.findByRecipeId(1L)).willReturn(List.of(recipeIngredient));
-        given(savedRecipeRepository.existsByUserIdAndRecipeId(1L, 1L)).willReturn(true);
+        given(recipeIngredientRepository.findAllByIdWithIngredient(1L)).willReturn(List.of(recipeIngredient));
+        given(savedRecipeRepository.existsByUserIdAndRecipeId(userId, 1L)).willReturn(true);
 
         // when
-        RecipeDetailResponse result = recipeService.getRecipeDetail(1L, 1L);
+        RecipeDetailResponse result = recipeService.getRecipeDetail(1L, userId);
 
         // then
         assertThat(result.getRecipeName()).isEqualTo("Kimchi Fried Rice");
@@ -82,7 +82,7 @@ class RecipeServiceTest {
         given(recipeRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> recipeService.getRecipeDetail(999L, userId))
-                .isInstanceOf(RecipeNotFoundException.class);
+        assertThrows(RecipeNotFoundException.class,
+                () ->  recipeService.getRecipeDetail(999L, userId));
     }
 }
