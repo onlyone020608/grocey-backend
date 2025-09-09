@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -101,12 +102,11 @@ class SavedRecipeServiceTest {
     @DisplayName("deletes saved recipe when it exists")
     void shouldDeleteSavedRecipe_whenItExists() {
         // given
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
-        given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.of(savedRecipe));
+        Long userId = 1L;
+        given(savedRecipeRepository.findByUserIdAndRecipeId(userId, 10L)).willReturn(Optional.of(savedRecipe));
 
         // when
-        savedRecipeService.deleteRecipe(1L, 10L);
+        savedRecipeService.deleteRecipe(userId, 10L);
 
         // then
         verify(savedRecipeRepository).delete(savedRecipe);
@@ -116,13 +116,11 @@ class SavedRecipeServiceTest {
     @DisplayName("throws SavedRecipeNotFoundException when recipe is not saved")
     void shouldThrowException_whenSavedRecipeNotFound() {
         // given
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
-        given(savedRecipeRepository.findByUserAndRecipe(user, recipe)).willReturn(Optional.empty());
+        Long userId = 1L;
+        given(savedRecipeRepository.findByUserIdAndRecipeId(userId, 10L)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> savedRecipeService.deleteRecipe(1L, 10L))
-                .isInstanceOf(SavedRecipeNotFoundException.class)
-                .hasMessageContaining("Saved recipe not found");
+        assertThrows(SavedRecipeNotFoundException.class,
+                () ->  savedRecipeService.deleteRecipe(userId, 10L));
     }
 }

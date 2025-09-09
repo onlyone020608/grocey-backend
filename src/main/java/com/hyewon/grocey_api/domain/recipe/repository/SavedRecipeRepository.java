@@ -14,7 +14,7 @@ public interface SavedRecipeRepository extends JpaRepository<SavedRecipe, Long> 
     @Query("SELECT sr FROM SavedRecipe sr JOIN FETCH sr.recipe WHERE sr.user.id = :userId")
     List<SavedRecipe> findByUserIdWithRecipe(@Param("userId") Long userId);
     boolean existsByUserAndRecipe(User user, Recipe recipe);
-    Optional<SavedRecipe> findByUserAndRecipe(User user, Recipe recipe);
+    Optional<SavedRecipe> findByUserIdAndRecipeId(Long userId, Long recipeId);
     boolean existsByUserIdAndRecipeId(Long userId, Long recipeId);
     void deleteByUser(User user);
 }

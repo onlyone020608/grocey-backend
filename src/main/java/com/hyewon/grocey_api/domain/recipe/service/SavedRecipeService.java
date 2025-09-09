@@ -50,12 +50,7 @@ public class SavedRecipeService {
 
     @Transactional
     public void deleteRecipe(Long userId, Long recipeId) {
-        User user = userQueryService.getUserById(userId);
-
-        Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> new RecipeNotFoundException(recipeId));
-
-        SavedRecipe savedRecipe = savedRecipeRepository.findByUserAndRecipe(user, recipe)
+        SavedRecipe savedRecipe = savedRecipeRepository.findByUserIdAndRecipeId(userId, recipeId)
                 .orElseThrow(() -> new SavedRecipeNotFoundException(userId, recipeId));
 
         savedRecipeRepository.delete(savedRecipe);
