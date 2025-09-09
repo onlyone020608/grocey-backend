@@ -136,45 +136,38 @@ class CartServiceTest {
         cart.addCartItem(cartItem2);
 
         given(cartRepository.findByUserId(userId)).willReturn(Optional.of(cart));
-        given(cartItemRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(cartItem1, cartItem2));
+        given(cartItemRepository.findAllByIdInAndUserId(List.of(10L, 20L), userId)).willReturn(List.of(cartItem1, cartItem2));
 
         // when
         cartService.deleteCartItems(userId, List.of(10L, 20L));
 
         // then
         assertThat(cart.getCartItems()).doesNotContain(cartItem1, cartItem2);
-        verify(cartItemRepository).deleteAll(List.of(cartItem1, cartItem2));
     }
 
     @Test
     @DisplayName("throws AccessDeniedException when user tries to delete item not in their cart")
     void shouldThrowException_whenDeletingItemNotInUserCart() {
-        // given
-        Long attackerId = 999L;
-        Long ownerId = 1L;
+            // given
+            Long userId = 1L;
 
-        User attacker = user;
-        ReflectionTestUtils.setField(attacker, "id", attackerId);
+            User user = User.of("user", "user@email.com", "pw");
+            ReflectionTestUtils.setField(user, "id", userId);
 
-        User owner = User.of("owner", "owner@email.com", "pw");
-        ReflectionTestUtils.setField(owner, "id", ownerId);
+            Cart cart = Cart.of(user, user.getFridge());
+            ReflectionTestUtils.setField(cart, "id", 100L);
 
-        Cart attackerCart = Cart.of(attacker, attacker.getFridge());
-        Cart ownerCart = Cart.of(owner, owner.getFridge());
-        ReflectionTestUtils.setField(attackerCart, "id", 888L);
-        ReflectionTestUtils.setField(ownerCart, "id", 999L);
+            CartItem ownedItem = CartItem.of(product, 1);
+            ReflectionTestUtils.setField(ownedItem, "id", 10L);
+            cart.addCartItem(ownedItem);
 
-        CartItem item = CartItem.of(product, 1);
-        ReflectionTestUtils.setField(item, "id", 200L);
-        ownerCart.addCartItem(item);
+            given(cartRepository.findByUserId(userId)).willReturn(Optional.of(cart));
+            given(cartItemRepository.findAllByIdInAndUserId(List.of(10L, 20L), userId))
+                    .willReturn(List.of(ownedItem));
 
-        given(cartRepository.findByUserId(attackerId)).willReturn(Optional.of(attackerCart));
-        given(cartItemRepository.findAllById(List.of(200L))).willReturn(List.of(item));
-
-        // when & then
-        assertThrows(AccessDeniedException.class, () -> {
-            cartService.deleteCartItems(attackerId, List.of(200L));
-        });
+            // when & then
+            assertThrows(AccessDeniedException.class,
+                    () -> cartService.deleteCartItems(userId, List.of(10L, 20L)));
     }
 
     @Test

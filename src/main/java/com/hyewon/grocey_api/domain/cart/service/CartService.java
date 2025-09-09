@@ -81,16 +81,13 @@ public class CartService {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId));
 
-        List<CartItem> itemsToDelete = cartItemRepository.findAllById(cartItemIds);
+        List<CartItem> itemsToDelete = cartItemRepository.findAllByIdInAndUserId(cartItemIds, userId);
 
-        for (CartItem cartItem : itemsToDelete) {
-            if (!cartItem.getCart().getId().equals(cart.getId())) {
-                throw new AccessDeniedException("Cannot delete cart item not belonging to this user.");
-            }
-            cart.removeCartItem(cartItem);
+        if (itemsToDelete.size() != cartItemIds.size()) {
+            throw new AccessDeniedException("Some cart items do not belong to this user.");
         }
 
-        cartItemRepository.deleteAll(itemsToDelete);
+        itemsToDelete.forEach(cart::removeCartItem);
     }
 
     @Transactional
