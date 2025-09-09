@@ -17,10 +17,10 @@ public class ProductTabService {
 
     @Transactional(readOnly = true)
     public List<ProductResponse> getProductsByTab(TabType tab) {
-        List<ProductTab> productTabs = productTabRepository.findByTabType(tab);
+        List<ProductTab> productTabs = productTabRepository.findByTabTypeWithProduct(tab);
 
         return productTabs.stream()
-                .map(pt -> new ProductResponse(pt.getProduct()))
+                .map(productTab -> new ProductResponse(productTab.getProduct()))
                 .toList();
     }
 }

@@ -25,23 +25,22 @@ class ProductTabServiceTest {
     @Mock private ProductTabRepository productTabRepository;
     @InjectMocks private ProductTabService productTabService;
 
-    private Product product;
+    private ProductTab productTab;
 
     @BeforeEach
     void setUp() {
-        product = ProductFixture.aProduct().build();
+        Product product = ProductFixture.aProduct().build();
+        productTab = ProductTab.builder()
+                .product(product)
+                .tabType(TabType.BEST)
+                .build();
     }
 
     @Test
     @DisplayName("returns product list when tab exists")
     void shouldReturnProductList_whenTabExists() {
         // given
-        ProductTab productTab = ProductTab.builder()
-                .product(product)
-                .tabType(TabType.BEST)
-                .build();
-
-        given(productTabRepository.findByTabType(TabType.BEST)).willReturn(List.of(productTab));
+        given(productTabRepository.findByTabTypeWithProduct(TabType.BEST)).willReturn(List.of(productTab));
 
         // when
         List<ProductResponse> result = productTabService.getProductsByTab(TabType.BEST);
