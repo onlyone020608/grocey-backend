@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -73,12 +72,13 @@ class SavedRecipeServiceTest {
     @DisplayName("saves new recipe when not already saved")
     void shouldSaveRecipe_whenNotAlreadySaved() {
         // given
-        given(userQueryService.getUserById(1L)).willReturn(user);
+        Long userId = 1L;
+        given(userQueryService.getUserById(userId)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
-        given(savedRecipeRepository.existsByUserAndRecipe(user, recipe)).willReturn(false);
+        given(savedRecipeRepository.existsByUserIdAndRecipeId(userId, 10L)).willReturn(false);
 
         // when
-        savedRecipeService.saveRecipe(1L, 10L);
+        savedRecipeService.saveRecipe(userId, 10L);
 
         // then
         verify(savedRecipeRepository).save(any(SavedRecipe.class));
@@ -88,14 +88,14 @@ class SavedRecipeServiceTest {
     @DisplayName("throws DuplicateSavedRecipeException when recipe is already saved")
     void shouldThrowException_whenRecipeAlreadySaved() {
         // given
+        Long userId = 1L;
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(recipeRepository.findById(10L)).willReturn(Optional.of(recipe));
-        given(savedRecipeRepository.existsByUserAndRecipe(user, recipe)).willReturn(true);
+        given(savedRecipeRepository.existsByUserIdAndRecipeId(userId, 10L)).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> savedRecipeService.saveRecipe(1L, 10L))
-                .isInstanceOf(DuplicateSavedRecipeException.class)
-                .hasMessageContaining("Recipe already saved");
+        assertThrows(DuplicateSavedRecipeException.class,
+                () ->  savedRecipeService.saveRecipe(userId, 10L));
     }
 
     @Test

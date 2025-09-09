@@ -39,7 +39,7 @@ public class SavedRecipeService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException(recipeId));
 
-        boolean exists = savedRecipeRepository.existsByUserAndRecipe(user, recipe);
+        boolean exists = savedRecipeRepository.existsByUserIdAndRecipeId(userId, recipeId);
         if (exists) {
             throw new DuplicateSavedRecipeException(recipeId);
         }
