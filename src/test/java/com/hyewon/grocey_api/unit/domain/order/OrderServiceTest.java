@@ -79,8 +79,7 @@ class OrderServiceTest {
         // given
         Long userId = 1L;
 
-        given(userQueryService.getUserById(userId)).willReturn(user);
-        given(orderRepository.findTop5ByUserOrderByCreatedAtDesc(user)).willReturn(List.of(order));
+        given(orderRepository.findRecentOrders(userId)).willReturn(List.of(order));
 
         // when
         List<OrderSummaryResponse> result = orderService.getRecentOrderSummaryByUserId(userId);

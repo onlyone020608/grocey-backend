@@ -2,12 +2,12 @@ package com.hyewon.grocey_api.domain.order.service;
 
 import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.cart.service.CartItemService;
-import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.order.entity.Order;
 import com.hyewon.grocey_api.domain.order.entity.OrderItem;
+import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.OrderNotFoundException;
@@ -29,9 +29,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public  List<OrderSummaryResponse> getRecentOrderSummaryByUserId(Long userId) {
-        User user = userQueryService.getUserById(userId);
-
-        List<Order> recentOrders = orderRepository.findTop5ByUserOrderByCreatedAtDesc(user);
+        List<Order> recentOrders = orderRepository.findRecentOrders(userId);
 
         return recentOrders.stream()
                 .map(OrderSummaryResponse::new)
