@@ -24,6 +24,15 @@ public class CartItemService {
         return selectedItems;
     }
 
+    @Transactional(readOnly = true)
+    public List<CartItem> getCartItemsWithProduct(List<Long> cartItemIds, Long userId) {
+        List<CartItem> selectedItems = cartItemRepository.findAllByIdInAndUserIdWithProduct(cartItemIds, userId);
+        if (selectedItems.isEmpty()) {
+            throw new InvalidRequestException("No cart items selected.");
+        }
+        return selectedItems;
+    }
+
     @Transactional
     public void deleteCartItems(List<CartItem> cartItems) {
         cartItemRepository.deleteAll(cartItems);

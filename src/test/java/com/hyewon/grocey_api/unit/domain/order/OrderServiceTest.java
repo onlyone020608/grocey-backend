@@ -145,10 +145,11 @@ class OrderServiceTest {
     @DisplayName("places order successfully when cart items are valid")
     void shouldPlaceOrder_whenCartItemsValid() {
         // given
+        Long userId = 1L;
         OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
+        given(cartItemService.getCartItemsWithProduct(List.of(10L), userId)).willReturn(List.of(cartItem));
         given(orderRepository.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         // when & then
@@ -178,22 +179,23 @@ class OrderServiceTest {
         anotherCart.addCartItem(cartItem);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItems(List.of(10L))).willReturn(List.of(cartItem));
+        given(cartItemService.getCartItemsWithProduct(List.of(10L), 1L)).willReturn(List.of());
 
         // when & then
         assertThatThrownBy(() -> orderService.placeOrder(1L, request))
                 .isInstanceOf(AccessDeniedException.class)
-                .hasMessageContaining("You cannot order items not in your cart");
+                .hasMessageContaining("Some items do not belong to this user.");
     }
 
     @Test
     @DisplayName("throws InvalidRequestException when payment method is invalid")
     void shouldThrowException_whenPaymentMethodInvalid() {
         // given
+        Long userId = 1L;
         OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "bitcoin");
 
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItems(any())).willReturn(List.of(cartItem));
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(cartItemService.getCartItemsWithProduct(List.of(10L), 1L)).willReturn(List.of(cartItem));
 
         // when & then
         assertThatThrownBy(() -> orderService.placeOrder(1L, request))

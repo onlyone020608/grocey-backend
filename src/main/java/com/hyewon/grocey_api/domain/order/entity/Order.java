@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.order.entity;
 
+import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -40,16 +41,21 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = OrderStatus.CONFIRMED;
         this.address = address;
         this.paymentMethod = paymentMethod;
+        this.orderItems = new ArrayList<>();
     }
 
     public static Order of(User user, String address, PaymentMethod paymentMethod) {
         return new Order(user, address, paymentMethod);
     }
 
-    public void addItem(OrderItem item) {
-        if (orderItems == null) {
-            orderItems = new ArrayList<>();
+    public void addOrderItems(List<CartItem> cartItems) {
+        for (CartItem item : cartItems) {
+            OrderItem orderItem = OrderItem.of(this, item.getProduct(), item.getQuantity(), item.getProduct().getPrice());
+            this.addItem(orderItem);
         }
+    }
+
+    private void addItem(OrderItem item) {
         orderItems.add(item);
         item.assignOrder(this);
     }

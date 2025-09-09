@@ -6,7 +6,6 @@ import com.hyewon.grocey_api.domain.order.dto.OrderDetailResponse;
 import com.hyewon.grocey_api.domain.order.dto.OrderRequest;
 import com.hyewon.grocey_api.domain.order.dto.OrderSummaryResponse;
 import com.hyewon.grocey_api.domain.order.entity.Order;
-import com.hyewon.grocey_api.domain.order.entity.OrderItem;
 import com.hyewon.grocey_api.domain.order.repository.OrderRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
@@ -54,20 +53,14 @@ public class OrderService {
     public Long placeOrder(Long userId, OrderRequest request) {
         User user = userQueryService.getUserById(userId);
 
-        List<CartItem> selectedItems = cartItemService.getCartItems(request.getCartItemIds());
+        List<CartItem> selectedItems = cartItemService.getCartItemsWithProduct(request.getCartItemIds(), userId);
 
-        for (CartItem item : selectedItems) {
-            if (!item.getCart().getUser().getId().equals(userId)) {
-                throw new AccessDeniedException("You cannot order items not in your cart.");
-            }
+        if (selectedItems.size() != request.getCartItemIds().size()) {
+            throw new AccessDeniedException("Some items do not belong to this user.");
         }
 
         Order order = Order.of(user, request.getAddress(), request.toPaymentMethod());
-
-        for (CartItem item : selectedItems) {
-            OrderItem orderItem = OrderItem.of(order, item.getProduct(), item.getQuantity(), item.getProduct().getPrice());
-            order.addItem(orderItem);
-        }
+        order.addOrderItems(selectedItems);
 
         orderRepository.save(order);
         cartItemService.deleteCartItems(selectedItems);
