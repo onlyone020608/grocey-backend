@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.cart.dto;
 
+import com.hyewon.grocey_api.domain.cart.entity.CartItem;
 import lombok.Getter;
 
 @Getter
@@ -18,5 +19,16 @@ public class CartItemResponse {
         this.imageUrl = imageUrl;
         this.price = price;
         this.quantity = quantity;
+    }
+
+    public static CartItemResponse from(CartItem item) {
+        return new CartItemResponse(
+                item.getId(),
+                item.getProduct().getId(),
+                item.getProduct().getName(),
+                item.getProduct().getImageUrl(),
+                item.getProduct().getPrice(),
+                item.getQuantity()
+        );
     }
 }

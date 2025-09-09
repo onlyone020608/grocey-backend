@@ -78,7 +78,7 @@ class CartServiceTest {
         ArgumentCaptor<CartItem> cartItemCaptor = ArgumentCaptor.forClass(CartItem.class);
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(productQueryService.getProduct(1L)).willReturn(product);
-        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
+        given(cartRepository.findByUserId(1L)).willReturn(Optional.empty());
         given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         // when
@@ -100,12 +100,17 @@ class CartServiceTest {
         // given
         AddCartItemRequest request = new AddCartItemRequest(1L, 2);
         CartItem existingItem = CartItem.of(product, 3);
-        Cart existingCart = Cart.of(user, user.getFridge());
+        Cart existingCart = Cart.builder()
+                .id(1L)
+                .user(user)
+                .fridge(user.getFridge())
+                .build();
         existingCart.addCartItem(existingItem);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(productQueryService.getProduct(1L)).willReturn(product);
-        given(cartRepository.findByUser(user)).willReturn(Optional.of(existingCart));
+        given(cartRepository.findByUserId(1L)).willReturn(Optional.of(existingCart));
+        given(cartItemRepository.findByCartIdAndProductId(1L, product.getId())).willReturn(Optional.of(existingItem));
 
         // when
         cartService.addCartItem(1L, request);
@@ -120,14 +125,16 @@ class CartServiceTest {
     void shouldRemoveCartItems_whenUserOwnsThem() {
         // given
         Long userId = 1L;
-        Cart cart = Cart.of(user, user.getFridge());
-        ReflectionTestUtils.setField(cart, "id", 777L);
+        Cart cart = Cart.builder()
+                .id(10L)
+                .user(user)
+                .fridge(user.getFridge())
+                .build();
 
         cart.addCartItem(cartItem1);
         cart.addCartItem(cartItem2);
 
-        given(userQueryService.getUserById(userId)).willReturn(user);
-        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+        given(cartRepository.findByUserId(userId)).willReturn(Optional.of(cart));
         given(cartItemRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(cartItem1, cartItem2));
 
         // when
@@ -160,8 +167,7 @@ class CartServiceTest {
         ReflectionTestUtils.setField(item, "id", 200L);
         ownerCart.addCartItem(item);
 
-        given(userQueryService.getUserById(attackerId)).willReturn(user);
-        given(cartRepository.findByUser(attacker)).willReturn(Optional.of(attackerCart));
+        given(cartRepository.findByUserId(attackerId)).willReturn(Optional.of(attackerCart));
         given(cartItemRepository.findAllById(List.of(200L))).willReturn(List.of(item));
 
         // when & then
@@ -188,8 +194,7 @@ class CartServiceTest {
 
         cartItem1.assignCart(cart2);
 
-        given(userQueryService.getUserById(userId)).willReturn(user);
-        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+        given(cartRepository.findByUserId(userId)).willReturn(Optional.of(cart));
         given(cartItemRepository.findAllById(List.of(20L))).willReturn(List.of(cartItem1));
 
         // when & then
@@ -255,9 +260,7 @@ class CartServiceTest {
                 .build();
 
         cart.addCartItem(cartItem1);
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartRepository.findByUser(user)).willReturn(Optional.of(cart));
+        given(cartRepository.findByUserId(userId)).willReturn(Optional.of(cart));
 
         // when
         CartResponse response = cartService.getCart(userId);
@@ -275,8 +278,7 @@ class CartServiceTest {
         // given
         Long userId = 1L;
 
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
+        given(cartRepository.findByUserId(userId)).willReturn(Optional.empty());
 
         // when & then
         assertThrows(CartNotFoundException.class, () -> {
@@ -310,7 +312,7 @@ class CartServiceTest {
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(productQueryService.getProduct(1L)).willReturn(product1);
         given(productQueryService.getProduct(2L)).willReturn(product2);
-        given(cartRepository.findByUser(user)).willReturn(Optional.empty());
+        given(cartRepository.findByUserId(1L)).willReturn(Optional.empty());
         given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         // when
