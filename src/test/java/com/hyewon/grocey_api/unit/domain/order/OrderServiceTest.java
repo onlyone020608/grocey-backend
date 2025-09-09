@@ -127,11 +127,11 @@ class OrderServiceTest {
     @DisplayName("returns paginated list of order summaries when user exists")
     void shouldReturnPagedOrderSummaries_whenUserExists() {
         // given
+        Long userId = 1L;
         Pageable pageable = Pageable.ofSize(10);
         Page<Order> mockPage = new PageImpl<>(List.of(order), pageable, 1);
 
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(orderRepository.findByUser(user, pageable)).willReturn(mockPage);
+        given(orderRepository.findByUserId(userId, pageable)).willReturn(mockPage);
 
         // when
         Page<OrderSummaryResponse> result = orderService.getAllOrders(1L, pageable);

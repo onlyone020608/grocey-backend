@@ -46,9 +46,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public Page<OrderSummaryResponse> getAllOrders(Long userId, Pageable pageable) {
-        User user = userQueryService.getUserById(userId);
-
-        return orderRepository.findByUser(user, pageable)
+        return orderRepository.findByUserId(userId, pageable)
                 .map(OrderSummaryResponse::new);
     }
 
