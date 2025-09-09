@@ -1,5 +1,6 @@
 package com.hyewon.grocey_api.domain.fridge.dto;
 
+import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import lombok.Getter;
 
 @Getter
@@ -12,6 +13,14 @@ public class FridgeIngredientResponse {
         this.ingredientId = id;
         this.ingredientName = ingredientName;
         this.imageUrl = imageUrl;
+    }
+
+    public static FridgeIngredientResponse from(FridgeIngredient fridgeIngredient) {
+        return new FridgeIngredientResponse(
+                fridgeIngredient.getIngredient().getId(),
+                fridgeIngredient.getIngredient().getName(),
+                fridgeIngredient.getIngredient().getImageUrl()
+        );
     }
 }
 

@@ -29,17 +29,13 @@ public class FridgeIngredientService {
         List<FridgeIngredient> ingredients;
 
         if (isFreezer == null) {
-            ingredients = fridgeIngredientRepository.findByFridgeId(fridgeId);
+            ingredients = fridgeIngredientRepository.findByFridgeIdWithIngredient(fridgeId);
         } else {
-            ingredients = fridgeIngredientRepository.findByFridgeIdAndFreezer(fridgeId, isFreezer);
+            ingredients = fridgeIngredientRepository.findByFridgeIdAndFreezerWithIngredient(fridgeId, isFreezer);
         }
 
         return ingredients.stream()
-                .map(fi -> new FridgeIngredientResponse(
-                        fi.getIngredient().getId(),
-                        fi.getIngredient().getName(),
-                        fi.getIngredient().getImageUrl()
-                ))
+                .map(FridgeIngredientResponse::from)
                 .collect(Collectors.toList());
     }
 

@@ -66,7 +66,7 @@ class FridgeIngredientServiceTest {
         Boolean isFreezer = true;
 
         given(fridgeQueryService.getFridgeByUserId(userId)).willReturn(fridge);
-        given(fridgeIngredientRepository.findByFridgeIdAndFreezer(1L, isFreezer))
+        given(fridgeIngredientRepository.findByFridgeIdAndFreezerWithIngredient(1L, isFreezer))
                 .willReturn(List.of(fridgeIngredient1));
 
         // when
