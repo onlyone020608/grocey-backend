@@ -16,6 +16,7 @@ import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.fixture.ProductFixture;
 import com.hyewon.grocey_api.fixture.UserFixture;
 import com.hyewon.grocey_api.global.exception.InvalidRequestException;
+import com.hyewon.grocey_api.global.exception.OrderNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,7 +95,7 @@ class OrderServiceTest {
     void shouldReturnOrderDetail_whenUserOwnsOrder() {
         // given
         Long userId = 1L;
-        given(orderRepository.findById(101L)).willReturn(Optional.of(order));
+        given(orderRepository.findByIdAndUserIdWithItemsAndProduct(101L, userId)).willReturn(Optional.of(order));
 
         // when
         OrderDetailResponse result = orderService.getOrderDetail(userId, 101L);
@@ -109,25 +110,17 @@ class OrderServiceTest {
     @DisplayName("throws AccessDeniedException when user does not own the order")
     void shouldThrowException_whenUserDoesNotOwnOrder() {
         // given
-        User anotherUser = User.builder()
-                .id(999L)
-                .username("hacker")
-                .email("bad@evil.com")
-                .password("pw")
-                .build();
         order = Order.builder()
                 .id(222L)
-                .user(anotherUser)
                 .address("hidden address")
                 .paymentMethod(PaymentMethod.TOSS)
                 .build();
 
-        given(orderRepository.findById(222L)).willReturn(Optional.of(order));
+        given(orderRepository.findByIdAndUserIdWithItemsAndProduct(222L, 1L)).willReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> orderService.getOrderDetail(1L, 222L))
-                .isInstanceOf(AccessDeniedException.class)
-                .hasMessageContaining("not authorized");
+                .isInstanceOf(OrderNotFoundException.class);
     }
 
     @Test

@@ -38,12 +38,8 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderDetailResponse getOrderDetail(Long userId, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdAndUserIdWithItemsAndProduct(orderId, userId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
-
-        if (!order.getUser().getId().equals(userId)) {
-            throw new AccessDeniedException("You are not authorized to view this order.");
-        }
 
         return new OrderDetailResponse(order);
     }
