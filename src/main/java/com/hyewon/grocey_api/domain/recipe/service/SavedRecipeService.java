@@ -1,10 +1,10 @@
 package com.hyewon.grocey_api.domain.recipe.service;
 
-import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
-import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.dto.SavedRecipeResponse;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.entity.SavedRecipe;
+import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
+import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
@@ -25,12 +25,10 @@ public class SavedRecipeService {
 
     @Transactional(readOnly = true)
     public List<SavedRecipeResponse> getSavedRecipes(Long userId) {
-        User user = userQueryService.getUserById(userId);
-
-        List<SavedRecipe> savedRecipes = savedRecipeRepository.findByUser(user);
+        List<SavedRecipe> savedRecipes = savedRecipeRepository.findByUserIdWithRecipe(userId);
 
         return savedRecipes.stream()
-                .map(SavedRecipeResponse::new)
+                .map(SavedRecipeResponse::from)
                 .toList();
     }
 

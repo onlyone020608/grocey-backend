@@ -54,11 +54,11 @@ class SavedRecipeServiceTest {
     @DisplayName("returns saved recipe list when user exists")
     void shouldReturnSavedRecipes_whenUserExists() {
         // given
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(savedRecipeRepository.findByUser(user)).willReturn(List.of(savedRecipe));
+        Long userId = 1L;
+        given(savedRecipeRepository.findByUserIdWithRecipe(userId)).willReturn(List.of(savedRecipe));
 
         // when
-        List<SavedRecipeResponse> result = savedRecipeService.getSavedRecipes(1L);
+        List<SavedRecipeResponse> result = savedRecipeService.getSavedRecipes(userId);
 
         // then
         assertThat(result).hasSize(1);

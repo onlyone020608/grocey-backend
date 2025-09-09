@@ -10,9 +10,16 @@ public class SavedRecipeResponse {
     private final String recipeName;
     private final String imageUrl;
 
-    public SavedRecipeResponse(SavedRecipe savedRecipe) {
-        this.recipeId = savedRecipe.getRecipe().getId();
-        this.recipeName = savedRecipe.getRecipe().getName();
-        this.imageUrl = savedRecipe.getRecipe().getImageUrl();
+    private SavedRecipeResponse(Long recipeId, String recipeName, String imageUrl) {
+        this.recipeId =  recipeId;
+        this.recipeName = recipeName;
+        this.imageUrl = imageUrl;
+    }
+
+    public static SavedRecipeResponse from(SavedRecipe savedRecipe) {
+        return new SavedRecipeResponse(
+                savedRecipe.getRecipe().getId(),
+                savedRecipe.getRecipe().getName(),
+                savedRecipe.getRecipe().getImageUrl());
     }
 }
