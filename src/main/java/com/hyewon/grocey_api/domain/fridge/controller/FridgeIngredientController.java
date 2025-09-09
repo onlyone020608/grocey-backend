@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.domain.fridge.controller;
 
+import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientDetailResponse;
 import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
-import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +19,7 @@ public class FridgeIngredientController {
     @GetMapping
     public List<FridgeIngredientResponse> getFridgeIngredients(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                @RequestParam(required = false) boolean isFreezer) {
-        return fridgeIngredientService.getIngredientsByFridge(userDetails.getUser().getFridge().getId(), isFreezer);
+        return fridgeIngredientService.getIngredientsByFridge(userDetails.getId(), isFreezer);
     }
 
     @GetMapping("/{ingredientId}")

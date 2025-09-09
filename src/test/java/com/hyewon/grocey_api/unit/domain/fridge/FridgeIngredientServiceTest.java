@@ -7,10 +7,10 @@ import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientService;
+import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.fixture.FridgeFixture;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
-import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +29,7 @@ import static org.mockito.BDDMockito.given;
 class FridgeIngredientServiceTest {
     @Mock private FridgeIngredientRepository fridgeIngredientRepository;
     @Mock private FridgeRepository fridgeRepository;
+    @Mock private FridgeQueryService fridgeQueryService;
     @InjectMocks private FridgeIngredientService fridgeIngredientService;
 
     private Fridge fridge;
@@ -61,16 +62,16 @@ class FridgeIngredientServiceTest {
     @DisplayName("returns list of ingredients when fridge exists")
     void shouldReturnIngredients_whenFridgeExists() {
         // given
-        Long fridgeId = 1L;
+        Long userId = 1L;
         Boolean isFreezer = true;
 
-        given(fridgeRepository.existsById(fridgeId)).willReturn(true);
-        given(fridgeIngredientRepository.findByFridgeIdAndFreezer(fridgeId, isFreezer))
+        given(fridgeQueryService.getFridgeByUserId(userId)).willReturn(fridge);
+        given(fridgeIngredientRepository.findByFridgeIdAndFreezer(1L, isFreezer))
                 .willReturn(List.of(fridgeIngredient1));
 
         // when
         List<FridgeIngredientResponse> result =
-                fridgeIngredientService.getIngredientsByFridge(fridgeId, isFreezer);
+                fridgeIngredientService.getIngredientsByFridge(userId, isFreezer);
 
         // then
         assertThat(result).hasSize(1);
@@ -94,20 +95,6 @@ class FridgeIngredientServiceTest {
         assertThat(result.getImageUrl()).isEqualTo("url.com/chicken");
         assertThat(result.getQuantity()).isEqualTo(1);
         assertThat(result.getIsFreezer()).isFalse();
-    }
-
-    @Test
-    @DisplayName("throws FridgeNotFoundException when fridge does not exist")
-    void shouldThrowException_whenFridgeNotFound() {
-        // given
-        Long fridgeId = 999L;
-        Boolean isFreezer = true;
-
-        given(fridgeRepository.existsById(fridgeId)).willReturn(false);
-
-        // when & then
-        assertThatThrownBy(() -> fridgeIngredientService.getIngredientsByFridge(fridgeId, isFreezer))
-                .isInstanceOf(FridgeNotFoundException.class);
     }
 
     @Test

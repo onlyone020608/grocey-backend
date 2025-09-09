@@ -12,7 +12,6 @@ import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProdu
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,17 +32,12 @@ public class FridgeRecommendationService {
     private final FridgeIngredientManager fridgeIngredientManager;
 
     @Transactional
-    public FridgeRecommendationResponse getLatestRecommendation(Long fridgeId) {
-        Fridge fridge = fridgeQueryService.getFridge(fridgeId);
-
-        Long userId = fridge.getUsers().stream()
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(fridgeId))
-                .getId();
+    public FridgeRecommendationResponse getLatestRecommendation(Long userId) {
+        Fridge fridge = fridgeQueryService.getFridgeByUserId(userId);
 
         List<Long> ingredientIds = fetchRecommendedIngredientIds(userId);
         if (ingredientIds.isEmpty()) {
-            throw RecommendationNotFoundException.forFridgeProduct(fridgeId);
+            throw RecommendationNotFoundException.forFridgeProduct(fridge.getId());
         }
 
         List<Product> products =  productQueryService.findRandomOnePerIngredient(ingredientIds);
@@ -65,7 +59,10 @@ public class FridgeRecommendationService {
         return response.getBody(); // [1, 2, 3]
     }
 
-    public void simulateFridgeChange(Long fridgeId) {
+    public void simulateFridgeChange(Long userId) {
+        Fridge fridge = fridgeQueryService.getFridgeByUserId(userId);
+        Long fridgeId = fridge.getId();
+
         List<FridgeIngredient> ingredients = fridgeIngredientManager.getByFridgeId(fridgeId);
 
         if (ingredients.size() <= 2) return;

@@ -97,9 +97,8 @@ class RecipeRecommendationServiceTest {
     @DisplayName("returns recipe recommendations when fridge contains ingredients")
     void shouldReturnRecommendations_whenFridgeContainsIngredients() {
         // given
-        Long fridgeId = 2L;
         Long userId = 1L;
-        given(fridgeQueryService.getFridge(fridgeId)).willReturn(fridge);
+        given(fridgeQueryService.getFridgeByUserId(userId)).willReturn(fridge);
 
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + userId;
         given(restTemplate.getForEntity(url, List.class))
@@ -111,7 +110,7 @@ class RecipeRecommendationServiceTest {
                 .willAnswer(invocation -> invocation.getArgument(0));
 
         // when
-        List<RecipeRecommendationResponse> result = recipeRecommendationService.getRecommendationsByFridge(fridgeId);
+        List<RecipeRecommendationResponse> result = recipeRecommendationService.getRecommendationsByFridge(userId);
 
         // then
         assertThat(result).hasSize(1);
@@ -121,14 +120,14 @@ class RecipeRecommendationServiceTest {
     @Test
     @DisplayName("throws RecommendationNotFoundException when no fridge-based recommendations are found")
     void shouldThrowException_whenFridgeRecommendationsNotFound() {
-        given(fridgeQueryService.getFridge(2L)).willReturn(fridge);
+        given(fridgeQueryService.getFridgeByUserId(1L)).willReturn(fridge);
 
         String url = "http://grocey-ai:5001/api/recommend/recipes/fridge/" + user.getId();
         given(restTemplate.getForEntity(url, List.class))
                 .willReturn(new ResponseEntity<>(List.of(), HttpStatus.OK));
 
         // when & then
-        assertThatThrownBy(() -> recipeRecommendationService.getRecommendationsByFridge(2L))
+        assertThatThrownBy(() -> recipeRecommendationService.getRecommendationsByFridge(1L))
                 .isInstanceOf(RecommendationNotFoundException.class);
     }
 }

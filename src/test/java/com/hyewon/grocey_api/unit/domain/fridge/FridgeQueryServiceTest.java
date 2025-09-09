@@ -3,6 +3,7 @@ package com.hyewon.grocey_api.unit.domain.fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
+import com.hyewon.grocey_api.domain.user.repository.UserRepository;
 import com.hyewon.grocey_api.fixture.FridgeFixture;
 import com.hyewon.grocey_api.global.exception.FridgeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class FridgeQueryServiceTest {
     @Mock private FridgeRepository fridgeRepository;
+    @Mock private UserRepository userRepository;
     @InjectMocks private FridgeQueryService fridgeQueryService;
 
     private Fridge fridge;
@@ -57,5 +59,33 @@ public class FridgeQueryServiceTest {
         // when & then
         assertThrows(FridgeNotFoundException.class,
                 () ->  fridgeQueryService.getFridge(fridgeId));
+    }
+
+    @Test
+    @DisplayName("returns fridge when it exists for given userId")
+    void shouldReturnFridge_whenItExistsForUserId() {
+        // given
+        Long userId = 1L;
+        given(userRepository.findFridgeByUserId(userId))
+                .willReturn(Optional.of(fridge));
+
+        // when
+        Fridge result = fridgeQueryService.getFridgeByUserId(userId);
+
+        // then
+        assertThat(result).isEqualTo(fridge);
+    }
+
+    @Test
+    @DisplayName("throws FridgeNotFoundException when no fridge exists for given userId")
+    void shouldThrowException_whenFridgeNotFoundForUserId() {
+        // given
+        Long userId = 999L;
+        given(userRepository.findFridgeByUserId(userId))
+                .willReturn(Optional.empty());
+
+        // when & then
+        assertThrows(FridgeNotFoundException.class,
+                () -> fridgeQueryService.getFridgeByUserId(userId));
     }
 }

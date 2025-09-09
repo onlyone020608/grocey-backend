@@ -1,7 +1,7 @@
 package com.hyewon.grocey_api.domain.recommendation.controller;
 
-import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
+import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.service.RecipeRecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +24,6 @@ public class RecipeRecommendationController {
 
     @GetMapping("/fridge")
     public List<RecipeRecommendationResponse> recommendByFridge(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return recommendationService.getRecommendationsByFridge(userDetails.getUser().getFridge().getId());
+        return recommendationService.getRecommendationsByFridge(userDetails.getId());
     }
 }

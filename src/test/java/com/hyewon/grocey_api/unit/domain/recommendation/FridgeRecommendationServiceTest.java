@@ -68,7 +68,7 @@ class FridgeRecommendationServiceTest {
     @DisplayName("returns latest recommendation for fridge when available")
     void shouldReturnLatestRecommendation_whenAvailable() {
         // given
-        given(fridgeQueryService.getFridge(1L)).willReturn(fridge);
+        given(fridgeQueryService.getFridgeByUserId(1L)).willReturn(fridge);
 
         List<Long> aiReturnedIds = List.of(1L, 2L, 3L);
         String url = "http://grocey-ai:5001/api/recommend/" + fridge.getUsers().get(0).getId();
@@ -92,7 +92,7 @@ class FridgeRecommendationServiceTest {
     @DisplayName("throws RecommendationNotFoundException when no recommendation is available")
     void shouldThrowException_whenRecommendationNotFound() {
         // given
-        given(fridgeQueryService.getFridge(1L)).willReturn(fridge);
+        given(fridgeQueryService.getFridgeByUserId(1L)).willReturn(fridge);
 
         List<Long> aiReturnedIds = List.of();
         String url = "http://grocey-ai:5001/api/recommend/" + fridge.getUsers().get(0).getId();

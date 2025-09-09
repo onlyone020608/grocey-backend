@@ -4,6 +4,7 @@ import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
+import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
@@ -17,6 +18,9 @@ import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private final AuthenticationManager authenticationManager;
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final FridgeCommandService fridgeCommandService;
@@ -105,16 +110,16 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest request) {
-        User user = userQueryService.getUserByEmail(request.getEmail());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid credentials");
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getId());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        tokenService.storeRefreshToken(user.getId(), refreshToken, 7 * 24 * 60 * 60);
+        String accessToken = jwtTokenProvider.generateAccessToken(userDetails.getId());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails.getId());
+
+        tokenService.storeRefreshToken(userDetails.getId(), refreshToken, 7 * 24 * 60 * 60);
         return new TokenResponse(accessToken, refreshToken);
     }
 

@@ -1,25 +1,25 @@
 package com.hyewon.grocey_api.domain.auth.security;
 
 import com.hyewon.grocey_api.domain.user.entity.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
-    private final User user;
+    private final Long id;
+    private final String username;
+    private final String email;
+    private final String password;
 
     public CustomUserDetails(User user) {
-        this.user = user;
-    }
-
-    public Long getId() {
-        return user.getId();
-    }
-
-    public User getUser() {
-        return user;
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
     }
 
     @Override public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -27,11 +27,11 @@ public class CustomUserDetails implements UserDetails {
     }
 
     @Override public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override public String getUsername() {
-        return user.getId().toString();
+        return username;
     }
 
     @Override public boolean isAccountNonExpired() {

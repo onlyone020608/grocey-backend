@@ -4,14 +4,13 @@ import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.recipe.service.RecipeQueryService;
-import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
-import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.recommendation.dto.RecipeRecommendationResponse;
+import com.hyewon.grocey_api.domain.recommendation.entity.RecipeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.entity.RecommendationType;
+import com.hyewon.grocey_api.domain.recommendation.repository.RecipeRecommendationRepository;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
-import com.hyewon.grocey_api.global.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -51,18 +50,13 @@ public class RecipeRecommendationService {
     }
 
     @Transactional
-    public List<RecipeRecommendationResponse> getRecommendationsByFridge(Long fridgeId) {
-        Fridge fridge = fridgeQueryService.getFridge(fridgeId);
-
-        Long userId = fridge.getUsers().stream()
-                .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(fridgeId))
-                .getId();
+    public List<RecipeRecommendationResponse> getRecommendationsByFridge(Long userId) {
+        Fridge fridge = fridgeQueryService.getFridgeByUserId(userId);
 
         List<Long> recipeIds = fetchFridgeBasedRecipeIds(userId);
 
         if (recipeIds.isEmpty()) {
-            throw RecommendationNotFoundException.forFridgeRecipe(fridgeId);
+            throw RecommendationNotFoundException.forFridgeRecipe(fridge.getId());
         }
 
         List<Recipe> recipes = recipeQueryService.getRecipes(recipeIds);
