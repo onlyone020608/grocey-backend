@@ -5,7 +5,6 @@ import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FridgeIngredientService {
     private final FridgeIngredientRepository fridgeIngredientRepository;
-    private final FridgeRepository fridgeRepository;
     private final FridgeQueryService fridgeQueryService;
 
     @Transactional(readOnly = true)
@@ -41,8 +39,8 @@ public class FridgeIngredientService {
 
     @Transactional(readOnly = true)
     public FridgeIngredientDetailResponse getIngredientDetail(Long id) {
-        FridgeIngredient fi = fridgeIngredientRepository.findById(id)
+        FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIdWithIngredient(id)
                 .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
-        return new FridgeIngredientDetailResponse(fi);
+        return new FridgeIngredientDetailResponse(fridgeIngredient);
     }
 }

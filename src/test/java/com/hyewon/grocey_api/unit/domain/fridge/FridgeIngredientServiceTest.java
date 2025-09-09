@@ -5,7 +5,6 @@ import com.hyewon.grocey_api.domain.fridge.dto.FridgeIngredientResponse;
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
 import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
-import com.hyewon.grocey_api.domain.fridge.repository.FridgeRepository;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeIngredientService;
 import com.hyewon.grocey_api.domain.fridge.service.FridgeQueryService;
 import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
@@ -28,7 +27,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class FridgeIngredientServiceTest {
     @Mock private FridgeIngredientRepository fridgeIngredientRepository;
-    @Mock private FridgeRepository fridgeRepository;
     @Mock private FridgeQueryService fridgeQueryService;
     @InjectMocks private FridgeIngredientService fridgeIngredientService;
 
@@ -83,12 +81,12 @@ class FridgeIngredientServiceTest {
     @DisplayName("returns detailed fridge ingredient info when ingredient exists")
     void shouldReturnIngredientDetail_whenIngredientExists() {
         // given
-        Long id = 10L;
+        Long ingredientId = 10L;
 
-        given(fridgeIngredientRepository.findById(id)).willReturn(java.util.Optional.of(fridgeIngredient2));
+        given(fridgeIngredientRepository.findByIdWithIngredient(ingredientId)).willReturn(java.util.Optional.of(fridgeIngredient2));
 
         // when
-        FridgeIngredientDetailResponse result = fridgeIngredientService.getIngredientDetail(id);
+        FridgeIngredientDetailResponse result = fridgeIngredientService.getIngredientDetail(ingredientId);
 
         // then
         assertThat(result.getIngredientName()).isEqualTo("Chicken");
@@ -101,11 +99,11 @@ class FridgeIngredientServiceTest {
     @DisplayName("throws FridgeIngredientNotFoundException when ingredient does not exist")
     void shouldThrowException_whenIngredientNotFound() {
         // given
-        Long id = 123L;
-        given(fridgeIngredientRepository.findById(id)).willReturn(java.util.Optional.empty());
+        Long ingredientId = 123L;
+        given(fridgeIngredientRepository.findByIdWithIngredient(ingredientId)).willReturn(java.util.Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> fridgeIngredientService.getIngredientDetail(id))
+        assertThatThrownBy(() -> fridgeIngredientService.getIngredientDetail(ingredientId))
                 .isInstanceOf(FridgeIngredientNotFoundException.class);
     }
 }
