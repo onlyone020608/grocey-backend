@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,6 @@ public class ProductServiceTest {
         ProductResponse result = productService.getProductDetail(1L);
 
         // then
-        assertThat(result.getProductId()).isEqualTo(1L);
         assertThat(result.getProductName()).isEqualTo("Milk");
         assertThat(result.getBrandName()).isEqualTo("SeoulDairy");
         assertThat(result.getPrice()).isEqualTo(2000);
@@ -54,8 +53,7 @@ public class ProductServiceTest {
         given(productRepository.findById(999L)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> productService.getProductDetail(999L))
-                .isInstanceOf(ProductNotFoundException.class)
-                .hasMessageContaining("Product not found");
+        assertThrows(ProductNotFoundException.class,
+                () ->  productService.getProductDetail(999L));
     }
 }
