@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -110,12 +109,6 @@ class OrderServiceTest {
     @DisplayName("throws AccessDeniedException when user does not own the order")
     void shouldThrowException_whenUserDoesNotOwnOrder() {
         // given
-        order = Order.builder()
-                .id(222L)
-                .address("hidden address")
-                .paymentMethod(PaymentMethod.TOSS)
-                .build();
-
         given(orderRepository.findByIdAndUserIdWithItemsAndProduct(222L, 1L)).willReturn(Optional.empty());
 
         // when & then
@@ -146,14 +139,15 @@ class OrderServiceTest {
     void shouldPlaceOrder_whenCartItemsValid() {
         // given
         Long userId = 1L;
-        OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
+        OrderRequest request = new OrderRequest(List.of(10L), "123 Seoul Street", "KAKAOPAY");
 
         given(userQueryService.getUserById(1L)).willReturn(user);
         given(cartItemService.getCartItemsWithProduct(List.of(10L), userId)).willReturn(List.of(cartItem));
-        given(orderRepository.save(any(Order.class))).willAnswer(invocation -> invocation.getArgument(0));
 
-        // when & then
-        assertThatNoException().isThrownBy(() -> orderService.placeOrder(1L, request));
+        // when
+        orderService.placeOrder(1L, request);
+
+        // then
         verify(orderRepository).save(any(Order.class));
     }
 
@@ -161,28 +155,14 @@ class OrderServiceTest {
     @DisplayName("throws AccessDeniedException when cart item does not belong to user")
     void shouldThrowException_whenCartItemNotOwnedByUser() {
         // given
-        OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "KAKAOPAY");
+        Long userId = 1L;
+        OrderRequest request = new OrderRequest(List.of(10L), "123 Seoul Street", "KAKAOPAY");
 
-        // cartItem이 다른 유저의 것
-        User anotherUser = User.builder()
-                .id(999L)
-                .username("hacker")
-                .email("bad@evil.com")
-                .password("pw")
-                .build();
-
-        Cart anotherCart = Cart.builder()
-                .user(anotherUser)
-                .fridge(null)
-                .build();
-
-        anotherCart.addCartItem(cartItem);
-
-        given(userQueryService.getUserById(1L)).willReturn(user);
-        given(cartItemService.getCartItemsWithProduct(List.of(10L), 1L)).willReturn(List.of());
+        given(userQueryService.getUserById(userId)).willReturn(user);
+        given(cartItemService.getCartItemsWithProduct(List.of(10L), userId)).willReturn(List.of());
 
         // when & then
-        assertThatThrownBy(() -> orderService.placeOrder(1L, request))
+        assertThatThrownBy(() -> orderService.placeOrder(userId, request))
                 .isInstanceOf(AccessDeniedException.class)
                 .hasMessageContaining("Some items do not belong to this user.");
     }
@@ -192,7 +172,7 @@ class OrderServiceTest {
     void shouldThrowException_whenPaymentMethodInvalid() {
         // given
         Long userId = 1L;
-        OrderRequest request = new OrderRequest(List.of(10L), "123 Soul Street", "bitcoin");
+        OrderRequest request = new OrderRequest(List.of(10L), "123 Seoul Street", "bitcoin");
 
         given(userQueryService.getUserById(userId)).willReturn(user);
         given(cartItemService.getCartItemsWithProduct(List.of(10L), 1L)).willReturn(List.of(cartItem));
