@@ -245,7 +245,7 @@ class CartServiceTest {
                 .build();
 
         cart.addCartItem(cartItem1);
-        given(cartRepository.findByUserId(userId)).willReturn(Optional.of(cart));
+        given(cartRepository.findByUserIdWithItemsAndProduct(userId)).willReturn(Optional.of(cart));
 
         // when
         CartResponse response = cartService.getCart(userId);

@@ -33,7 +33,7 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public CartResponse getCart(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId)
+        Cart cart = cartRepository.findByUserIdWithItemsAndProduct(userId)
                 .orElseThrow(() -> new CartNotFoundException(userId));
 
         List<CartItemResponse> items = cart.getCartItems().stream()
