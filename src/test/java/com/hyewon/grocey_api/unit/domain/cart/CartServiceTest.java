@@ -35,10 +35,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceTest {
@@ -274,38 +272,65 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("adds multiple items in batch, creating cart if needed")
-    void shouldAddMultipleItemsInBatch_whenCartNotExists() {
+    @DisplayName("adds multiple new cart items in batch")
+    void shouldAddMultipleNewCartItems_whenProductsNotExist() {
         // given
-        AddCartItemRequest request1 = new AddCartItemRequest(1L, 2);
-        AddCartItemRequest request2 = new AddCartItemRequest(2L, 1);
-
-        Product product1 = Product.builder()
+        Product product1 = Product.builder().id(101L).name("Milk").price(2000).build();
+        Product product2 = Product.builder().id(102L).name("Bread").price(1500).build();
+        Cart cart = Cart.builder()
                 .id(1L)
-                .name("Milk")
-                .brand("BrandA")
-                .price(1000)
-                .imageUrl("image1")
+                .user(user)
+                .fridge(user.getFridge())
                 .build();
 
-        Product product2 = Product.builder()
-                .id(2L)
-                .name("Bread")
-                .brand("BrandB")
-                .price(2000)
-                .imageUrl("image2")
-                .build();
+        AddCartItemRequest req1 = new AddCartItemRequest(product1.getId(), 2);
+        AddCartItemRequest req2 = new AddCartItemRequest(product2.getId(), 3);
 
         given(userQueryService.getUserById(1L)).willReturn(user);
-        given(productQueryService.getProduct(1L)).willReturn(product1);
-        given(productQueryService.getProduct(2L)).willReturn(product2);
-        given(cartRepository.findByUserId(1L)).willReturn(Optional.empty());
-        given(cartRepository.save(any(Cart.class))).willAnswer(invocation -> invocation.getArgument(0));
+        given(cartRepository.findByUserId(1L)).willReturn(Optional.of(cart));
+        given(productQueryService.getProduct(product1.getId())).willReturn(product1);
+        given(productQueryService.getProduct(product2.getId())).willReturn(product2);
+        given(cartItemRepository.findByCartIdAndProductId(cart.getId(), product1.getId())).willReturn(Optional.empty());
+        given(cartItemRepository.findByCartIdAndProductId(cart.getId(), product2.getId())).willReturn(Optional.empty());
 
         // when
-        cartService.addCartItemsInBatch(1L, List.of(request1, request2));
+        cartService.addCartItemsInBatch(1L, List.of(req1, req2));
 
         // then
-        verify(cartItemRepository).saveAll(anyList());
+        assertThat(cart.getCartItems()).hasSize(2);
+        verify(cartItemRepository, times(2)).save(any(CartItem.class));
+    }
+
+    @Test
+    @DisplayName("adds new items and increases quantity for existing items in one batch")
+    void shouldAddAndUpdateItemsTogether_whenMixedBatch() {
+        // given
+        Product product1 = Product.builder().id(101L).name("Milk").price(2000).build();
+        Product product2 = Product.builder().id(102L).name("Bread").price(1500).build();
+        Cart cart = Cart.builder()
+                .id(1L)
+                .user(user)
+                .fridge(user.getFridge())
+                .build();
+        CartItem existingItem = CartItem.of(product1, 5);
+        cart.addCartItem(existingItem);
+
+        AddCartItemRequest req1 = new AddCartItemRequest(product1.getId(), 2);
+        AddCartItemRequest req2 = new AddCartItemRequest(product2.getId(), 3);
+
+        given(userQueryService.getUserById(1L)).willReturn(user);
+        given(cartRepository.findByUserId(1L)).willReturn(Optional.of(cart));
+        given(productQueryService.getProduct(product1.getId())).willReturn(product1);
+        given(productQueryService.getProduct(product2.getId())).willReturn(product2);
+        given(cartItemRepository.findByCartIdAndProductId(cart.getId(), product1.getId())).willReturn(Optional.of(existingItem));
+        given(cartItemRepository.findByCartIdAndProductId(cart.getId(), product2.getId())).willReturn(Optional.empty());
+
+        // when
+        cartService.addCartItemsInBatch(1L, List.of(req1, req2));
+
+        // then
+        assertThat(existingItem.getQuantity()).isEqualTo(7);
+        assertThat(cart.getCartItems()).hasSize(2);
+        verify(cartItemRepository).save(any(CartItem.class));
     }
 }
