@@ -29,7 +29,7 @@ public class ProductQueryServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = ProductFixture.aProduct();
+        product = ProductFixture.aProduct().build();
     }
 
     @Test

@@ -58,7 +58,7 @@ class OrderServiceTest {
                 .user(user)
                 .fridge(null)
                 .build();
-        product = ProductFixture.aProduct();
+        product = ProductFixture.aProduct().build();
         cartItem = CartItem.builder()
                 .id(10L)
                 .product(product)

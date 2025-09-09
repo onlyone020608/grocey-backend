@@ -52,7 +52,7 @@ class FridgeRecommendationServiceTest {
         fridge = FridgeFixture.aFridge();
         user = UserFixture.aDefaultUser();
         user.assignFridge(fridge);
-        product = ProductFixture.aProduct();
+        product = ProductFixture.aProduct().build();
         fridgeRecommendation = FridgeRecommendation.builder()
                 .id(100L)
                 .fridge(fridge)

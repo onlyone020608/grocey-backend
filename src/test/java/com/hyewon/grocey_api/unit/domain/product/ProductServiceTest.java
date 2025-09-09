@@ -27,7 +27,7 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = ProductFixture.aProduct();
+        product = ProductFixture.aProduct().build();
     }
 
     @Test
