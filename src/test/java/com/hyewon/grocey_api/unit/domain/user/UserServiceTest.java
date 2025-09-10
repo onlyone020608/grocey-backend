@@ -24,6 +24,7 @@ import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
@@ -74,10 +75,11 @@ class UserServiceTest {
     @DisplayName("returns summary info when user exists")
     void shouldReturnUserSummary_whenUserExists() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        UserSummaryResponse result = userService.getUserSummary(1L);
+        UserSummaryResponse result = userService.getUserSummary(userId);
 
         // then
         assertThat(result.getName()).isEqualTo("tester");
@@ -87,21 +89,23 @@ class UserServiceTest {
     @DisplayName("throws UserNotFoundException when user does not exist in summary lookup")
     void shouldThrowException_whenUserNotFoundInSummary() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.empty());
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> userService.getUserSummary(1L))
-                .isInstanceOf(UserNotFoundException.class);
+        assertThrows(UserNotFoundException.class,
+                () ->  userService.getUserSummary(userId));
     }
 
     @Test
     @DisplayName("returns detailed info when user exists")
     void shouldReturnUserDetail_whenUserExists() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        UserDetailResponse result = userService.getUserDetail(1L);
+        UserDetailResponse result = userService.getUserDetail(userId);
 
         // then
         assertThat(result.getUserName()).isEqualTo("tester");
@@ -112,23 +116,25 @@ class UserServiceTest {
     @DisplayName("throws UserNotFoundException when user does not exist in detail lookup")
     void shouldThrowException_whenUserNotFoundInDetail() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.empty());
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> userService.getUserDetail(1L))
-                .isInstanceOf(UserNotFoundException.class);
+        assertThrows(UserNotFoundException.class,
+                () ->  userService.getUserDetail(userId));
     }
 
     @Test
     @DisplayName("updates name and email when both provided")
     void shouldUpdateUserNameAndEmail_whenBothProvided() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         UserUpdateRequest request = new UserUpdateRequest("newName", "new@email.com");
 
         // when
-        userService.updateUser(1L, request);
+        userService.updateUser(userId, request);
 
         // then
         assertThat(user.getUsername()).isEqualTo("newName");
@@ -139,15 +145,16 @@ class UserServiceTest {
     @DisplayName("updates only email when name is null")
     void shouldUpdateEmailOnly_whenNameIsNull() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         UserUpdateRequest request = new UserUpdateRequest(null, "updated@email.com");
 
         // when
-        userService.updateUser(1L, request);
+        userService.updateUser(userId, request);
 
         // then
-        assertThat(user.getUsername()).isEqualTo("tester"); // unchanged
+        assertThat(user.getUsername()).isEqualTo("tester");
         assertThat(user.getEmail()).isEqualTo("updated@email.com");
     }
 
@@ -155,23 +162,26 @@ class UserServiceTest {
     @DisplayName("throws UserNotFoundException when updating user that does not exist")
     void shouldThrowException_whenUserNotFoundOnUpdate() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.empty());
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
 
-        UserUpdateRequest request = new UserUpdateRequest("ignored", "new@email.con");
+        UserUpdateRequest request = new UserUpdateRequest("ignored", "new@email.com");
+
         // when & then
-        assertThatThrownBy(() -> userService.updateUser(1L, request))
-                .isInstanceOf(UserNotFoundException.class);
+        assertThrows(UserNotFoundException.class,
+                () ->  userService.updateUser(userId, request));
     }
 
     @Test
     @DisplayName("updates gender when valid value is provided")
     void shouldUpdateGender_whenValidValueProvided() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         GenderUpdateRequest request = new GenderUpdateRequest("male");
 
         // when
-        userService.updateGender(1L, request);
+        userService.updateGender(userId, request);
 
         // then
         assertThat(user.getGender()).isEqualTo(Gender.MALE);
@@ -193,12 +203,13 @@ class UserServiceTest {
     @DisplayName("updates age group when valid value is provided")
     void shouldUpdateAgeGroup_whenValidValueProvided() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         AgeGroupUpdateRequest request = new AgeGroupUpdateRequest(30);
 
         // when
-        userService.updateAgeGroup(1L, request);
+        userService.updateAgeGroup(userId, request);
 
         // then
         assertThat(user.getAgeGroup()).isEqualTo(AgeGroup.THIRTIES);
@@ -220,15 +231,16 @@ class UserServiceTest {
     @DisplayName("updates user allergies when valid IDs provided")
     void shouldUpdateUserAllergies_whenValidIdsProvided() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(allergyRepository.findAllById(List.of(10L, 20L))).willReturn(List.of(allergy1, allergy2));
         UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(10L, 20L));
 
         // when
-        userService.updateUserAllergies(1L, request);
+        userService.updateUserAllergies(userId, request);
 
         // then
-        verify(userAllergyRepository).deleteAllByUserId(1L);
+        verify(userAllergyRepository).deleteAllByUserId(userId);
         verify(userAllergyRepository).saveAll(argThat(allergies ->
                 StreamSupport.stream(allergies.spliterator(), false)
                         .count() == 2
@@ -239,12 +251,13 @@ class UserServiceTest {
     @DisplayName("throws InvalidRequestException when allergy IDs are invalid")
     void shouldThrowException_whenAllergyIdsInvalid() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(allergyRepository.findAllById(List.of(10L, 999L))).willReturn(List.of(allergy1));
         UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(10L, 999L));
 
         // when & then
-        assertThatThrownBy(() -> userService.updateUserAllergies(1L, request))
+        assertThatThrownBy(() -> userService.updateUserAllergies(userId, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("One or more allergy IDs are invalid.");
     }
@@ -253,7 +266,8 @@ class UserServiceTest {
     @DisplayName("updates user preferences when all IDs are valid")
     void shouldUpdateUserPreferences_whenAllIdsValid() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         PreferenceUpdateRequest request = new PreferenceUpdateRequest(
                 List.of(10L),
                 List.of(20L),
@@ -264,7 +278,7 @@ class UserServiceTest {
         given(preferenceIngredientRepository.findAllById(List.of(30L))).willReturn(List.of(preferenceIngredient2));
 
         // when
-        userService.updateUserPreferences(1L, request);
+        userService.updateUserPreferences(userId, request);
 
         // then
         verify(userFoodPreferenceRepository).saveAll(any());
@@ -277,12 +291,13 @@ class UserServiceTest {
     @DisplayName("throws InvalidRequestException when foodPreferenceIds are invalid")
     void shouldThrowException_whenFoodPreferenceIdsInvalid() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(foodPreferenceRepository.findAllById(List.of(10L, 99L))).willReturn(List.of(foodPreference));
         PreferenceUpdateRequest request = new PreferenceUpdateRequest(List.of(10L, 99L), List.of(), List.of());
 
         // when & then
-        assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
+        assertThatThrownBy(() -> userService.updateUserPreferences(userId, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("food preference");
     }
@@ -291,14 +306,15 @@ class UserServiceTest {
     @DisplayName("throws InvalidRequestException when preferredIngredientIds are invalid")
     void shouldThrowException_whenPreferredIngredientIdsInvalid() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(preferenceIngredientRepository.findAllById(List.of(20L, 99L))).willReturn(List.of(preferenceIngredient1));
 
         PreferenceUpdateRequest request = new PreferenceUpdateRequest();
         ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(20L, 99L));
 
         // when & then
-        assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
+        assertThatThrownBy(() -> userService.updateUserPreferences(userId, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("preferred ingredient");
     }
@@ -307,14 +323,15 @@ class UserServiceTest {
     @DisplayName("throws InvalidRequestException when dislikedIngredientIds are invalid")
     void shouldThrowException_whenDislikedIngredientIdsInvalid() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(preferenceIngredientRepository.findAllById(List.of(20L, 999L))).willReturn(List.of(preferenceIngredient1));
 
         PreferenceUpdateRequest request = new PreferenceUpdateRequest();
         ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(20L, 999L));
 
         // when & then
-        assertThatThrownBy(() -> userService.updateUserPreferences(1L, request))
+        assertThatThrownBy(() -> userService.updateUserPreferences(userId, request))
                 .isInstanceOf(InvalidRequestException.class)
                 .hasMessageContaining("disliked ingredient");
     }
@@ -323,11 +340,12 @@ class UserServiceTest {
     @DisplayName("updates vegan status when valid request is provided")
     void shouldUpdateVeganStatus_whenValidRequestProvided() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
         VeganUpdateRequest request = new VeganUpdateRequest(true);
 
         // when
-        userService.updateVeganStatus(1L, request);
+        userService.updateVeganStatus(userId, request);
 
         // then
         assertThat(user.getVegan()).isTrue();
@@ -337,23 +355,25 @@ class UserServiceTest {
     @DisplayName("throws UserNotFoundException when updating vegan status of non-existing user")
     void shouldThrowException_whenUserNotFoundOnUpdateVeganStatus() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.empty());
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
         VeganUpdateRequest request = new VeganUpdateRequest(true);
 
         // when & then
-        assertThatThrownBy(() -> userService.updateVeganStatus(1L, request))
-                .isInstanceOf(UserNotFoundException.class);
+        assertThrows(UserNotFoundException.class,
+                () ->  userService.updateVeganStatus(userId, request));
     }
 
     @Test
     @DisplayName("returns true when profile is completed")
     void shouldReturnTrue_whenProfileCompleted() {
         // given
+        Long userId = 1L;
         user.completeProfile();
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        boolean result = userService.checkProfileCompletion(1L);
+        boolean result = userService.checkProfileCompletion(userId);
 
         // then
         assertThat(result).isTrue();
@@ -363,10 +383,11 @@ class UserServiceTest {
     @DisplayName("returns false when profile is not completed")
     void shouldReturnFalse_whenProfileNotCompleted() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.of(user));
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         // when
-        boolean result = userService.checkProfileCompletion(1L);
+        boolean result = userService.checkProfileCompletion(userId);
 
         // then
         assertThat(result).isFalse();
@@ -376,11 +397,12 @@ class UserServiceTest {
     @DisplayName("throws UserNotFoundException when checking profile completion of non-existing user")
     void shouldThrowException_whenUserNotFoundOnCheckProfileCompletion() {
         // given
-        given(userRepository.findById(1L)).willReturn(Optional.empty());
+        Long userId = 1L;
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> userService.checkProfileCompletion(1L))
-                .isInstanceOf(UserNotFoundException.class);
+        assertThrows(UserNotFoundException.class,
+                () ->  userService.checkProfileCompletion(userId));
     }
 
     @Test
