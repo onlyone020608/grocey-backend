@@ -4,7 +4,6 @@ import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
 import com.hyewon.grocey_api.domain.auth.dto.SignupRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenRefreshRequest;
 import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
-import com.hyewon.grocey_api.domain.auth.security.CustomUserDetails;
 import com.hyewon.grocey_api.domain.auth.security.JwtTokenProvider;
 import com.hyewon.grocey_api.domain.auth.service.AuthService;
 import com.hyewon.grocey_api.domain.auth.service.TokenService;
@@ -24,8 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -47,8 +44,6 @@ class AuthServiceTest {
     @Mock private JwtTokenProvider jwtTokenProvider;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private TokenService tokenService;
-    @Mock private Authentication authentication;
-    @Mock private AuthenticationManager authenticationManager;
     @InjectMocks private AuthService authService;
 
     private SignupRequest signupRequest;
@@ -120,9 +115,8 @@ class AuthServiceTest {
         User user = User.of("tester", "user@email.com", "encoded-password");
         ReflectionTestUtils.setField(user, "id", 1L);
 
-        given(authenticationManager.authenticate(any())).willReturn(authentication);
-        CustomUserDetails userDetails = new CustomUserDetails(user);
-        given(authentication.getPrincipal()).willReturn(userDetails);
+        given(userQueryService.getUserByEmail(request.getEmail())).willReturn(user);
+        given(passwordEncoder.matches(request.getPassword(), user.getPassword())).willReturn(true);
         given(jwtTokenProvider.generateAccessToken(1L)).willReturn("access-token");
         given(jwtTokenProvider.generateRefreshToken(1L)).willReturn("refresh-token");
 

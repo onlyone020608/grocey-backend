@@ -18,9 +18,7 @@ import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserCommandService;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final AuthenticationManager authenticationManager;
     private final UserQueryService userQueryService;
     private final UserCommandService userCommandService;
     private final FridgeCommandService fridgeCommandService;
@@ -110,11 +107,13 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest request) {
+        User user = userQueryService.getUserByEmail(request.getEmail());
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = new CustomUserDetails(user);
 
         String accessToken = jwtTokenProvider.generateAccessToken(userDetails.getId());
         String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails.getId());
