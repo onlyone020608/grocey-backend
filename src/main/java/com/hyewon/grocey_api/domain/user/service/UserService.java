@@ -94,51 +94,57 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        userFoodPreferenceRepository.deleteByUser(user);
-        userPreferredIngredientRepository.deleteByUser(user);
-        userDislikedIngredientRepository.deleteByUser(user);
+        userFoodPreferenceRepository.deleteAllByUserId(userId);
+        userPreferredIngredientRepository.deleteAllByUserId(userId);
+        userDislikedIngredientRepository.deleteAllByUserId(userId);
 
-        if (request.getFoodPreferenceIds() != null) {
-            List<FoodPreference> foods = foodPreferenceRepository.findAllById(request.getFoodPreferenceIds());
-            if (foods.size() != request.getFoodPreferenceIds().size()) {
-                throw new InvalidRequestException("One or more food preference IDs are invalid.");
-            }
-
-            List<UserFoodPreference> userFoodPreferences = foods.stream()
-                    .map(food -> UserFoodPreference.of(user, food))
-                    .toList();
-            userFoodPreferenceRepository.saveAll(userFoodPreferences);
-        }
-
-        if (request.getPreferredIngredientIds() != null) {
-            List<Long> preferredIds = request.getPreferredIngredientIds();
-            List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(preferredIds);
-
-            if (ingredients.size() != preferredIds.size()) {
-                throw new InvalidRequestException("One or more preferred ingredient IDs are invalid.");
-            }
-
-            List<UserPreferredIngredient> preferredEntities = ingredients.stream()
-                    .map(ingredient -> UserPreferredIngredient.of(user, ingredient))
-                    .toList();
-            userPreferredIngredientRepository.saveAll(preferredEntities);
-        }
-
-        if (request.getDislikedIngredientIds() != null) {
-            List<Long> dislikedIds = request.getDislikedIngredientIds();
-            List<PreferenceIngredient> dislikedIngredients = preferenceIngredientRepository.findAllById(dislikedIds);
-
-            if (dislikedIngredients.size() != dislikedIds.size()) {
-                throw new InvalidRequestException("One or more disliked ingredient IDs are invalid.");
-            }
-
-            List<UserDislikedIngredient> dislikedEntities = dislikedIngredients.stream()
-                    .map(ingredient -> UserDislikedIngredient.of(user, ingredient))
-                    .toList();
-            userDislikedIngredientRepository.saveAll(dislikedEntities);
-        }
+        saveUserFoodPreferences(user, request.getFoodPreferenceIds());
+        saveUserPreferredIngredients(user, request.getPreferredIngredientIds());
+        saveUserDislikedIngredients(user, request.getDislikedIngredientIds());
 
         user.completeProfile();
+    }
+
+    private void saveUserFoodPreferences(User user, List<Long> foodIds) {
+        if (foodIds == null) return;
+
+        List<FoodPreference> foods = foodPreferenceRepository.findAllById(foodIds);
+        if (foods.size() != foodIds.size()) {
+            throw new InvalidRequestException("One or more food preference IDs are invalid.");
+        }
+
+        List<UserFoodPreference> entities = foods.stream()
+                .map(food -> UserFoodPreference.of(user, food))
+                .toList();
+        userFoodPreferenceRepository.saveAll(entities);
+    }
+
+    private void saveUserPreferredIngredients(User user, List<Long> ingredientIds) {
+        if (ingredientIds == null) return;
+
+        List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(ingredientIds);
+        if (ingredients.size() != ingredientIds.size()) {
+            throw new InvalidRequestException("One or more preferred ingredient IDs are invalid.");
+        }
+
+        List<UserPreferredIngredient> entities = ingredients.stream()
+                .map(ingredient -> UserPreferredIngredient.of(user, ingredient))
+                .toList();
+        userPreferredIngredientRepository.saveAll(entities);
+    }
+
+    private void saveUserDislikedIngredients(User user, List<Long> ingredientIds) {
+        if (ingredientIds == null) return;
+
+        List<PreferenceIngredient> ingredients = preferenceIngredientRepository.findAllById(ingredientIds);
+        if (ingredients.size() != ingredientIds.size()) {
+            throw new InvalidRequestException("One or more disliked ingredient IDs are invalid.");
+        }
+
+        List<UserDislikedIngredient> entities = ingredients.stream()
+                .map(ingredient -> UserDislikedIngredient.of(user, ingredient))
+                .toList();
+        userDislikedIngredientRepository.saveAll(entities);
     }
 
     @Transactional
