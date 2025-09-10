@@ -5,7 +5,6 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class FridgeRecommendationResponse {
@@ -13,17 +12,19 @@ public class FridgeRecommendationResponse {
     private LocalDateTime createdAt;
     private List<FridgeRecommendedProductResponse> products;
 
-    public FridgeRecommendationResponse(Long recommendationId, LocalDateTime createdAt, List<FridgeRecommendedProductResponse> products) {
+    private FridgeRecommendationResponse(Long recommendationId, LocalDateTime createdAt, List<FridgeRecommendedProductResponse> products) {
         this.recommendationId = recommendationId;
         this.createdAt = createdAt;
         this.products = products;
     }
 
-    public FridgeRecommendationResponse(FridgeRecommendation recommendation) {
-        this.recommendationId = recommendation.getId();
-        this.createdAt = recommendation.getCreatedAt();
-        this.products = recommendation.getRecommendedProducts().stream()
-                .map(FridgeRecommendedProductResponse::new)
-                .collect(Collectors.toList());
+    public static FridgeRecommendationResponse from(FridgeRecommendation recommendation) {
+        return new FridgeRecommendationResponse(
+                recommendation.getId(),
+                recommendation.getCreatedAt(),
+                recommendation.getRecommendedProducts().stream()
+                        .map(FridgeRecommendedProductResponse::from)
+                        .toList()
+        );
     }
 }

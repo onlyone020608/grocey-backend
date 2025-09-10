@@ -8,9 +8,7 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
-import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
-import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +26,6 @@ public class FridgeRecommendationService {
     private final FridgeQueryService fridgeQueryService;
     private final ProductQueryService productQueryService;
     private final RestTemplate restTemplate;
-    private final FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     private final FridgeIngredientManager fridgeIngredientManager;
 
     @Transactional
@@ -43,14 +40,9 @@ public class FridgeRecommendationService {
         List<Product> products =  productQueryService.findRandomOnePerIngredient(ingredientIds);
 
         FridgeRecommendation recommendation = fridgeRecommendationRepository.save(FridgeRecommendation.of(fridge));
-        List<FridgeRecommendedProduct> savedProducts = products.stream()
-                .map(product -> FridgeRecommendedProduct.of(product, recommendation))
-                .toList();
+        products.forEach(recommendation::addRecommendedProduct);
 
-        fridgeRecommendedProductRepository.saveAll(savedProducts);
-        recommendation.getRecommendedProducts().addAll(savedProducts);
-
-        return new FridgeRecommendationResponse(recommendation);
+        return FridgeRecommendationResponse.from(recommendation);
     }
 
     public List<Long> fetchRecommendedIngredientIds(Long userId) {
@@ -61,9 +53,8 @@ public class FridgeRecommendationService {
 
     public void simulateFridgeChange(Long userId) {
         Fridge fridge = fridgeQueryService.getFridgeByUserId(userId);
-        Long fridgeId = fridge.getId();
 
-        List<FridgeIngredient> ingredients = fridgeIngredientManager.getByFridgeId(fridgeId);
+        List<FridgeIngredient> ingredients = fridgeIngredientManager.getByFridgeId(fridge.getId());
 
         if (ingredients.size() <= 2) return;
 

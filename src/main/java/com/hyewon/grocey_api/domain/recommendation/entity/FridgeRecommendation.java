@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.domain.recommendation.entity;
 
 import com.hyewon.grocey_api.domain.fridge.entity.Fridge;
+import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.global.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,7 +37,8 @@ public class FridgeRecommendation extends BaseTimeEntity {
         return fridgeRecommendation;
     }
 
-    public void addRecommendationProduct(FridgeRecommendedProduct product) {
-        recommendedProducts.add(product);
+    public void addRecommendedProduct(Product product) {
+        FridgeRecommendedProduct frp = FridgeRecommendedProduct.of(product, this);
+        this.recommendedProducts.add(frp);
     }
 }

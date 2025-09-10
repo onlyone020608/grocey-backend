@@ -6,9 +6,7 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.service.ProductQueryService;
 import com.hyewon.grocey_api.domain.recommendation.dto.FridgeRecommendationResponse;
 import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
-import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendedProduct;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
-import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendedProductRepository;
 import com.hyewon.grocey_api.domain.recommendation.service.FridgeRecommendationService;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.fixture.FridgeFixture;
@@ -29,14 +27,13 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class FridgeRecommendationServiceTest {
     @Mock private FridgeRecommendationRepository fridgeRecommendationRepository;
-    @Mock private FridgeRecommendedProductRepository fridgeRecommendedProductRepository;
     @Mock private FridgeQueryService fridgeQueryService;
     @Mock private ProductQueryService productQueryService;
     @Mock private RestTemplate restTemplate;
@@ -44,7 +41,6 @@ class FridgeRecommendationServiceTest {
 
     private Fridge fridge;
     private Product product;
-    private FridgeRecommendation fridgeRecommendation;
     private User user;
 
     @BeforeEach
@@ -53,22 +49,14 @@ class FridgeRecommendationServiceTest {
         user = UserFixture.aDefaultUser();
         user.assignFridge(fridge);
         product = ProductFixture.aProduct().build();
-        fridgeRecommendation = FridgeRecommendation.builder()
-                .id(100L)
-                .fridge(fridge)
-                .build();
-        FridgeRecommendedProduct recommendedProduct = FridgeRecommendedProduct.builder()
-                .product(product)
-                .fridgeRecommendation(fridgeRecommendation)
-                .build();
-        fridgeRecommendation.addRecommendationProduct(recommendedProduct);
     }
 
     @Test
     @DisplayName("returns latest recommendation for fridge when available")
     void shouldReturnLatestRecommendation_whenAvailable() {
         // given
-        given(fridgeQueryService.getFridgeByUserId(1L)).willReturn(fridge);
+        Long userId = 1L;
+        given(fridgeQueryService.getFridgeByUserId(userId)).willReturn(fridge);
 
         List<Long> aiReturnedIds = List.of(1L, 2L, 3L);
         String url = "http://grocey-ai:5001/api/recommend/" + fridge.getUsers().get(0).getId();
@@ -80,7 +68,7 @@ class FridgeRecommendationServiceTest {
                 .willAnswer(invocation -> invocation.getArgument(0));
 
         // when
-        FridgeRecommendationResponse result = fridgeRecommendationService.getLatestRecommendation(1L);
+        FridgeRecommendationResponse result = fridgeRecommendationService.getLatestRecommendation(userId);
 
         // then
         assertThat(result.getProducts()).hasSize(1);
@@ -92,7 +80,8 @@ class FridgeRecommendationServiceTest {
     @DisplayName("throws RecommendationNotFoundException when no recommendation is available")
     void shouldThrowException_whenRecommendationNotFound() {
         // given
-        given(fridgeQueryService.getFridgeByUserId(1L)).willReturn(fridge);
+        Long userId = 1L;
+        given(fridgeQueryService.getFridgeByUserId(userId)).willReturn(fridge);
 
         List<Long> aiReturnedIds = List.of();
         String url = "http://grocey-ai:5001/api/recommend/" + fridge.getUsers().get(0).getId();
@@ -100,7 +89,7 @@ class FridgeRecommendationServiceTest {
         given(restTemplate.getForEntity(url, List.class)).willReturn(mockResponse);
 
         // when & then
-        assertThatThrownBy(() -> fridgeRecommendationService.getLatestRecommendation(1L))
-                .isInstanceOf(RecommendationNotFoundException.class);
+        assertThrows(RecommendationNotFoundException.class,
+                () ->  fridgeRecommendationService.getLatestRecommendation(userId));
     }
 }
