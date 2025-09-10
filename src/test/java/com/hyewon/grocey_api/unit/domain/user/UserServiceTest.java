@@ -228,7 +228,7 @@ class UserServiceTest {
         userService.updateUserAllergies(1L, request);
 
         // then
-        verify(userAllergyRepository).deleteByUser(user);
+        verify(userAllergyRepository).deleteAllByUserId(1L);
         verify(userAllergyRepository).saveAll(argThat(allergies ->
                 StreamSupport.stream(allergies.spliterator(), false)
                         .count() == 2

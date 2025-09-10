@@ -74,7 +74,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        userAllergyRepository.deleteByUser(user);
+        userAllergyRepository.deleteAllByUserId(userId);
 
         List<Long> allergyIds = request.getAllergyIds();
         List<Allergy> allergies = allergyRepository.findAllById(allergyIds);
