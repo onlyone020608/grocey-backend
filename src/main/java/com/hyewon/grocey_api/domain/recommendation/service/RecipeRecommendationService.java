@@ -32,7 +32,7 @@ public class RecipeRecommendationService {
     public List<RecipeRecommendationResponse> getRecommendationsByUser(Long userId) {
         User user = userQueryService.getUserById(userId);
 
-        List<Long> recipeIds = fetchPreferenceBasedRecipeIds(userId); // AI 호출
+        List<Long> recipeIds = fetchPreferenceBasedRecipeIds(userId);
         if (recipeIds.isEmpty()) {
             throw RecommendationNotFoundException.forUserRecipe(userId);
         }
@@ -45,7 +45,7 @@ public class RecipeRecommendationService {
         recipeRecommendationRepository.saveAll(saved);
 
         return saved.stream()
-                .map(RecipeRecommendationResponse::new)
+                .map(RecipeRecommendationResponse::from)
                 .toList();
     }
 
@@ -67,7 +67,7 @@ public class RecipeRecommendationService {
         recipeRecommendationRepository.saveAll(saved);
 
         return saved.stream()
-                .map(RecipeRecommendationResponse::new)
+                .map(RecipeRecommendationResponse::from)
                 .toList();
     }
 

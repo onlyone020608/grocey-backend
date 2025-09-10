@@ -9,9 +9,17 @@ public class RecipeRecommendationResponse {
     private String recipeImageUrl;
     private Long recipeId;
 
-    public RecipeRecommendationResponse(RecipeRecommendation recommendation) {
-        this.recipeId = recommendation.getRecipe().getId();
-        this.recipeName = recommendation.getRecipe().getName();
-        this.recipeImageUrl = recommendation.getRecipe().getImageUrl();
+    private RecipeRecommendationResponse(Long recipeId, String recipeName, String recipeImageUrl) {
+        this.recipeId = recipeId;
+        this.recipeName = recipeName;
+        this.recipeImageUrl = recipeImageUrl;
+    }
+
+    public static RecipeRecommendationResponse from(RecipeRecommendation recommendation) {
+        return new RecipeRecommendationResponse(
+                recommendation.getRecipe().getId(),
+                recommendation.getRecipe().getName(),
+                recommendation.getRecipe().getImageUrl()
+        );
     }
 }
