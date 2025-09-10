@@ -45,40 +45,52 @@ public class AuthService {
             throw new IllegalArgumentException("Email already in use");
         }
 
+        Fridge fridge = createFridge();
+        User user = createUser(request, fridge);
+
+        addDefaultFridgeIngredients(fridge);
+
+        createInitialSnapshots(fridge);
+
+        userCommandService.createUser(user);
+        return user;
+    }
+
+    private Fridge createFridge() {
         Fridge fridge = Fridge.of(3.0, -18.0);
         fridgeCommandService.createFridge(fridge);
+        return fridge;
+    }
 
+    private User createUser(SignupRequest request, Fridge fridge) {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         User user = User.of(request.getName(), request.getEmail(), encodedPassword);
-        user.assignFridge(fridge); // 연관관계 설정
+        user.assignFridge(fridge);
+        return user;
+    }
 
-        for (long ingredientId : List.of(1L, 2L, 3L)) {
+    private void addDefaultFridgeIngredients(Fridge fridge) {
+        addIngredients(List.of(1L, 2L, 3L), fridge, false, 7);
+        addIngredients(List.of(7L, 8L), fridge, true, 30);
+    }
+
+    private void addIngredients(List<Long> ingredientIds, Fridge fridge, boolean freezer, int daysToAdd) {
+        for (long ingredientId : ingredientIds) {
             Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);
 
             FridgeIngredient fi = FridgeIngredient.of(
                     fridge,
                     ingredient,
-                    false,
+                    freezer,
                     2,
-                    LocalDate.now().plusDays(7)
+                    LocalDate.now().plusDays(daysToAdd)
             );
             fridgeIngredientManager.createFridgeIngredient(fi);
         }
+    }
 
-        for (long ingredientId : List.of(7L, 8L)) {
-            Ingredient ingredient = ingredientQueryService.getIngredientById(ingredientId);
-
-            FridgeIngredient fi = FridgeIngredient.of(
-                    fridge,
-                    ingredient,
-                    true,
-                    2,
-                    LocalDate.now().plusDays(30)
-            );
-            fridgeIngredientManager.createFridgeIngredient(fi);
-        }
-
+    private void createInitialSnapshots(Fridge fridge) {
         List<FridgeIngredient> fridgeIngredients = fridgeIngredientManager.getByFridgeId(fridge.getId());
 
         for (FridgeIngredient fi : fridgeIngredients) {
@@ -90,8 +102,6 @@ public class AuthService {
             );
             fridgeSnapshotCommandService.createFridgeSnapshot(snapshot);
         }
-        userCommandService.createUser(user);
-        return user;
     }
 
     @Transactional
