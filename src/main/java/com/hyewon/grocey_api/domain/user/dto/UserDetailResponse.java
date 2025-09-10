@@ -8,8 +8,15 @@ public class UserDetailResponse {
     private String userName;
     private String email;
 
-    public UserDetailResponse(User user) {
-        this.userName = user.getUsername();
-        this.email = user.getEmail();
+    private UserDetailResponse(String userName, String email) {
+        this.userName = userName;
+        this.email = email;
+    }
+
+    public static UserDetailResponse from(User user) {
+        return new UserDetailResponse(
+                user.getUsername(),
+                user.getEmail()
+        );
     }
 }

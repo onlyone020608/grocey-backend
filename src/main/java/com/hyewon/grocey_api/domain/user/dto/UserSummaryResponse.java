@@ -7,7 +7,11 @@ import lombok.Getter;
 public class UserSummaryResponse {
     private final String name;
 
-    public UserSummaryResponse(User user) {
-        this.name = user.getUsername();
+    private UserSummaryResponse(String name) {
+        this.name = name;
+    }
+
+    public static UserSummaryResponse from(User user) {
+        return new UserSummaryResponse(user.getUsername());
     }
 }

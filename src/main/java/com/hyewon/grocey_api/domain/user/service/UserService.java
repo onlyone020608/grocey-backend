@@ -32,14 +32,14 @@ public class UserService {
     public UserSummaryResponse getUserSummary(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        return new UserSummaryResponse(user);
+        return UserSummaryResponse.from(user);
     }
 
     @Transactional(readOnly = true)
     public UserDetailResponse getUserDetail(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
-        return new UserDetailResponse(user);
+        return UserDetailResponse.from(user);
     }
 
     @Transactional
