@@ -28,8 +28,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
@@ -64,11 +64,8 @@ class RecipeRecommendationServiceTest {
         String url = "http://grocey-ai:5001/api/recommend/recipes/preference/" + userId;
         ResponseEntity<List> mockResponse = new ResponseEntity<>(aiReturnedIds, HttpStatus.OK);
         given(restTemplate.getForEntity(url, List.class)).willReturn(mockResponse);
-
         given(userQueryService.getUserById(userId)).willReturn(user);
-
         given(recipeQueryService.getRecipes(aiReturnedIds)).willReturn(List.of(recipe));
-
         given(recipeRecommendationRepository.saveAll(anyList()))
                 .willAnswer(invocation -> invocation.getArgument(0));
 
@@ -86,11 +83,11 @@ class RecipeRecommendationServiceTest {
         given(userQueryService.getUserById(userId)).willReturn(user);
         String url = "http://grocey-ai:5001/api/recommend/recipes/preference/" + userId;
         given(restTemplate.getForEntity(url, List.class))
-                .willReturn(new ResponseEntity<>(List.of(), HttpStatus.OK)); // 빈 리스트
+                .willReturn(new ResponseEntity<>(List.of(), HttpStatus.OK));
 
         // when & then
-        assertThatThrownBy(() -> recipeRecommendationService.getRecommendationsByUser(userId))
-                .isInstanceOf(RecommendationNotFoundException.class);
+        assertThrows(RecommendationNotFoundException.class,
+                () ->  recipeRecommendationService.getRecommendationsByUser(userId));
     }
 
     @Test
@@ -127,7 +124,7 @@ class RecipeRecommendationServiceTest {
                 .willReturn(new ResponseEntity<>(List.of(), HttpStatus.OK));
 
         // when & then
-        assertThatThrownBy(() -> recipeRecommendationService.getRecommendationsByFridge(1L))
-                .isInstanceOf(RecommendationNotFoundException.class);
+        assertThrows(RecommendationNotFoundException.class,
+                () ->  recipeRecommendationService.getRecommendationsByFridge(1L));
     }
 }
