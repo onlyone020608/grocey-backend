@@ -14,8 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,29 +35,38 @@ public class CartItemServiceTest {
     }
 
     @Test
-    @DisplayName("returns cart items when they exist")
-    void shouldReturnCartItems_whenTheyExist() {
+    @DisplayName("returns cart items with product when found")
+    void shouldReturnCartItemsWithProduct_whenFound() {
         // given
-        given(cartItemRepository.findAllById(List.of(1L,2L))).willReturn(
-                List.of(cartItem1,cartItem2));
+        List<Long> ids = List.of(1L, 2L);
+        Long userId = 100L;
+        List<CartItem> expected = List.of(cartItem1, cartItem2);
+
+        given(cartItemRepository.findAllByIdInAndUserIdWithProduct(ids, userId))
+                .willReturn(expected);
 
         // when
-        List<CartItem> resultCartItems = cartItemService.getCartItems(List.of(1L, 2L));
+        List<CartItem> result = cartItemService.getCartItemsWithProduct(ids, userId);
 
         // then
-        assertThat(resultCartItems).isEqualTo(List.of(cartItem1, cartItem2));
+        assertThat(result).hasSize(2).containsExactlyInAnyOrder(cartItem1, cartItem2);
+        verify(cartItemRepository, times(1))
+                .findAllByIdInAndUserIdWithProduct(ids, userId);
     }
 
     @Test
-    @DisplayName("throws InvalidRequestException when cart items do not exist")
-    void shouldThrowException_whenCartItemsNotFound() {
+    @DisplayName("throws InvalidRequestException when no cart items found")
+    void shouldThrowException_whenNoCartItemsFound() {
         // given
-        given(cartItemRepository.findAllById(List.of(999L,888L))).willReturn(
-                List.of());
+        List<Long> ids = List.of(1L, 2L);
+        Long userId = 100L;
+
+        given(cartItemRepository.findAllByIdInAndUserIdWithProduct(ids, userId))
+                .willReturn(List.of());
 
         // when & then
         assertThrows(InvalidRequestException.class,
-                () ->  cartItemService.getCartItems(List.of(999L,888L)));
+                () -> cartItemService.getCartItemsWithProduct(ids, userId));
     }
 
     @Test
