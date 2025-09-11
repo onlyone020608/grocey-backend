@@ -6,26 +6,24 @@ import com.hyewon.grocey_api.domain.ingredient.entity.Ingredient;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("FridgeIngredientController Integration Test")
-@Sql(scripts = {
-        "/sql/ingredient-data.sql"
-})
 public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/fridge/ingredients - returns ingredient list when user has items")
     void getFridgeIngredients_withItems_returnsIngredientList() throws Exception {
-        User user = createTestUser("Mary", "mary", "securepw");
+        // given
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();
         setupFridgeIngredient(user, ingredient, false, 2 );
 
+        // when & then
         mockMvc.perform(get("/api/fridge/ingredients")
                         .header("Authorization", "Bearer " + token)
                         .param("isFreezer", "false"))
@@ -37,7 +35,8 @@ public class FridgeIngredientControllerIntegrationTest extends AbstractIntegrati
     @Test
     @DisplayName("GET /api/fridge/ingredients/{ingredientId} - returns ingredient detail when id is valid")
     void getFridgeIngredientDetail_withValidId_returnsDetailInfo() throws Exception {
-        User user = createTestUser("Mary", "mary", "securepw");
+        // given
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         Ingredient ingredient = ingredientRepository.findById(1L).orElseThrow();

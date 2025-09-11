@@ -5,24 +5,18 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("ProductController Integration Test")
-@Sql(scripts = {
-        "/sql/ingredient-data.sql",
-        "/sql/product-data.sql",
-        "/sql/product-tab-data.sql"
-})
 public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/products?tab=NEW - returns products when tab is NEW")
     void getProductsByTab_withNewTab_returnsNewProducts() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 
@@ -42,9 +36,9 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/products?tab=BEST - returns products when tab is BEST")
     void getProductsByTab_withBestTab_returnsBestProducts() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
-        Product product = productRepository.findById(2L).orElseThrow();
+        Product product = productRepository.findById(5L).orElseThrow();
 
         // when & then
         mockMvc.perform(get("/api/products")
@@ -62,7 +56,7 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/products/{productId} - returns product detail when id is valid")
     void getProductById_withValidId_returnsProductDetail() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
         Product product = productRepository.findById(1L).orElseThrow();
 

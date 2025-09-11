@@ -1,8 +1,6 @@
 package com.hyewon.grocey_api.integration.user;
 
 import com.hyewon.grocey_api.common.AbstractIntegrationTest;
-import com.hyewon.grocey_api.domain.auth.dto.LoginRequest;
-import com.hyewon.grocey_api.domain.auth.dto.TokenResponse;
 import com.hyewon.grocey_api.domain.auth.repository.RefreshTokenRepository;
 import com.hyewon.grocey_api.domain.user.dto.*;
 import com.hyewon.grocey_api.domain.user.entity.User;
@@ -12,9 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
@@ -24,11 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("UserController Integration Test")
-@Sql(scripts = {
-        "/sql/allergy-data.sql",
-        "/sql/food-preference-data.sql",
-        "/sql/preference-ingredient-data.sql"
-}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
@@ -40,16 +31,13 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/users/me/summary - returns user summary when authenticated")
     void getUserSummary_withAuthenticatedUser_returnsSummary() throws Exception {
         // given
-        var user = createTestUser("Mary Kim", "mary", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
-        // when
-        ResultActions result = mockMvc.perform(get("/api/users/me/summary")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON));
-
-        // then
-        result.andExpect(status().isOk())
+        // when & then
+        mockMvc.perform(get("/api/users/me/summary")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(user.getUsername()));
     }
 
@@ -57,7 +45,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/users/me - returns user detail when authenticated")
     void getUserDetail_withAuthenticatedUser_returnsDetail() throws Exception {
         // given
-        User user = createTestUser("Mary Kim", "mary", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         // when & then
@@ -72,7 +60,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me - updates user info when request is valid")
     void updateUserInfo_withValidRequest_updatesUserInfo() throws Exception {
         // given
-        User user = createTestUser("Old Name", "old", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         UserUpdateRequest request = UserUpdateRequest.builder()
@@ -96,7 +84,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/gender - updates user gender when request is valid")
     void updateGender_withValidRequest_updatesUserGender() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "pass123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         GenderUpdateRequest request = GenderUpdateRequest.builder()
@@ -118,7 +106,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/age-group - updates user age group when request is valid")
     void updateAgeGroup_withValidRequest_updatesUserAgeGroup() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         AgeGroupUpdateRequest request = AgeGroupUpdateRequest.builder()
@@ -140,7 +128,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/allergies - updates user allergies when request is valid")
     void updateUserAllergies_withValidRequest_updatesAllergies() throws Exception {
         // given
-        User user = createTestUser("AllergyUser", "allergy", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
         UserAllergyUpdateRequest request = new UserAllergyUpdateRequest(List.of(1L, 2L));
 
@@ -161,7 +149,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/preferences - updates user preferences when request is valid")
     void updatePreferences_withValidRequest_updatesUserPreferences() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         PreferenceUpdateRequest request = PreferenceUpdateRequest.builder()
@@ -184,7 +172,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/users/me/vegan - updates vegan status when request is valid")
     void updateVegan_withValidRequest_updatesVeganStatus() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         VeganUpdateRequest request = new VeganUpdateRequest(true);
@@ -204,39 +192,27 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/users/me/status - returns profile completion status when authenticated")
     void getUserStatus_withAuthenticatedUser_returnsProfileCompletionStatus() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "password123");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         User initial = userRepository.findById(user.getId()).orElseThrow();
         assertThat(initial.getProfileCompleted()).isFalse();
 
-        // when
-        ResultActions result = mockMvc.perform(get("/api/users/me/status")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON));
-
-        // then
-        result.andExpect(status().isOk())
+        // when & then
+        mockMvc.perform(get("/api/users/me/status")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.profileCompleted").value(false));
     }
 
     @Test
     @DisplayName("DELETE /api/users/me - deletes user and invalidates refresh token when request is valid")
     void withdraw_withValidToken_deletesUserAndInvalidatesToken() throws Exception {
-        User user = createTestUser("Mary", "mary", "test1234!");
-
-        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
-        String loginResponse = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
-        String accessToken = tokens.getAccessToken();
+        User user = createTestUser();
+        String token = generateTokenFor(user);
 
         mockMvc.perform(delete("/api/users/me")
-                        .header("Authorization", "Bearer " + accessToken))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
 }

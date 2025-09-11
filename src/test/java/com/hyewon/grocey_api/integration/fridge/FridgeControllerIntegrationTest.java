@@ -15,7 +15,7 @@ public class FridgeControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("GET /api/fridge - returns fridge info when user is authenticated")
     void getFridge_withAuthenticatedUser_returnsFridgeInfo() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         // when & then

@@ -37,13 +37,16 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/signup - registers a new user when request is valid")
     void signUp_withValidRequest_registersNewUser() throws Exception {
+        // given
         SignupRequest request = new SignupRequest("mary@example.com", "securepw", "Mary");
 
+        // when
         mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated());
 
+        // then
         Optional<User> userOpt = userRepository.findByEmail("mary@example.com");
         assertThat(userOpt).isPresent();
 
@@ -55,10 +58,12 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/login - returns tokens when credentials are valid")
     void login_withValidCredentials_returnsTokens() throws Exception {
-        User user = createTestUser("Mary", "mary", "test1234!");
+        // given
+        User user = createTestUser();
 
-        LoginRequest request = new LoginRequest(user.getEmail(), "test1234!");
+        LoginRequest request = new LoginRequest(user.getEmail(), "password");
 
+        // when & then
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -70,9 +75,10 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/refresh - returns new tokens when refresh token is valid")
     void refresh_withValidRefreshToken_returnsNewTokens() throws Exception {
-        User user = createTestUser("Mary", "mary", "test1234!");
+        // given
+        User user = createTestUser();
 
-        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
+        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "password");
 
         String loginResponse = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,6 +95,7 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
                 .refreshToken(tokens.getRefreshToken())
                 .build();
 
+        // when & then
         mockMvc.perform(post("/api/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(refreshRequest)))
@@ -100,20 +107,13 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("POST /api/auth/logout - invalidates refresh token when request is valid")
     void logout_withValidToken_invalidatesRefreshToken() throws Exception {
-        User user = createTestUser("Mary", "mary", "test1234!");
+        // given
+        User user = createTestUser();
+        String token = generateTokenFor(user);
 
-        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "test1234!");
-        String loginResponse = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
-        String accessToken = tokens.getAccessToken();
-
+        // when & then
         mockMvc.perform(post("/api/auth/logout")
-                        .header("Authorization", "Bearer " + accessToken))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
 
@@ -121,31 +121,22 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/auth/password - changes password when current password is correct")
     void changePassword_withValidCurrentPassword_updatesPassword() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "oldPassword123");
+        User user = createTestUser();
+        String token = generateTokenFor(user);
 
-        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "oldPassword123");
-        String loginResponse = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
-        String accessToken = tokens.getAccessToken();
-
-        // when & then
+        // when
         mockMvc.perform(patch("/api/auth/password")
-                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {
-                          "currentPassword": "oldPassword123",
+                          "currentPassword": "password",
                           "newPassword": "newPassword456"
                         }
                     """))
                 .andExpect(status().isOk());
 
-        // verify login with new password
+        // then
         LoginRequest newLogin = new LoginRequest(user.getEmail(), "newPassword456");
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -157,21 +148,12 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
     @DisplayName("PATCH /api/auth/password - fails when current password is incorrect")
     void changePassword_withInvalidCurrentPassword_returnsBadRequest() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary", "correctPassword");
-
-        LoginRequest loginRequest = new LoginRequest(user.getEmail(), "correctPassword");
-        String loginResponse = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-
-        TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
-        String accessToken = tokens.getAccessToken();
+        User user = createTestUser();
+        String token = generateTokenFor(user);
 
         // when & then
         mockMvc.perform(patch("/api/auth/password")
-                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {

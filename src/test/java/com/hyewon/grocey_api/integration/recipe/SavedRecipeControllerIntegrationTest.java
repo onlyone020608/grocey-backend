@@ -5,20 +5,18 @@ import com.hyewon.grocey_api.domain.recipe.entity.Recipe;
 import com.hyewon.grocey_api.domain.user.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("SavedRecipeController Integration Test")
-@Sql(scripts = "/sql/recipe-data.sql")
 public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("GET /api/users/me/recipes - returns saved recipes when user has saved recipes")
     void getSavedRecipes_withSavedRecipes_returnsRecipes() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
@@ -37,7 +35,7 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
     @DisplayName("POST /api/users/me/recipes/{recipeId} - saves recipe when request is valid")
     void saveRecipe_withValidId_savesRecipe() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
@@ -51,7 +49,7 @@ public class SavedRecipeControllerIntegrationTest extends AbstractIntegrationTes
     @DisplayName("DELETE /api/users/me/recipes/{recipeId} - deletes saved recipe when id is valid")
     void deleteSavedRecipe_withValidId_deletesRecipe() throws Exception {
         // given
-        User user = createTestUser("Mary", "mary@", "securepw");
+        User user = createTestUser();
         String token = generateTokenFor(user);
 
         Recipe recipe = recipeRepository.findById(1L).orElseThrow();
