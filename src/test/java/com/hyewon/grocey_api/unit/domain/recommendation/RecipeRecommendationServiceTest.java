@@ -111,7 +111,7 @@ class RecipeRecommendationServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getRecipeName()).isEqualTo("Kimchi Fried Rice");
+        assertThat(result.get(0).recipeName()).isEqualTo("Kimchi Fried Rice");
     }
 
     @Test

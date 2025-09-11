@@ -47,7 +47,7 @@ public class CartService {
     public void addCartItem(Long userId, AddCartItemRequest request) {
         User user = userQueryService.getUserById(userId);
 
-        Product product = productQueryService.getProduct(request.getProductId());
+        Product product = productQueryService.getProduct(request.productId());
 
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
@@ -57,9 +57,9 @@ public class CartService {
 
         cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
                 .ifPresentOrElse(
-                        existingItem -> existingItem.updateQuantity(existingItem.getQuantity() + request.getQuantity()),
+                        existingItem -> existingItem.updateQuantity(existingItem.getQuantity() + request.quantity()),
                         () -> {
-                            CartItem cartItem = CartItem.of(product, request.getQuantity());
+                            CartItem cartItem = CartItem.of(product, request.quantity());
                             cart.addCartItem(cartItem);
                             cartItemRepository.save(cartItem);
                         }
@@ -68,10 +68,10 @@ public class CartService {
 
     @Transactional
     public void updateCartItemQuantity(Long userId, UpdateCartItemRequest request) {
-        CartItem cartItem = cartItemRepository.findByIdAndUserId(request.getCartItemId(), userId)
-                .orElseThrow(() -> new CartItemNotFoundException(request.getCartItemId()));
+        CartItem cartItem = cartItemRepository.findByIdAndUserId(request.cartItemId(), userId)
+                .orElseThrow(() -> new CartItemNotFoundException(request.cartItemId()));
 
-        cartItem.updateQuantity(request.getQuantity());
+        cartItem.updateQuantity(request.quantity());
     }
 
     @Transactional
@@ -96,12 +96,12 @@ public class CartService {
                 .orElseGet(() -> cartRepository.save(Cart.of(user, user.getFridge())));
 
         for (AddCartItemRequest request : requests) {
-            Product product = productQueryService.getProduct(request.getProductId());
+            Product product = productQueryService.getProduct(request.productId());
             cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
                     .ifPresentOrElse(
-                            existingItem -> existingItem.updateQuantity(existingItem.getQuantity() + request.getQuantity()),
+                            existingItem -> existingItem.updateQuantity(existingItem.getQuantity() + request.quantity()),
                             () -> {
-                                CartItem cartItem = CartItem.of(product, request.getQuantity());
+                                CartItem cartItem = CartItem.of(product, request.quantity());
                                 cart.addCartItem(cartItem);
                                 cartItemRepository.save(cartItem);
                             }

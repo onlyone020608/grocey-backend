@@ -71,9 +71,9 @@ class FridgeRecommendationServiceTest {
         FridgeRecommendationResponse result = fridgeRecommendationService.getLatestRecommendation(userId);
 
         // then
-        assertThat(result.getProducts()).hasSize(1);
-        assertThat(result.getProducts().get(0).getProductId()).isEqualTo(1L);
-        assertThat(result.getProducts().get(0).getProductName()).isEqualTo("Milk");
+        assertThat(result.products()).hasSize(1);
+        assertThat(result.products().get(0).productId()).isEqualTo(1L);
+        assertThat(result.products().get(0).productName()).isEqualTo("Milk");
     }
 
     @Test

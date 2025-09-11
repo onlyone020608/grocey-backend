@@ -47,7 +47,7 @@ class ProductTabServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getProductId()).isEqualTo(1L);
-        assertThat(result.get(0).getProductName()).isEqualTo("Milk");
+        assertThat(result.get(0).productId()).isEqualTo(1L);
+        assertThat(result.get(0).productName()).isEqualTo("Milk");
     }
 }

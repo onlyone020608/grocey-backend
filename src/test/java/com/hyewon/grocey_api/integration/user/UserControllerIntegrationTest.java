@@ -109,9 +109,7 @@ public class UserControllerIntegrationTest extends AbstractIntegrationTest {
         User user = createTestUser();
         String token = generateTokenFor(user);
 
-        AgeGroupUpdateRequest request = AgeGroupUpdateRequest.builder()
-                .ageValue(20)
-                .build();
+        AgeGroupUpdateRequest request = new AgeGroupUpdateRequest(20);
 
         // when & then
         mockMvc.perform(patch("/api/users/me/age-group")

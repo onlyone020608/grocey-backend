@@ -46,7 +46,7 @@ public class AuthController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody ChangePasswordRequest request
     ) {
-        authService.changePassword(userDetails.getId(), request.getCurrentPassword(), request.getNewPassword());
+        authService.changePassword(userDetails.getId(), request.currentPassword(), request.newPassword());
         return ResponseEntity.ok().build();
     }
 }

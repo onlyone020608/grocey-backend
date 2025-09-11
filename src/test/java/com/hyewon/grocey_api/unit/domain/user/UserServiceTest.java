@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -82,7 +81,7 @@ class UserServiceTest {
         UserSummaryResponse result = userService.getUserSummary(userId);
 
         // then
-        assertThat(result.getName()).isEqualTo("tester");
+        assertThat(result.name()).isEqualTo("tester");
     }
 
     @Test
@@ -108,8 +107,8 @@ class UserServiceTest {
         UserDetailResponse result = userService.getUserDetail(userId);
 
         // then
-        assertThat(result.getUserName()).isEqualTo("tester");
-        assertThat(result.getEmail()).isEqualTo("tester@email.com");
+        assertThat(result.userName()).isEqualTo("tester");
+        assertThat(result.email()).isEqualTo("tester@email.com");
     }
 
     @Test
@@ -310,8 +309,9 @@ class UserServiceTest {
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(preferenceIngredientRepository.findAllById(List.of(20L, 99L))).willReturn(List.of(preferenceIngredient1));
 
-        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
-        ReflectionTestUtils.setField(request, "preferredIngredientIds", List.of(20L, 99L));
+        PreferenceUpdateRequest request = PreferenceUpdateRequest.builder()
+                .preferredIngredientIds(List.of(20L, 99L))
+                .build();
 
         // when & then
         assertThatThrownBy(() -> userService.updateUserPreferences(userId, request))
@@ -327,8 +327,9 @@ class UserServiceTest {
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(preferenceIngredientRepository.findAllById(List.of(20L, 999L))).willReturn(List.of(preferenceIngredient1));
 
-        PreferenceUpdateRequest request = new PreferenceUpdateRequest();
-        ReflectionTestUtils.setField(request, "dislikedIngredientIds", List.of(20L, 999L));
+        PreferenceUpdateRequest request = PreferenceUpdateRequest.builder()
+                .dislikedIngredientIds(List.of(20L, 999L))
+                .build();
 
         // when & then
         assertThatThrownBy(() -> userService.updateUserPreferences(userId, request))

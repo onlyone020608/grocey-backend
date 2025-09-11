@@ -31,7 +31,7 @@ public class OrderService {
         List<Order> recentOrders = orderRepository.findRecentOrders(userId);
 
         return recentOrders.stream()
-                .map(OrderSummaryResponse::new)
+                .map(OrderSummaryResponse::from)
                 .toList();
     }
 
@@ -40,26 +40,26 @@ public class OrderService {
         Order order = orderRepository.findByIdAndUserIdWithItemsAndProduct(orderId, userId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
 
-        return new OrderDetailResponse(order);
+        return OrderDetailResponse.from(order);
     }
 
     @Transactional(readOnly = true)
     public Page<OrderSummaryResponse> getAllOrders(Long userId, Pageable pageable) {
         return orderRepository.findByUserId(userId, pageable)
-                .map(OrderSummaryResponse::new);
+                .map(OrderSummaryResponse::from);
     }
 
     @Transactional
     public Long placeOrder(Long userId, OrderRequest request) {
         User user = userQueryService.getUserById(userId);
 
-        List<CartItem> selectedItems = cartItemService.getCartItemsWithProduct(request.getCartItemIds(), userId);
+        List<CartItem> selectedItems = cartItemService.getCartItemsWithProduct(request.cartItemIds(), userId);
 
-        if (selectedItems.size() != request.getCartItemIds().size()) {
+        if (selectedItems.size() != request.cartItemIds().size()) {
             throw new AccessDeniedException("Some items do not belong to this user.");
         }
 
-        Order order = Order.of(user, request.getAddress(), request.toPaymentMethod());
+        Order order = Order.of(user, request.address(), request.toPaymentMethod());
         order.addOrderItems(selectedItems);
 
         orderRepository.save(order);

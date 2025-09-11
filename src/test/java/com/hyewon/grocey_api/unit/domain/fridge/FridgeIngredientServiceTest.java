@@ -73,8 +73,8 @@ class FridgeIngredientServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getIngredientName()).isEqualTo("Chicken");
-        assertThat(result.get(0).getImageUrl()).isEqualTo("url.com/chicken");
+        assertThat(result.get(0).ingredientName()).isEqualTo("Chicken");
+        assertThat(result.get(0).imageUrl()).isEqualTo("url.com/chicken");
     }
 
     @Test
@@ -89,10 +89,10 @@ class FridgeIngredientServiceTest {
         FridgeIngredientDetailResponse result = fridgeIngredientService.getIngredientDetail(ingredientId);
 
         // then
-        assertThat(result.getIngredientName()).isEqualTo("Chicken");
-        assertThat(result.getImageUrl()).isEqualTo("url.com/chicken");
-        assertThat(result.getQuantity()).isEqualTo(1);
-        assertThat(result.getIsFreezer()).isFalse();
+        assertThat(result.ingredientName()).isEqualTo("Chicken");
+        assertThat(result.imageUrl()).isEqualTo("url.com/chicken");
+        assertThat(result.quantity()).isEqualTo(1);
+        assertThat(result.isFreezer()).isFalse();
     }
 
     @Test

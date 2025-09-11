@@ -41,6 +41,6 @@ public class FridgeIngredientService {
     public FridgeIngredientDetailResponse getIngredientDetail(Long id) {
         FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIdWithIngredient(id)
                 .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
-        return new FridgeIngredientDetailResponse(fridgeIngredient);
+        return FridgeIngredientDetailResponse.from(fridgeIngredient);
     }
 }

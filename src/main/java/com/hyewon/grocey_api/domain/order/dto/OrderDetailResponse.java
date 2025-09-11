@@ -3,28 +3,28 @@ package com.hyewon.grocey_api.domain.order.dto;
 import com.hyewon.grocey_api.domain.order.entity.Order;
 import com.hyewon.grocey_api.domain.order.entity.OrderStatus;
 import com.hyewon.grocey_api.domain.order.entity.PaymentMethod;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-public class OrderDetailResponse {
-    private Long orderId;
-    private LocalDateTime createdAt;
-    private OrderStatus orderStatus;
-    private PaymentMethod paymentMethod;
-    private String shippingAddress;
-    private List<OrderItemResponse> items;
-
-    public OrderDetailResponse(Order order) {
-        this.orderId = order.getId();
-        this.createdAt = order.getCreatedAt();
-        this.orderStatus = order.getOrderStatus();
-        this.paymentMethod = order.getPaymentMethod();
-        this.shippingAddress = order.getAddress();
-        this.items = order.getOrderItems().stream()
-                .map(OrderItemResponse::new)
-                .toList();
+public record OrderDetailResponse(
+        Long orderId,
+        LocalDateTime createdAt,
+        OrderStatus orderStatus,
+        PaymentMethod paymentMethod,
+        String shippingAddress,
+        List<OrderItemResponse> items
+) {
+    public static OrderDetailResponse from(Order order) {
+        return new OrderDetailResponse(
+                order.getId(),
+                order.getCreatedAt(),
+                order.getOrderStatus(),
+                order.getPaymentMethod(),
+                order.getAddress(),
+                order.getOrderItems().stream()
+                        .map(OrderItemResponse::from)
+                        .toList()
+        );
     }
 }

@@ -89,10 +89,10 @@ class CartServiceTest {
         CartResponse response = cartService.getCart(userId);
 
         // then
-        assertThat(response.getCartId()).isEqualTo(10L);
-        assertThat(response.getItems()).hasSize(1);
-        assertThat(response.getItems().get(0).getProductName()).isEqualTo(product1.getName());
-        assertThat(response.getItems().get(0).getQuantity()).isEqualTo(1);
+        assertThat(response.cartId()).isEqualTo(10L);
+        assertThat(response.items()).hasSize(1);
+        assertThat(response.items().get(0).productName()).isEqualTo(product1.getName());
+        assertThat(response.items().get(0).quantity()).isEqualTo(1);
     }
 
     @Test

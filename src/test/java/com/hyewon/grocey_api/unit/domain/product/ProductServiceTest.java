@@ -40,10 +40,10 @@ public class ProductServiceTest {
         ProductResponse result = productService.getProductDetail(1L);
 
         // then
-        assertThat(result.getProductName()).isEqualTo("Milk");
-        assertThat(result.getBrandName()).isEqualTo("SeoulDairy");
-        assertThat(result.getPrice()).isEqualTo(2000);
-        assertThat(result.getImageUrl()).isEqualTo("milk.png");
+        assertThat(result.productName()).isEqualTo("Milk");
+        assertThat(result.brandName()).isEqualTo("SeoulDairy");
+        assertThat(result.price()).isEqualTo(2000);
+        assertThat(result.imageUrl()).isEqualTo("milk.png");
     }
 
     @Test

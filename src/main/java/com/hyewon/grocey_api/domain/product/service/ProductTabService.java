@@ -20,7 +20,7 @@ public class ProductTabService {
         List<ProductTab> productTabs = productTabRepository.findByTabTypeWithProduct(tab);
 
         return productTabs.stream()
-                .map(productTab -> new ProductResponse(productTab.getProduct()))
+                .map(productTab -> ProductResponse.from(productTab.getProduct()))
                 .toList();
     }
 }

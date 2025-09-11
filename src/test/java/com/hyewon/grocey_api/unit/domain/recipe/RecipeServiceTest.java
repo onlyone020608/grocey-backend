@@ -62,16 +62,16 @@ class RecipeServiceTest {
         RecipeDetailResponse result = recipeService.getRecipeDetail(1L, userId);
 
         // then
-        assertThat(result.getRecipeName()).isEqualTo("Kimchi Fried Rice");
-        assertThat(result.getCookingTime()).isEqualTo(15);
-        assertThat(result.getServings()).isEqualTo(2);
-        assertThat(result.getDescriptionSteps()).containsExactly(
+        assertThat(result.recipeName()).isEqualTo("Kimchi Fried Rice");
+        assertThat(result.cookingTime()).isEqualTo(15);
+        assertThat(result.servings()).isEqualTo(2);
+        assertThat(result.descriptionSteps()).containsExactly(
                 "step1", "step2"
         );
-        assertThat(result.getIngredients()).hasSize(1);
-        assertThat(result.getIngredients().get(0).getName()).isEqualTo("Kimchi");
-        assertThat(result.getIngredients().get(0).getQuantity()).isEqualTo("1 cup");
-        assertThat(result.isSaved()).isTrue();
+        assertThat(result.ingredients()).hasSize(1);
+        assertThat(result.ingredients().get(0).name()).isEqualTo("Kimchi");
+        assertThat(result.ingredients().get(0).quantity()).isEqualTo("1 cup");
+        assertThat(result.saved()).isTrue();
     }
 
     @Test

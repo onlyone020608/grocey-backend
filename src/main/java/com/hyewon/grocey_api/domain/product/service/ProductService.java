@@ -1,8 +1,8 @@
 package com.hyewon.grocey_api.domain.product.service;
 
-import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
 import com.hyewon.grocey_api.domain.product.entity.Product;
+import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,6 @@ public class ProductService {
     public ProductResponse getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(productId));
-        return new ProductResponse(product);
+        return ProductResponse.from(product);
     }
 }

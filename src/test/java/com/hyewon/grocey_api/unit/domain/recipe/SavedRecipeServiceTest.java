@@ -62,9 +62,9 @@ class SavedRecipeServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getRecipeId()).isEqualTo(10L);
-        assertThat(result.get(0).getRecipeName()).isEqualTo("Kimchi Fried Rice");
-        assertThat(result.get(0).getImageUrl()).isEqualTo("img.jpg");
+        assertThat(result.get(0).recipeId()).isEqualTo(10L);
+        assertThat(result.get(0).recipeName()).isEqualTo("Kimchi Fried Rice");
+        assertThat(result.get(0).imageUrl()).isEqualTo("img.jpg");
     }
 
 

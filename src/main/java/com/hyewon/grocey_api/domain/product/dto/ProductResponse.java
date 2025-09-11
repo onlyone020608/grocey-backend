@@ -1,21 +1,21 @@
 package com.hyewon.grocey_api.domain.product.dto;
 
 import com.hyewon.grocey_api.domain.product.entity.Product;
-import lombok.Getter;
 
-@Getter
-public class ProductResponse {
-    private Long productId;
-    private String brandName;
-    private String productName;
-    private double price;
-    private String imageUrl;
-
-    public ProductResponse(Product product) {
-        this.productId = product.getId();
-        this.brandName = product.getBrand();
-        this.productName = product.getName();
-        this.price = product.getPrice();
-        this.imageUrl = product.getImageUrl();
+public record ProductResponse(
+        Long productId,
+        String brandName,
+        String productName,
+        double price,
+        String imageUrl
+) {
+    public static ProductResponse from(Product product) {
+        return new ProductResponse(
+                product.getId(),
+                product.getBrand(),
+                product.getName(),
+                product.getPrice(),
+                product.getImageUrl()
+        );
     }
 }

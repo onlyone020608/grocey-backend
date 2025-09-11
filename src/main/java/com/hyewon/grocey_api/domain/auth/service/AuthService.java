@@ -41,7 +41,7 @@ public class AuthService {
 
     @Transactional
     public User signup(SignupRequest request) {
-        if (userQueryService.existsByEmail(request.getEmail())) {
+        if (userQueryService.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already in use");
         }
 
@@ -63,9 +63,9 @@ public class AuthService {
     }
 
     private User createUser(SignupRequest request, Fridge fridge) {
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.password());
 
-        User user = User.of(request.getName(), request.getEmail(), encodedPassword);
+        User user = User.of(request.name(), request.email(), encodedPassword);
         user.assignFridge(fridge);
         return user;
     }
@@ -117,9 +117,9 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest request) {
-        User user = userQueryService.getUserByEmail(request.getEmail());
+        User user = userQueryService.getUserByEmail(request.email());
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
 
@@ -134,7 +134,7 @@ public class AuthService {
 
     @Transactional
     public TokenResponse refresh(TokenRefreshRequest request) {
-        String refreshToken = request.getRefreshToken();
+        String refreshToken = request.refreshToken();
 
         if (!jwtTokenProvider.validateToken(refreshToken)) {
             throw new IllegalArgumentException("Invalid refresh token");

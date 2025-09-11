@@ -47,12 +47,12 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        if (request.getUserName() != null) {
-            user.updateName(request.getUserName());
+        if (request.userName() != null) {
+            user.updateName(request.userName());
         }
 
-        if (request.getEmail() != null) {
-            user.updateEmail(request.getEmail());
+        if (request.email() != null) {
+            user.updateEmail(request.email());
         }
     }
     @Transactional
@@ -76,7 +76,7 @@ public class UserService {
 
         userAllergyRepository.deleteAllByUserId(userId);
 
-        List<Long> allergyIds = request.getAllergyIds();
+        List<Long> allergyIds = request.allergyIds();
         List<Allergy> allergies = allergyRepository.findAllById(allergyIds);
 
         if (allergies.size() != allergyIds.size()) {
@@ -98,9 +98,9 @@ public class UserService {
         userPreferredIngredientRepository.deleteAllByUserId(userId);
         userDislikedIngredientRepository.deleteAllByUserId(userId);
 
-        saveUserFoodPreferences(user, request.getFoodPreferenceIds());
-        saveUserPreferredIngredients(user, request.getPreferredIngredientIds());
-        saveUserDislikedIngredients(user, request.getDislikedIngredientIds());
+        saveUserFoodPreferences(user, request.foodPreferenceIds());
+        saveUserPreferredIngredients(user, request.preferredIngredientIds());
+        saveUserDislikedIngredients(user, request.dislikedIngredientIds());
 
         user.completeProfile();
     }

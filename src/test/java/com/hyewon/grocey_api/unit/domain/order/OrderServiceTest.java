@@ -86,7 +86,7 @@ class OrderServiceTest {
 
         // then
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getOrderId()).isEqualTo(101L);
+        assertThat(result.get(0).orderId()).isEqualTo(101L);
     }
 
     @Test
@@ -100,9 +100,9 @@ class OrderServiceTest {
         OrderDetailResponse result = orderService.getOrderDetail(userId, 101L);
 
         // then
-        assertThat(result.getOrderId()).isEqualTo(101L);
-        assertThat(result.getShippingAddress()).isEqualTo("123 Seoul");
-        assertThat(result.getPaymentMethod()).isEqualTo(PaymentMethod.KAKAOPAY);
+        assertThat(result.orderId()).isEqualTo(101L);
+        assertThat(result.shippingAddress()).isEqualTo("123 Seoul");
+        assertThat(result.paymentMethod()).isEqualTo(PaymentMethod.KAKAOPAY);
     }
 
     @Test
@@ -131,7 +131,7 @@ class OrderServiceTest {
 
         // then
         assertThat(result.getTotalElements()).isEqualTo(1);
-        assertThat(result.getContent().get(0).getOrderId()).isEqualTo(101L);
+        assertThat(result.getContent().get(0).orderId()).isEqualTo(101L);
     }
 
     @Test

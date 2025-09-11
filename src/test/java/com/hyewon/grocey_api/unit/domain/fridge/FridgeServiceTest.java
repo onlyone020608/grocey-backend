@@ -39,7 +39,7 @@ class FridgeServiceTest {
         FridgeResponse response = fridgeService.getFridgeInfo(userId);
 
         // then
-        assertThat(response.getFridgeTemperature()).isEqualTo(4.0);
-        assertThat(response.getFreezerTemperature()).isEqualTo(-18.0);
+        assertThat(response.fridgeTemperature()).isEqualTo(4.0);
+        assertThat(response.freezerTemperature()).isEqualTo(-18.0);
     }
 }
