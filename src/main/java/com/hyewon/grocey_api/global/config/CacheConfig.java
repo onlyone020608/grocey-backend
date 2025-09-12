@@ -34,8 +34,6 @@ public class CacheConfig {
         cacheConfigs.put("products", thirtyMinConfig);
         cacheConfigs.put("productTabs", thirtyMinConfig);
         cacheConfigs.put("recipes", thirtyMinConfig);
-        cacheConfigs.put("recipeRecommendations", fiveMinConfig);
-        cacheConfigs.put("fridgeRecommendations", fiveMinConfig);
         cacheConfigs.put("fridge", fiveMinConfig);
 
         return RedisCacheManager.builder(connectionFactory)

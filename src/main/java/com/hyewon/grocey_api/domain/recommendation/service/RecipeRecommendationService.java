@@ -12,7 +12,6 @@ import com.hyewon.grocey_api.domain.user.entity.User;
 import com.hyewon.grocey_api.domain.user.service.UserQueryService;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,6 @@ public class RecipeRecommendationService {
     private final RecipeQueryService recipeQueryService;
 
     @Transactional
-    @CachePut(value = "recipeRecommendations", key = "#userId")
     public List<RecipeRecommendationResponse> getRecommendationsByUser(Long userId) {
         User user = userQueryService.getUserById(userId);
 
