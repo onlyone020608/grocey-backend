@@ -31,8 +31,8 @@ public class CacheConfig {
         RedisCacheConfiguration fiveMinConfig = defaultConfig.entryTtl(Duration.ofMinutes(5));
 
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
-        cacheConfigs.put("products", thirtyMinConfig);
-        cacheConfigs.put("productTabs", thirtyMinConfig);
+//        cacheConfigs.put("products", thirtyMinConfig);
+//        cacheConfigs.put("productTabs", thirtyMinConfig);
         cacheConfigs.put("recipes", thirtyMinConfig);
         cacheConfigs.put("fridge", fiveMinConfig);
 

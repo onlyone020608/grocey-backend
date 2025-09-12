@@ -8,6 +8,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
+@Table(
+        name = "product_tab",
+        indexes = {
+                @Index(name = "idx_product_tab_tabtype", columnList = "tabType")
+        }
+)
 public class ProductTab {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
