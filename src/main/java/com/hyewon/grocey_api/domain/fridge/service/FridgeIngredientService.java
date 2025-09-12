@@ -7,7 +7,6 @@ import com.hyewon.grocey_api.domain.fridge.entity.FridgeIngredient;
 import com.hyewon.grocey_api.domain.fridge.repository.FridgeIngredientRepository;
 import com.hyewon.grocey_api.global.exception.FridgeIngredientNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,6 @@ public class FridgeIngredientService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "fridgeIngredientDetail", key = "#id")
     public FridgeIngredientDetailResponse getIngredientDetail(Long id) {
         FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIdWithIngredient(id)
                 .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
