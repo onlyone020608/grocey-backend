@@ -1,6 +1,7 @@
 package com.hyewon.grocey_api.domain.product.service;
 
 import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
+import com.hyewon.grocey_api.domain.product.dto.ProductTabResponse;
 import com.hyewon.grocey_api.domain.product.entity.ProductTab;
 import com.hyewon.grocey_api.domain.product.entity.TabType;
 import com.hyewon.grocey_api.domain.product.repository.ProductTabRepository;
@@ -18,11 +19,13 @@ public class ProductTabService {
 
     @Cacheable(value = "productTabs", key = "#tab")
     @Transactional(readOnly = true)
-    public List<ProductResponse> getProductsByTab(TabType tab) {
+    public ProductTabResponse getProductsByTab(TabType tab) {
         List<ProductTab> productTabs = productTabRepository.findByTabTypeWithProduct(tab);
 
-        return productTabs.stream()
+        List<ProductResponse> responses = productTabs.stream()
                 .map(productTab -> ProductResponse.from(productTab.getProduct()))
                 .toList();
+
+        return ProductTabResponse.from(responses);
     }
 }

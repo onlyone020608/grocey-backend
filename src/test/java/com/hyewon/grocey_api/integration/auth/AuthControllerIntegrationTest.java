@@ -89,10 +89,10 @@ public class AuthControllerIntegrationTest extends AbstractIntegrationTest {
         TokenResponse tokens = objectMapper.readValue(loginResponse, TokenResponse.class);
 
         given(refreshTokenRepository.findByUserId(user.getId()))
-                .willReturn(tokens.getRefreshToken());
+                .willReturn(tokens.refreshToken());
 
         TokenRefreshRequest refreshRequest = TokenRefreshRequest.builder()
-                .refreshToken(tokens.getRefreshToken())
+                .refreshToken(tokens.refreshToken())
                 .build();
 
         // when & then

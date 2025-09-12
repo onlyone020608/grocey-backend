@@ -26,8 +26,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -77,7 +77,7 @@ class AuthServiceTest {
     @DisplayName("signs up user when request is valid")
     void shouldSignUpUser_whenRequestValid() {
         // given
-        given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(false);
+        given(userQueryService.existsByEmail(signupRequest.email())).willReturn(false);
         given(ingredientQueryService.getIngredientById(1L)).willReturn(ingredient1);
         given(ingredientQueryService.getIngredientById(2L)).willReturn(ingredient2);
         given(ingredientQueryService.getIngredientById(3L)).willReturn(ingredient3);
@@ -88,7 +88,7 @@ class AuthServiceTest {
         authService.signup(signupRequest);
 
         // then
-        verify(userQueryService).existsByEmail(signupRequest.getEmail());
+        verify(userQueryService).existsByEmail(signupRequest.email());
         verify(fridgeCommandService).createFridge(any(Fridge.class));
     }
 
@@ -96,7 +96,7 @@ class AuthServiceTest {
     @DisplayName("throws exception when email is already in use during signup")
     void shouldThrowException_whenEmailAlreadyInUse() {
         // given
-        given(userQueryService.existsByEmail(signupRequest.getEmail())).willReturn(true);
+        given(userQueryService.existsByEmail(signupRequest.email())).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> authService.signup(signupRequest))
@@ -115,8 +115,8 @@ class AuthServiceTest {
         User user = User.of("tester", "user@email.com", "encoded-password");
         ReflectionTestUtils.setField(user, "id", 1L);
 
-        given(userQueryService.getUserByEmail(request.getEmail())).willReturn(user);
-        given(passwordEncoder.matches(request.getPassword(), user.getPassword())).willReturn(true);
+        given(userQueryService.getUserByEmail(request.email())).willReturn(user);
+        given(passwordEncoder.matches(request.password(), user.getPassword())).willReturn(true);
         given(jwtTokenProvider.generateAccessToken(1L)).willReturn("access-token");
         given(jwtTokenProvider.generateRefreshToken(1L)).willReturn("refresh-token");
 
@@ -124,8 +124,8 @@ class AuthServiceTest {
         TokenResponse response = authService.login(request);
 
         // then
-        assertThat(response.getAccessToken()).isEqualTo("access-token");
-        assertThat(response.getRefreshToken()).isEqualTo("refresh-token");
+        assertThat(response.accessToken()).isEqualTo("access-token");
+        assertThat(response.refreshToken()).isEqualTo("refresh-token");
     }
 
     @Test
@@ -147,8 +147,8 @@ class AuthServiceTest {
         TokenResponse response = authService.refresh(request);
 
         // then
-        assertThat(response.getAccessToken()).isEqualTo("new-access-token");
-        assertThat(response.getRefreshToken()).isEqualTo(oldRefreshToken);
+        assertThat(response.accessToken()).isEqualTo("new-access-token");
+        assertThat(response.refreshToken()).isEqualTo(oldRefreshToken);
     }
 
     @Test

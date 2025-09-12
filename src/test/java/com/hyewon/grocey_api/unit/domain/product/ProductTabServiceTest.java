@@ -1,6 +1,6 @@
 package com.hyewon.grocey_api.unit.domain.product;
 
-import com.hyewon.grocey_api.domain.product.dto.ProductResponse;
+import com.hyewon.grocey_api.domain.product.dto.ProductTabResponse;
 import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.entity.ProductTab;
 import com.hyewon.grocey_api.domain.product.entity.TabType;
@@ -43,11 +43,11 @@ class ProductTabServiceTest {
         given(productTabRepository.findByTabTypeWithProduct(TabType.BEST)).willReturn(List.of(productTab));
 
         // when
-        List<ProductResponse> result = productTabService.getProductsByTab(TabType.BEST);
+        ProductTabResponse result = productTabService.getProductsByTab(TabType.BEST);
 
         // then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).productId()).isEqualTo(1L);
-        assertThat(result.get(0).productName()).isEqualTo("Milk");
+        assertThat(result.products()).hasSize(1);
+        assertThat(result.products().get(0).productId()).isEqualTo(1L);
+        assertThat(result.products().get(0).productName()).isEqualTo("Milk");
     }
 }
