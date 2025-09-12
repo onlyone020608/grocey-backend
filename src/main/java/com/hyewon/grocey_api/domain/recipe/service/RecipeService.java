@@ -8,6 +8,7 @@ import com.hyewon.grocey_api.domain.recipe.repository.RecipeRepository;
 import com.hyewon.grocey_api.domain.recipe.repository.SavedRecipeRepository;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final SavedRecipeRepository savedRecipeRepository;
 
+    @Cacheable(value = "recipes", key = "#recipeId")
     @Transactional(readOnly = true)
     public RecipeDetailResponse getRecipeDetail(Long recipeId, Long userId) {
         Recipe recipe = recipeRepository.findById(recipeId)

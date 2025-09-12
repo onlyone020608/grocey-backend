@@ -11,6 +11,8 @@ import com.hyewon.grocey_api.global.exception.DuplicateSavedRecipeException;
 import com.hyewon.grocey_api.global.exception.RecipeNotFoundException;
 import com.hyewon.grocey_api.global.exception.SavedRecipeNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,7 @@ public class SavedRecipeService {
     private final UserQueryService userQueryService;
     private final RecipeRepository recipeRepository;
 
+    @Cacheable(value = "recipes", key = "'saved:' + #userId")
     @Transactional(readOnly = true)
     public List<SavedRecipeResponse> getSavedRecipes(Long userId) {
         List<SavedRecipe> savedRecipes = savedRecipeRepository.findByUserIdWithRecipe(userId);
@@ -32,6 +35,7 @@ public class SavedRecipeService {
                 .toList();
     }
 
+    @CacheEvict(value = "recipes", key = "'saved:' + #userId")
     @Transactional
     public void saveRecipe(Long userId, Long recipeId) {
         User user = userQueryService.getUserById(userId);
@@ -48,6 +52,7 @@ public class SavedRecipeService {
         savedRecipeRepository.save(savedRecipe);
     }
 
+    @CacheEvict(value = "recipes", key = "'saved:' + #userId")
     @Transactional
     public void deleteRecipe(Long userId, Long recipeId) {
         SavedRecipe savedRecipe = savedRecipeRepository.findByUserIdAndRecipeId(userId, recipeId)

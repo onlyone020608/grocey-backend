@@ -11,6 +11,7 @@ import com.hyewon.grocey_api.domain.recommendation.entity.FridgeRecommendation;
 import com.hyewon.grocey_api.domain.recommendation.repository.FridgeRecommendationRepository;
 import com.hyewon.grocey_api.global.exception.RecommendationNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class FridgeRecommendationService {
     private final FridgeIngredientManager fridgeIngredientManager;
 
     @Transactional
+    @CachePut(value = "fridgeRecommendations", key = "#userId")
     public FridgeRecommendationResponse getLatestRecommendation(Long userId) {
         Fridge fridge = fridgeQueryService.getFridgeByUserId(userId);
 
