@@ -5,6 +5,7 @@ import com.hyewon.grocey_api.domain.product.entity.Product;
 import com.hyewon.grocey_api.domain.product.repository.ProductRepository;
 import com.hyewon.grocey_api.global.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductRepository productRepository;
 
-//    @Cacheable(value = "products", key = "#productId")
+    @Cacheable(value = "products", key = "#productId")
     @Transactional(readOnly = true)
     public ProductResponse getProductDetail(Long productId) {
         Product product = productRepository.findById(productId)
