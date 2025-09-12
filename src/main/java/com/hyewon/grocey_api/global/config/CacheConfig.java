@@ -32,6 +32,7 @@ public class CacheConfig {
 
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
         cacheConfigs.put("products", thirtyMinConfig);
+        cacheConfigs.put("productTabs", thirtyMinConfig);
         cacheConfigs.put("recipes", thirtyMinConfig);
         cacheConfigs.put("recipeRecommendations", fiveMinConfig);
         cacheConfigs.put("fridgeRecommendations", fiveMinConfig);

@@ -16,7 +16,7 @@ import java.util.List;
 public class ProductTabService {
     private final ProductTabRepository productTabRepository;
 
-    @Cacheable(value = "products", key = "#tab")
+    @Cacheable(value = "productTabs", key = "#tab")
     @Transactional(readOnly = true)
     public List<ProductResponse> getProductsByTab(TabType tab) {
         List<ProductTab> productTabs = productTabRepository.findByTabTypeWithProduct(tab);
