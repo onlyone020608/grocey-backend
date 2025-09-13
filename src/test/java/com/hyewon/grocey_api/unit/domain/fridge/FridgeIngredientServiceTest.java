@@ -83,7 +83,7 @@ class FridgeIngredientServiceTest {
         // given
         Long ingredientId = 10L;
 
-        given(fridgeIngredientRepository.findByIngredientIdWithIngredient(ingredientId)).willReturn(java.util.Optional.of(fridgeIngredient2));
+        given(fridgeIngredientRepository.findByIdWithIngredient(ingredientId)).willReturn(java.util.Optional.of(fridgeIngredient2));
 
         // when
         FridgeIngredientDetailResponse result = fridgeIngredientService.getIngredientDetail(ingredientId);
@@ -100,7 +100,7 @@ class FridgeIngredientServiceTest {
     void shouldThrowException_whenIngredientNotFound() {
         // given
         Long ingredientId = 123L;
-        given(fridgeIngredientRepository.findByIngredientIdWithIngredient(ingredientId)).willReturn(java.util.Optional.empty());
+        given(fridgeIngredientRepository.findByIdWithIngredient(ingredientId)).willReturn(java.util.Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> fridgeIngredientService.getIngredientDetail(ingredientId))

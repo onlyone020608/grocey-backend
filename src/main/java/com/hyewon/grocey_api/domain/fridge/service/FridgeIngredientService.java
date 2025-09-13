@@ -38,9 +38,9 @@ public class FridgeIngredientService {
     }
 
     @Transactional(readOnly = true)
-    public FridgeIngredientDetailResponse getIngredientDetail(Long id) {
-        FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIngredientIdWithIngredient(id)
-                .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
+    public FridgeIngredientDetailResponse getIngredientDetail(Long fridgeIngredientId) {
+        FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIdWithIngredient(fridgeIngredientId)
+                .orElseThrow(() -> new FridgeIngredientNotFoundException(fridgeIngredientId));
         return FridgeIngredientDetailResponse.from(fridgeIngredient);
     }
 }

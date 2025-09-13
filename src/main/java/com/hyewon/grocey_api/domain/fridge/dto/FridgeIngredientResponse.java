@@ -9,7 +9,7 @@ public record FridgeIngredientResponse(
 ) {
     public static FridgeIngredientResponse from(FridgeIngredient fridgeIngredient) {
         return new FridgeIngredientResponse(
-                fridgeIngredient.getIngredient().getId(),
+                fridgeIngredient.getId(),
                 fridgeIngredient.getIngredient().getName(),
                 fridgeIngredient.getIngredient().getImageUrl()
         );
