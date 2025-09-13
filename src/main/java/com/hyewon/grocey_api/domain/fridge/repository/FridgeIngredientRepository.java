@@ -20,8 +20,8 @@ public interface FridgeIngredientRepository extends JpaRepository<FridgeIngredie
     List<FridgeIngredient> findByFridgeIdAndFreezerWithIngredient(@Param("fridgeId") Long fridgeId,
                                                                   @Param("isFreezer")  Boolean isFreezer);
     @Query("SELECT fi FROM FridgeIngredient fi " +
-            "JOIN FETCH fi.ingredient " +
-            "WHERE fi.id = :id")
-    Optional<FridgeIngredient> findByIdWithIngredient(@Param("id") Long id);
+            "JOIN FETCH fi.ingredient i " +
+            "WHERE i.id = :ingredientId")
+    Optional<FridgeIngredient> findByIngredientIdWithIngredient(@Param("id") Long id);
     List<FridgeIngredient> findByFridgeId(Long fridgeId);
 }

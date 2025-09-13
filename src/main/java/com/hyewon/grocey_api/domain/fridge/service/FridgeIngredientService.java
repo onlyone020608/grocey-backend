@@ -39,7 +39,7 @@ public class FridgeIngredientService {
 
     @Transactional(readOnly = true)
     public FridgeIngredientDetailResponse getIngredientDetail(Long id) {
-        FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIdWithIngredient(id)
+        FridgeIngredient fridgeIngredient = fridgeIngredientRepository.findByIngredientIdWithIngredient(id)
                 .orElseThrow(() -> new FridgeIngredientNotFoundException(id));
         return FridgeIngredientDetailResponse.from(fridgeIngredient);
     }
