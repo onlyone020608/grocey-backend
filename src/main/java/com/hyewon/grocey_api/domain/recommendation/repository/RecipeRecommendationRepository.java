@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RecipeRecommendationRepository extends JpaRepository<RecipeRecommendation, Integer> {
+public interface RecipeRecommendationRepository extends JpaRepository<RecipeRecommendation, Long> {
     List<RecipeRecommendation> findByUser(User user);
     List<RecipeRecommendation> findByFridge(Fridge fridge);
     void deleteByUser(User user);
