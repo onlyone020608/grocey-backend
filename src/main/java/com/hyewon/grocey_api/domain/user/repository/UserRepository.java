@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmailAndPassword(String email, String password);
     boolean existsByEmail(String email);
     Optional<User> findByEmail(String email);
     @Query("select u.fridge from User u where u.id = :userId")
