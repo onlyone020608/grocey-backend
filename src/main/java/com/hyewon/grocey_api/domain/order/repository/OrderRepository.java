@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, OrderQueryRepository {
-    @Query("SELECT o FROM Order o " +
+    @Query("SELECT DISTINCT o FROM Order o " +
             "JOIN FETCH o.orderItems oi " +
             "JOIN FETCH oi.product " +
             "WHERE o.id = :orderId AND o.user.id = :userId")
